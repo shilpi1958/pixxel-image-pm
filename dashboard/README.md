@@ -23,9 +23,15 @@ the dashboard needs no server and no network.
   decision badge (pass / retry / escalate), failure category, retry count,
   version, delivery-ready state.
 - **Detail view** — click any card: large preview, scene facts (from the STAC
-  metadata), every QA metric (from the real masks), the full per-rule
+  metadata), **the two real masks rendered** (usable-data mask with
+  cloud/haze/shadow colors, and the pixel-quality mask with interpolated
+  pixels lit up), every QA metric (from the real masks), the full per-rule
   evaluation table in PRD order with reasoning, the not-assessed list, and a
   link to the scene's source files in `data/`.
+
+The mask previews are generated from the real TIFFs by
+`dashboard/make_mask_previews.py` (browsers can't render GeoTIFFs natively,
+so they're pre-rendered to small PNGs — still 100% real data).
 
 ## Regenerating after a re-run of the agent
 

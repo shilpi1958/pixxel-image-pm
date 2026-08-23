@@ -232,6 +232,23 @@
         </div>
 
         <section>
+          <h4>Rasters — real TIFFs rendered</h4>
+          <div style="display:flex;gap:14px;flex-wrap:wrap">
+            <figure style="flex:1 1 260px;min-width:220px">
+              <img class="preview" style="max-height:300px" src="${s.data_mask_preview}" alt="usable data mask of ${s.scene_id}">
+              <figcaption class="meta-line">Usable data mask — <span style="color:#ff5c5c">cloud</span> ·
+              <span style="color:#5ce65c">haze/smoke</span> · <span style="color:#4664ff">cloud-shadow</span> ·
+              dark = clear · black = outside scene</figcaption>
+            </figure>
+            <figure style="flex:1 1 260px;min-width:220px">
+              <img class="preview" style="max-height:300px" src="${s.quality_mask_preview}" alt="pixel quality mask of ${s.scene_id}">
+              <figcaption class="meta-line">Pixel quality mask — brightness = bands interpolated
+              (dead/bad pixels) · black = healthy</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section>
           <h4>Scene facts</h4>
           <table class="grid">
             <tr><th>Platform</th><td class="mono">${esc(s.platform)} (${esc(s.expected_bands)} expected bands)</td></tr>

@@ -20,6 +20,7 @@ An agent that looks at a hyperspectral scene, reads its quality mask, applies me
 | [`agent/`](agent/SETUP.md) | The **QA triage agent**: executes the PRD's rules as structured conditions against each scene's real metadata + masks, decides pass/retry/escalate, and logs the full reasoning trace → [`agent/decisions.json`](agent/decisions.json) |
 | [`dashboard/`](dashboard/README.md) | Clickable pipeline-monitoring dashboard — image queue, per-scene QA status, failure category, retry count, version, reasoning trace. Populated only with the real data above |
 | [`docs/`](docs/pipeline-walkthrough.md) | Pipeline walkthrough: raw input, quality mask, and processed output side by side for each scene, tied to specific PRD rules |
+| [`notebooks/`](notebooks/README.md) | **The learning notebook** — every QA calculation re-derived step by step on the real data, with an interactive threshold experiment |
 
 ## Quick start
 
@@ -31,7 +32,11 @@ python3 -m venv .venv && .venv/bin/pip install -r agent/requirements.txt
 .venv/bin/python agent/triage_agent.py --data data
 #   → writes agent/decisions.json + agent/logs/*.log
 
-# 3. serve the dashboard
+# 3. learn interactively (optional but recommended)
+.venv/bin/pip install jupyterlab matplotlib ipywidgets
+.venv/bin/jupyter lab            # open notebooks/qa_pipeline_walkthrough.ipynb
+
+# 4. serve the dashboard
 python3 -m http.server 8000        # open http://localhost:8000/dashboard/
 #   (or open dashboard/index.html directly — data is embedded, no server needed)
 ```

@@ -250,6 +250,8 @@ window.PIXXEL_DATA = {
       ],
       "preview": "../data/01-clean-cropfield-australia/preview.png",
       "thumbnail": "../data/01-clean-cropfield-australia/thumbnail.png",
+      "data_mask_preview": "../data/01-clean-cropfield-australia/data_mask_preview.png",
+      "quality_mask_preview": "../data/01-clean-cropfield-australia/quality_mask_preview.png",
       "data_dir": "../data/01-clean-cropfield-australia/"
     },
     {
@@ -491,6 +493,8 @@ window.PIXXEL_DATA = {
       ],
       "preview": "../data/02-wildfire-smoke-saskatchewan/preview.png",
       "thumbnail": "../data/02-wildfire-smoke-saskatchewan/thumbnail.png",
+      "data_mask_preview": "../data/02-wildfire-smoke-saskatchewan/data_mask_preview.png",
+      "quality_mask_preview": "../data/02-wildfire-smoke-saskatchewan/quality_mask_preview.png",
       "data_dir": "../data/02-wildfire-smoke-saskatchewan/"
     },
     {
@@ -724,6 +728,8 @@ window.PIXXEL_DATA = {
       ],
       "preview": "../data/03-copper-mine-chile/preview.png",
       "thumbnail": "../data/03-copper-mine-chile/thumbnail.png",
+      "data_mask_preview": "../data/03-copper-mine-chile/data_mask_preview.png",
+      "quality_mask_preview": "../data/03-copper-mine-chile/quality_mask_preview.png",
       "data_dir": "../data/03-copper-mine-chile/"
     }
   ]

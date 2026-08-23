@@ -88,6 +88,8 @@ def build(decisions_path: Path, out_path: Path) -> None:
             ],
             "preview": f"../data/{s['folder']}/preview.png",
             "thumbnail": f"../data/{s['folder']}/thumbnail.png",
+            "data_mask_preview": f"../data/{s['folder']}/data_mask_preview.png",
+            "quality_mask_preview": f"../data/{s['folder']}/quality_mask_preview.png",
             "data_dir": f"../data/{s['folder']}/",
         })
 
