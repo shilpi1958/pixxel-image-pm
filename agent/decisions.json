@@ -1,0 +1,696 @@
+{
+  "schema": "pixxel.qa.decisions.v1",
+  "generated_at": "2026-08-23T06:37:22.776502+00:00",
+  "rules_source": "prd/qa-qc-prd.md \u00a72-\u00a74 (agent/rules.json)",
+  "max_retries": 2,
+  "scenes": [
+    {
+      "scene_id": "wyvern_dragonette-003_20250319T000402_d5ebab06_l2a",
+      "folder": "01-clean-cropfield-australia",
+      "role": "clean crop field (Australia)",
+      "platform": "Dragonette-003",
+      "datetime": "2025-03-19T00:04:06.253411Z",
+      "processing_level": "L2A",
+      "processing_version": "2.1",
+      "stac_cloud_cover_pct": 0.0,
+      "gsd_m": 5.22,
+      "bbox": [
+        144.13500110045015,
+        -38.51349400007312,
+        144.63646459309035,
+        -37.96990012978469
+      ],
+      "cog_href": "https://wyvern-data.com/wyvern_dragonette-003_20250319T000402_d5ebab06_l2a/wyvern_dragonette-003_20250319T000402_d5ebab06_l2a.tiff",
+      "expected_bands": 31,
+      "metrics": {
+        "band_count": 31,
+        "aoi_coverage_pct": null,
+        "quality_mask_coverage_pct": 100.0,
+        "cloud_or_haze_pct": 0.0,
+        "interpolated_pct": 0.0,
+        "full_band_dropout": false,
+        "geolocation_rmse_px": null,
+        "coreg_offset_px": null,
+        "reflectance_out_of_bounds_pct": null,
+        "band_corr_mean": null
+      },
+      "mask_metrics": {
+        "valid_footprint_pct": 47.05,
+        "clear_pct": 100.0,
+        "cloud_pct": 0.0,
+        "haze_pct": 0.0,
+        "cloud_shadow_pct": 0.0,
+        "cloud_or_haze_pct": 0.0,
+        "quality_mask_coverage_pct": 100.0,
+        "interpolated_pct": 0.0,
+        "per_band_interpolated_pct": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "full_band_dropout": false
+      },
+      "rules": [
+        {
+          "rule_id": "QA-1",
+          "name": "incomplete_data",
+          "category": "INCOMPLETE",
+          "routing": "escalate",
+          "level": [
+            "L1B"
+          ],
+          "status": "not_applicable",
+          "checks": [],
+          "reasoning": "Rule QA-1 applies to ['L1B']; scene is L2A \u2014 not evaluated at this processing level."
+        },
+        {
+          "rule_id": "QA-2",
+          "name": "mask_gap",
+          "category": "MASK_GAP",
+          "routing": "escalate",
+          "level": [
+            "L1B",
+            "L2A"
+          ],
+          "status": "pass",
+          "checks": [
+            {
+              "metric": "quality_mask_coverage_pct",
+              "observed": 100.0,
+              "threshold": 100,
+              "op": "lt",
+              "status": "pass",
+              "reasoning": "Quality/cloud mask missing, unparseable, or covering less than the full scene footprint"
+            }
+          ],
+          "reasoning": "Rule QA-2 (mask_gap) passed: quality_mask_coverage_pct=100.0 (threshold 100)"
+        },
+        {
+          "rule_id": "QA-3",
+          "name": "cloud_obstruction",
+          "category": "CLOUD",
+          "routing": "retry",
+          "level": [
+            "L1B",
+            "L2A"
+          ],
+          "status": "pass",
+          "checks": [
+            {
+              "metric": "cloud_or_haze_pct",
+              "observed": 0.0,
+              "threshold": 40,
+              "op": "gt",
+              "status": "pass",
+              "reasoning": "Cloud/haze/smoke mask coverage exceeds the 40% usable threshold"
+            }
+          ],
+          "reasoning": "Rule QA-3 (cloud_obstruction) passed: cloud_or_haze_pct=0.0 (threshold 40)"
+        },
+        {
+          "rule_id": "QA-4",
+          "name": "sensor_artifact",
+          "category": "SENSOR",
+          "routing": "escalate",
+          "level": [
+            "L1B"
+          ],
+          "status": "not_applicable",
+          "checks": [],
+          "reasoning": "Rule QA-4 applies to ['L1B']; scene is L2A \u2014 not evaluated at this processing level."
+        },
+        {
+          "rule_id": "QA-5",
+          "name": "geometric_misalignment",
+          "category": "GEOM",
+          "routing": "retry",
+          "level": [
+            "L1B",
+            "L2A"
+          ],
+          "status": "not_assessable",
+          "checks": [
+            {
+              "metric": "geolocation_rmse_px",
+              "observed": null,
+              "threshold": 1,
+              "status": "not_assessable",
+              "reasoning": "Geolocation RMSE exceeds 1 pixel \u2014 metric 'geolocation_rmse_px' is not available in this run's inputs."
+            },
+            {
+              "metric": "coreg_offset_px",
+              "observed": null,
+              "threshold": 0.5,
+              "status": "not_assessable",
+              "reasoning": "Cross-band co-registration offset exceeds 0.5 pixel \u2014 metric 'coreg_offset_px' is not available in this run's inputs."
+            }
+          ],
+          "reasoning": "Rule QA-5 (geometric_misalignment) could not be fully evaluated: geolocation_rmse_px; coreg_offset_px not available."
+        },
+        {
+          "rule_id": "QA-6",
+          "name": "radiometric_bounds",
+          "category": "RADIO",
+          "routing": "retry",
+          "level": [
+            "L2A"
+          ],
+          "status": "not_assessable",
+          "checks": [
+            {
+              "metric": "reflectance_out_of_bounds_pct",
+              "observed": null,
+              "threshold": 0.5,
+              "status": "not_assessable",
+              "reasoning": "Reflectance outside physical [0,1] bounds on more than 0.5% of valid (unmasked) pixels \u2014 metric 'reflectance_out_of_bounds_pct' is not available in this run's inputs."
+            }
+          ],
+          "reasoning": "Rule QA-6 (radiometric_bounds) could not be fully evaluated: reflectance_out_of_bounds_pct not available."
+        },
+        {
+          "rule_id": "QA-7",
+          "name": "radiometric_consistency",
+          "category": "RADIO",
+          "routing": "escalate",
+          "level": [
+            "L2A"
+          ],
+          "status": "not_assessable",
+          "checks": [
+            {
+              "metric": "band_corr_mean",
+              "observed": null,
+              "threshold": 0.7,
+              "status": "not_assessable",
+              "reasoning": "Internally inconsistent reflectance: mean band-to-band correlation on clear pixels below the expected range for hyperspectral surface data (adjacent bands of a well-calibrated stack are strongly correlated) \u2014 the output contradicts its own inputs \u2014 metric 'band_corr_mean' is not available in this run's inputs."
+            }
+          ],
+          "reasoning": "Rule QA-7 (radiometric_consistency) could not be fully evaluated: band_corr_mean not available."
+        }
+      ],
+      "decision": "pass",
+      "failure_category": null,
+      "fired_rule": null,
+      "reasoning": "No QA rule failed. Scene is CLEAN.",
+      "retry_count": 0,
+      "version": "v1",
+      "version_note": "Initial assessment. A retry that re-runs processing with changed parameters creates a new version (PRD \u00a75); an automated retry with identical parameters is the same version, new attempt.",
+      "delivery_ready": true,
+      "delivery_ready_note": "Passed on all assessable rules and meets PRD section 6 conditions.",
+      "not_assessed": [
+        "QA-5",
+        "QA-6",
+        "QA-7"
+      ],
+      "not_assessed_detail": [
+        "Rule QA-5 (geometric_misalignment) could not be fully evaluated: geolocation_rmse_px; coreg_offset_px not available.",
+        "Rule QA-6 (radiometric_bounds) could not be fully evaluated: reflectance_out_of_bounds_pct not available.",
+        "Rule QA-7 (radiometric_consistency) could not be fully evaluated: band_corr_mean not available."
+      ]
+    },
+    {
+      "scene_id": "wyvern_dragonette-003_20250531T173810_56fca26e_l2a",
+      "folder": "02-wildfire-smoke-saskatchewan",
+      "role": "wildfire smoke (Saskatchewan)",
+      "platform": "Dragonette-003",
+      "datetime": "2025-05-31T17:38:14.026409Z",
+      "processing_level": "L2A",
+      "processing_version": "2.1",
+      "stac_cloud_cover_pct": 37.85,
+      "gsd_m": 5.22,
+      "bbox": [
+        -103.25223511895695,
+        54.847130682080056,
+        -102.70281510022586,
+        55.32069701904252
+      ],
+      "cog_href": "https://wyvern-data.com/wyvern_dragonette-003_20250531T173810_56fca26e_l2a/wyvern_dragonette-003_20250531T173810_56fca26e_l2a.tiff",
+      "expected_bands": 31,
+      "metrics": {
+        "band_count": 31,
+        "aoi_coverage_pct": null,
+        "quality_mask_coverage_pct": 100.0,
+        "cloud_or_haze_pct": 62.3,
+        "interpolated_pct": 0.0,
+        "full_band_dropout": false,
+        "geolocation_rmse_px": null,
+        "coreg_offset_px": null,
+        "reflectance_out_of_bounds_pct": null,
+        "band_corr_mean": null
+      },
+      "mask_metrics": {
+        "valid_footprint_pct": 59.96,
+        "clear_pct": 37.7,
+        "cloud_pct": 37.85,
+        "haze_pct": 24.45,
+        "cloud_shadow_pct": 0.01,
+        "cloud_or_haze_pct": 62.3,
+        "quality_mask_coverage_pct": 100.0,
+        "interpolated_pct": 0.0,
+        "per_band_interpolated_pct": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "full_band_dropout": false
+      },
+      "rules": [
+        {
+          "rule_id": "QA-1",
+          "name": "incomplete_data",
+          "category": "INCOMPLETE",
+          "routing": "escalate",
+          "level": [
+            "L1B"
+          ],
+          "status": "not_applicable",
+          "checks": [],
+          "reasoning": "Rule QA-1 applies to ['L1B']; scene is L2A \u2014 not evaluated at this processing level."
+        },
+        {
+          "rule_id": "QA-2",
+          "name": "mask_gap",
+          "category": "MASK_GAP",
+          "routing": "escalate",
+          "level": [
+            "L1B",
+            "L2A"
+          ],
+          "status": "pass",
+          "checks": [
+            {
+              "metric": "quality_mask_coverage_pct",
+              "observed": 100.0,
+              "threshold": 100,
+              "op": "lt",
+              "status": "pass",
+              "reasoning": "Quality/cloud mask missing, unparseable, or covering less than the full scene footprint"
+            }
+          ],
+          "reasoning": "Rule QA-2 (mask_gap) passed: quality_mask_coverage_pct=100.0 (threshold 100)"
+        },
+        {
+          "rule_id": "QA-3",
+          "name": "cloud_obstruction",
+          "category": "CLOUD",
+          "routing": "retry",
+          "level": [
+            "L1B",
+            "L2A"
+          ],
+          "status": "fail",
+          "checks": [
+            {
+              "metric": "cloud_or_haze_pct",
+              "observed": 62.3,
+              "threshold": 40,
+              "op": "gt",
+              "status": "fail",
+              "reasoning": "Cloud/haze/smoke mask coverage exceeds the 40% usable threshold"
+            }
+          ],
+          "reasoning": "Rule QA-3 (cloud_obstruction) fired: cloud_or_haze_pct=62.3 gt threshold=40 \u2192 FAIL"
+        },
+        {
+          "rule_id": "QA-4",
+          "name": "sensor_artifact",
+          "category": "SENSOR",
+          "routing": "escalate",
+          "level": [
+            "L1B"
+          ],
+          "status": "not_applicable",
+          "checks": [],
+          "reasoning": "Rule QA-4 applies to ['L1B']; scene is L2A \u2014 not evaluated at this processing level."
+        },
+        {
+          "rule_id": "QA-5",
+          "name": "geometric_misalignment",
+          "category": "GEOM",
+          "routing": "retry",
+          "level": [
+            "L1B",
+            "L2A"
+          ],
+          "status": "not_assessable",
+          "checks": [
+            {
+              "metric": "geolocation_rmse_px",
+              "observed": null,
+              "threshold": 1,
+              "status": "not_assessable",
+              "reasoning": "Geolocation RMSE exceeds 1 pixel \u2014 metric 'geolocation_rmse_px' is not available in this run's inputs."
+            },
+            {
+              "metric": "coreg_offset_px",
+              "observed": null,
+              "threshold": 0.5,
+              "status": "not_assessable",
+              "reasoning": "Cross-band co-registration offset exceeds 0.5 pixel \u2014 metric 'coreg_offset_px' is not available in this run's inputs."
+            }
+          ],
+          "reasoning": "Rule QA-5 (geometric_misalignment) could not be fully evaluated: geolocation_rmse_px; coreg_offset_px not available."
+        },
+        {
+          "rule_id": "QA-6",
+          "name": "radiometric_bounds",
+          "category": "RADIO",
+          "routing": "retry",
+          "level": [
+            "L2A"
+          ],
+          "status": "not_assessable",
+          "checks": [
+            {
+              "metric": "reflectance_out_of_bounds_pct",
+              "observed": null,
+              "threshold": 0.5,
+              "status": "not_assessable",
+              "reasoning": "Reflectance outside physical [0,1] bounds on more than 0.5% of valid (unmasked) pixels \u2014 metric 'reflectance_out_of_bounds_pct' is not available in this run's inputs."
+            }
+          ],
+          "reasoning": "Rule QA-6 (radiometric_bounds) could not be fully evaluated: reflectance_out_of_bounds_pct not available."
+        },
+        {
+          "rule_id": "QA-7",
+          "name": "radiometric_consistency",
+          "category": "RADIO",
+          "routing": "escalate",
+          "level": [
+            "L2A"
+          ],
+          "status": "not_assessable",
+          "checks": [
+            {
+              "metric": "band_corr_mean",
+              "observed": null,
+              "threshold": 0.7,
+              "status": "not_assessable",
+              "reasoning": "Internally inconsistent reflectance: mean band-to-band correlation on clear pixels below the expected range for hyperspectral surface data (adjacent bands of a well-calibrated stack are strongly correlated) \u2014 the output contradicts its own inputs \u2014 metric 'band_corr_mean' is not available in this run's inputs."
+            }
+          ],
+          "reasoning": "Rule QA-7 (radiometric_consistency) could not be fully evaluated: band_corr_mean not available."
+        }
+      ],
+      "decision": "retry",
+      "failure_category": "CLOUD",
+      "fired_rule": "QA-3",
+      "reasoning": "Rule QA-3 (cloud_obstruction) fired: cloud_or_haze_pct=62.3 gt threshold=40 \u2192 FAIL",
+      "retry_count": 1,
+      "version": "v1",
+      "version_note": "Initial assessment. A retry that re-runs processing with changed parameters creates a new version (PRD \u00a75); an automated retry with identical parameters is the same version, new attempt.",
+      "delivery_ready": false,
+      "delivery_ready_note": "Not delivery ready \u2014 see decision/reasoning.",
+      "not_assessed": [
+        "QA-5",
+        "QA-6",
+        "QA-7"
+      ],
+      "not_assessed_detail": [
+        "Rule QA-5 (geometric_misalignment) could not be fully evaluated: geolocation_rmse_px; coreg_offset_px not available.",
+        "Rule QA-6 (radiometric_bounds) could not be fully evaluated: reflectance_out_of_bounds_pct not available.",
+        "Rule QA-7 (radiometric_consistency) could not be fully evaluated: band_corr_mean not available."
+      ]
+    },
+    {
+      "scene_id": "wyvern_dragonette-001_20240620T145630_2d5d0eef_l2a",
+      "folder": "03-copper-mine-chile",
+      "role": "open-pit copper mine (Chile)",
+      "platform": "Dragonette-001",
+      "datetime": "2024-06-20T14:56:33.325008Z",
+      "processing_level": "L2A",
+      "processing_version": "2.1",
+      "stac_cloud_cover_pct": 0.0,
+      "gsd_m": 5.26,
+      "bbox": [
+        -69.215945083454,
+        -24.57796529281816,
+        -68.92276531430736,
+        -24.16322622627984
+      ],
+      "cog_href": "https://wyvern-data.com/wyvern_dragonette-001_20240620T145630_2d5d0eef_l2a/wyvern_dragonette-001_20240620T145630_2d5d0eef_l2a.tiff",
+      "expected_bands": 23,
+      "metrics": {
+        "band_count": 23,
+        "aoi_coverage_pct": null,
+        "quality_mask_coverage_pct": 100.0,
+        "cloud_or_haze_pct": 0.0,
+        "interpolated_pct": 0.0034,
+        "full_band_dropout": false,
+        "geolocation_rmse_px": null,
+        "coreg_offset_px": null,
+        "reflectance_out_of_bounds_pct": null,
+        "band_corr_mean": null
+      },
+      "mask_metrics": {
+        "valid_footprint_pct": 67.1,
+        "clear_pct": 100.0,
+        "cloud_pct": 0.0,
+        "haze_pct": 0.0,
+        "cloud_shadow_pct": 0.0,
+        "cloud_or_haze_pct": 0.0,
+        "quality_mask_coverage_pct": 100.0,
+        "interpolated_pct": 0.0034,
+        "per_band_interpolated_pct": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0263,
+          0.0,
+          0.0263,
+          0.0263,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "full_band_dropout": false
+      },
+      "rules": [
+        {
+          "rule_id": "QA-1",
+          "name": "incomplete_data",
+          "category": "INCOMPLETE",
+          "routing": "escalate",
+          "level": [
+            "L1B"
+          ],
+          "status": "not_applicable",
+          "checks": [],
+          "reasoning": "Rule QA-1 applies to ['L1B']; scene is L2A \u2014 not evaluated at this processing level."
+        },
+        {
+          "rule_id": "QA-2",
+          "name": "mask_gap",
+          "category": "MASK_GAP",
+          "routing": "escalate",
+          "level": [
+            "L1B",
+            "L2A"
+          ],
+          "status": "pass",
+          "checks": [
+            {
+              "metric": "quality_mask_coverage_pct",
+              "observed": 100.0,
+              "threshold": 100,
+              "op": "lt",
+              "status": "pass",
+              "reasoning": "Quality/cloud mask missing, unparseable, or covering less than the full scene footprint"
+            }
+          ],
+          "reasoning": "Rule QA-2 (mask_gap) passed: quality_mask_coverage_pct=100.0 (threshold 100)"
+        },
+        {
+          "rule_id": "QA-3",
+          "name": "cloud_obstruction",
+          "category": "CLOUD",
+          "routing": "retry",
+          "level": [
+            "L1B",
+            "L2A"
+          ],
+          "status": "pass",
+          "checks": [
+            {
+              "metric": "cloud_or_haze_pct",
+              "observed": 0.0,
+              "threshold": 40,
+              "op": "gt",
+              "status": "pass",
+              "reasoning": "Cloud/haze/smoke mask coverage exceeds the 40% usable threshold"
+            }
+          ],
+          "reasoning": "Rule QA-3 (cloud_obstruction) passed: cloud_or_haze_pct=0.0 (threshold 40)"
+        },
+        {
+          "rule_id": "QA-4",
+          "name": "sensor_artifact",
+          "category": "SENSOR",
+          "routing": "escalate",
+          "level": [
+            "L1B"
+          ],
+          "status": "not_applicable",
+          "checks": [],
+          "reasoning": "Rule QA-4 applies to ['L1B']; scene is L2A \u2014 not evaluated at this processing level."
+        },
+        {
+          "rule_id": "QA-5",
+          "name": "geometric_misalignment",
+          "category": "GEOM",
+          "routing": "retry",
+          "level": [
+            "L1B",
+            "L2A"
+          ],
+          "status": "not_assessable",
+          "checks": [
+            {
+              "metric": "geolocation_rmse_px",
+              "observed": null,
+              "threshold": 1,
+              "status": "not_assessable",
+              "reasoning": "Geolocation RMSE exceeds 1 pixel \u2014 metric 'geolocation_rmse_px' is not available in this run's inputs."
+            },
+            {
+              "metric": "coreg_offset_px",
+              "observed": null,
+              "threshold": 0.5,
+              "status": "not_assessable",
+              "reasoning": "Cross-band co-registration offset exceeds 0.5 pixel \u2014 metric 'coreg_offset_px' is not available in this run's inputs."
+            }
+          ],
+          "reasoning": "Rule QA-5 (geometric_misalignment) could not be fully evaluated: geolocation_rmse_px; coreg_offset_px not available."
+        },
+        {
+          "rule_id": "QA-6",
+          "name": "radiometric_bounds",
+          "category": "RADIO",
+          "routing": "retry",
+          "level": [
+            "L2A"
+          ],
+          "status": "not_assessable",
+          "checks": [
+            {
+              "metric": "reflectance_out_of_bounds_pct",
+              "observed": null,
+              "threshold": 0.5,
+              "status": "not_assessable",
+              "reasoning": "Reflectance outside physical [0,1] bounds on more than 0.5% of valid (unmasked) pixels \u2014 metric 'reflectance_out_of_bounds_pct' is not available in this run's inputs."
+            }
+          ],
+          "reasoning": "Rule QA-6 (radiometric_bounds) could not be fully evaluated: reflectance_out_of_bounds_pct not available."
+        },
+        {
+          "rule_id": "QA-7",
+          "name": "radiometric_consistency",
+          "category": "RADIO",
+          "routing": "escalate",
+          "level": [
+            "L2A"
+          ],
+          "status": "not_assessable",
+          "checks": [
+            {
+              "metric": "band_corr_mean",
+              "observed": null,
+              "threshold": 0.7,
+              "status": "not_assessable",
+              "reasoning": "Internally inconsistent reflectance: mean band-to-band correlation on clear pixels below the expected range for hyperspectral surface data (adjacent bands of a well-calibrated stack are strongly correlated) \u2014 the output contradicts its own inputs \u2014 metric 'band_corr_mean' is not available in this run's inputs."
+            }
+          ],
+          "reasoning": "Rule QA-7 (radiometric_consistency) could not be fully evaluated: band_corr_mean not available."
+        }
+      ],
+      "decision": "pass",
+      "failure_category": null,
+      "fired_rule": null,
+      "reasoning": "No QA rule failed. Scene is CLEAN.",
+      "retry_count": 0,
+      "version": "v1",
+      "version_note": "Initial assessment. A retry that re-runs processing with changed parameters creates a new version (PRD \u00a75); an automated retry with identical parameters is the same version, new attempt.",
+      "delivery_ready": true,
+      "delivery_ready_note": "Passed on all assessable rules and meets PRD section 6 conditions.",
+      "not_assessed": [
+        "QA-5",
+        "QA-6",
+        "QA-7"
+      ],
+      "not_assessed_detail": [
+        "Rule QA-5 (geometric_misalignment) could not be fully evaluated: geolocation_rmse_px; coreg_offset_px not available.",
+        "Rule QA-6 (radiometric_bounds) could not be fully evaluated: reflectance_out_of_bounds_pct not available.",
+        "Rule QA-7 (radiometric_consistency) could not be fully evaluated: band_corr_mean not available."
+      ]
+    }
+  ]
+}

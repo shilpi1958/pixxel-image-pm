@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pixxel Image QA — Pipeline Monitor</title>
+<style>
+  :root {
+    --bg: #0b0f14;
+    --panel: #12181f;
+    --panel-2: #1a222c;
+    --border: #26313d;
+    --text: #d7e0e8;
+    --muted: #8b98a5;
+    --pass: #2ecc71;
+    --retry: #f39c12;
+    --escalate: #e74c3c;
+    --info: #3498db;
+    --warn-bg: rgba(243, 156, 18, 0.12);
+    --pass-bg: rgba(46, 204, 113, 0.12);
+    --esc-bg: rgba(231, 76, 60, 0.12);
+    --mono: "SF Mono", "Cascadia Mono", Consolas, "Liberation Mono", monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.45;
+    padding: 24px 32px 60px;
+  }
+  header.top { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; border-bottom: 1px solid var(--border); padding-bottom: 18px; }
+  h1 { font-size: 22px; font-weight: 700; letter-spacing: 0.2px; }
+  h1 .accent { color: var(--info); }
+  .subtitle { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .summary { display: flex; gap: 10px; flex-wrap: wrap; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--panel); border: 1px solid var(--border); border-radius: 999px;
+    padding: 6px 14px; font-size: 13px; color: var(--muted);
+  }
+  .chip b { color: var(--text); font-family: var(--mono); }
+  .chip .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .dot.pass { background: var(--pass); } .dot.retry { background: var(--retry); } .dot.escalate { background: var(--escalate); }
+  .meta-line { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+  .queue { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; margin-top: 26px; }
+  .card {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+    cursor: pointer; transition: transform 0.12s ease, border-color 0.12s ease;
+  }
+  .card:hover { transform: translateY(-3px); border-color: var(--info); }
+  .card .thumb { width: 100%; height: 170px; object-fit: cover; display: block; background: #000; }
+  .card .body { padding: 14px 16px 16px; }
+  .card .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .card h3 { font-size: 14px; font-weight: 600; color: var(--text); }
+  .card .scene-id { font-family: var(--mono); font-size: 11px; color: var(--muted); word-break: break-all; margin-top: 4px; }
+  .card .facts { display: flex; gap: 14px; margin-top: 10px; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
+  .card .facts b { color: var(--text); font-family: var(--mono); font-weight: 600; }
+  .badge {
+    display: inline-block; border-radius: 6px; padding: 3px 10px;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase;
+    font-family: var(--mono);
+  }
+  .badge.pass { background: var(--pass-bg); color: var(--pass); }
+  .badge.retry { background: var(--warn-bg); color: var(--retry); }
+  .badge.escalate { background: var(--esc-bg); color: var(--escalate); }
+  .badge.grey { background: rgba(139,152,165,0.12); color: var(--muted); }
+  .tag { font-size: 11px; color: var(--muted); background: var(--panel-2); border: 1px solid var(--border); border-radius: 5px; padding: 2px 8px; font-family: var(--mono); }
+  .tag.ready { color: var(--pass); border-color: rgba(46,204,113,0.4); }
+
+  /* detail modal */
+  .overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.72); display: none;
+    align-items: flex-start; justify-content: center; overflow-y: auto; padding: 32px 16px; z-index: 50;
+  }
+  .overlay.open { display: flex; }
+  .detail {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
+    max-width: 960px; width: 100%; padding: 26px 30px 30px;
+  }
+  .detail h2 { font-size: 18px; }
+  .detail .scene-id { font-family: var(--mono); font-size: 12px; color: var(--muted); word-break: break-all; margin-top: 4px; }
+  .detail .close {
+    float: right; background: none; border: 1px solid var(--border); color: var(--muted);
+    border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: 13px;
+  }
+  .detail .close:hover { color: var(--text); border-color: var(--info); }
+  .detail .preview { width: 100%; max-height: 420px; object-fit: contain; background: #000; border-radius: 10px; margin: 16px 0; border: 1px solid var(--border); }
+  section { margin-top: 20px; }
+  section h4 { font-size: 12px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 12px; }
+  .verdict { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .verdict .reasoning { flex: 1 1 300px; color: var(--text); font-size: 14px; }
+  .note { color: var(--muted); font-size: 12.5px; margin-top: 10px; }
+  table.grid { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.grid th, table.grid td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  table.grid th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.6px; }
+  table.grid td.mono { font-family: var(--mono); font-size: 12px; }
+  .na { color: var(--muted); font-style: italic; }
+  .rule-pass { color: var(--pass); } .rule-fail { color: var(--escalate); font-weight: 700; }
+  .rule-na { color: var(--muted); }
+  .checks { margin-top: 6px; font-size: 12px; color: var(--muted); font-family: var(--mono); }
+  .checks .c-fail { color: var(--escalate); }
+  .link { color: var(--info); text-decoration: none; font-family: var(--mono); font-size: 12px; }
+  .link:hover { text-decoration: underline; }
+  .footer { margin-top: 34px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--border); padding-top: 16px; }
+  .nofile { background: var(--esc-bg); border: 1px solid rgba(231,76,60,0.5); color: var(--escalate); border-radius: 10px; padding: 18px 22px; margin-top: 24px; font-family: var(--mono); font-size: 13px; }
+</style>
+</head>
+<body>
+  <header class="top">
+    <div>
+      <h1>Pixxel Image QA — <span class="accent">Pipeline Monitor</span></h1>
+      <div class="subtitle">Hyperspectral scene triage · decisions from <span class="meta-line" style="display:inline">agent/decisions.json</span> · rules from <span class="meta-line" style="display:inline">prd/qa-qc-prd.md</span></div>
+    </div>
+    <div class="summary" id="summary"></div>
+  </header>
+
+  <div id="queue" class="queue"></div>
+
+  <div class="overlay" id="overlay">
+    <div class="detail" id="detail"></div>
+  </div>
+
+  <div class="footer">
+    Practice project for the Image Product Manager role · real imagery from
+    <a class="link" href="https://wyvern.space/open-data/" target="_blank">Wyvern's Open Data Program</a> (CC BY 4.0) ·
+    no placeholder data — every number traces to files in <span class="meta-line" style="display:inline">data/</span> and <span class="meta-line" style="display:inline">agent/decisions.json</span>.
+  </div>
+
+  <script src="data.js"></script>
+  <script>
+    const D = window.PIXXEL_DATA;
+    const $ = (s) => document.querySelector(s);
+
+    function esc(v) {
+      return String(v).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    function badge(decision) {
+      return `<span class="badge ${decision}">${decision}</span>`;
+    }
+
+    function renderSummary() {
+      const s = D.summary;
+      $("#summary").innerHTML = `
+        <span class="chip"><span class="dot pass"></span> pass <b>${s.pass}</b></span>
+        <span class="chip"><span class="dot retry"></span> retry <b>${s.retry}</b></span>
+        <span class="chip"><span class="dot escalate"></span> escalate <b>${s.escalate}</b></span>
+        <span class="chip">scenes <b>${D.scene_count}</b></span>
+        <span class="chip">max retries <b>${D.max_retries}</b></span>`;
+    }
+
+    function renderQueue() {
+      const q = $("#queue");
+      q.innerHTML = D.scenes.map((s, i) => `
+        <div class="card" onclick="openDetail(${i})">
+          <img class="thumb" src="${s.thumbnail}" alt="thumbnail of ${s.scene_id}" loading="lazy">
+          <div class="body">
+            <div class="row">
+              <h3>${esc(s.role)}</h3>
+              ${badge(s.decision)}
+            </div>
+            <div class="scene-id">${esc(s.scene_id)}</div>
+            <div class="facts">
+              <span>platform <b>${esc(s.platform)}</b></span>
+              <span>${esc((s.datetime || "").slice(0, 10))}</span>
+              <span>${esc(s.processing_level)}</span>
+              <span>v${esc(s.version)}</span>
+            </div>
+            <div class="row" style="margin-top:12px">
+              <span>
+                ${s.failure_category ? `<span class="tag">${esc(s.failure_category)}</span> ` : ""}
+                <span class="tag">retries ${s.retry_count}</span>
+                ${s.delivery_ready ? `<span class="tag ready">delivery ready</span>` : `<span class="tag">held</span>`}
+              </span>
+              <span class="meta-line">view →</span>
+            </div>
+          </div>
+        </div>`).join("");
+    }
+
+    function fmt(v) {
+      if (v === null || v === undefined) return '<span class="na">not assessable</span>';
+      if (typeof v === "boolean") return v ? "true" : "false";
+      if (typeof v === "number") return Number.isInteger(v) ? v : v.toLocaleString(undefined, {maximumFractionDigits: 4});
+      return esc(v);
+    }
+
+    function ruleRow(r) {
+      const statusCls = {pass:"rule-pass", fail:"rule-fail", not_assessable:"rule-na", not_applicable:"rule-na"}[r.status] || "rule-na";
+      const statusLabel = {pass:"pass", fail:"FAIL", not_assessable:"not assessable", not_applicable:"n/a (level)"}[r.status] || r.status;
+      const checks = (r.checks || []).map((c) => {
+        const cls = c.status === "fail" ? "c-fail" : "";
+        const obs = c.observed === null || c.observed === undefined ? "—" : c.observed;
+        const thr = c.threshold === null || c.threshold === undefined ? "—" : c.threshold;
+        return `<div class="${cls}">${esc(c.metric)}: observed ${obs} ${c.op || ""} threshold ${thr} → ${c.status}</div>`;
+      }).join("");
+      return `<tr>
+        <td class="mono">${r.rule_id}</td>
+        <td>${esc(r.name)}<div class="meta-line">${esc(r.anchor || "")}</div></td>
+        <td class="mono ${statusCls}">${statusLabel}</td>
+        <td>${r.reasoning}${checks ? `<div class="checks">${checks}</div>` : ""}</td>
+      </tr>`;
+    }
+
+    function openDetail(i) {
+      const s = D.scenes[i];
+      const metrics = s.metrics.map((m) =>
+        `<tr><td>${esc(m.name)}</td><td class="mono">${fmt(m.value)}</td></tr>`).join("");
+      const rules = s.rules.map(ruleRow).join("");
+      const notAssessed = (s.not_assessed_detail || []).map((d) => `<li>${esc(d)}</li>`).join("");
+      $("#detail").innerHTML = `
+        <button class="close" onclick="closeDetail()">✕ close</button>
+        <h2>${esc(s.role)}</h2>
+        <div class="scene-id">${esc(s.scene_id)}</div>
+        <img class="preview" src="${s.preview}" alt="preview of ${s.scene_id}">
+
+        <div class="verdict">
+          ${badge(s.decision)}
+          <div class="reasoning">
+            <b>Decision:</b> ${esc(s.decision.toUpperCase())}
+            ${s.failure_category ? ` · <b>category</b> ${esc(s.failure_category)}` : ""}
+            ${s.fired_rule ? ` · <b>rule</b> ${esc(s.fired_rule)}` : ""}
+            <br><span class="note">${esc(s.reasoning)}</span>
+          </div>
+        </div>
+        <div class="note">
+          Version ${esc(s.version)} · retry count ${s.retry_count} ·
+          delivery ready: <b>${s.delivery_ready ? "yes" : "no"}</b> — ${esc(s.delivery_ready_note)}
+          ${s.version_note ? `<br>${esc(s.version_note)}` : ""}
+        </div>
+
+        <section>
+          <h4>Scene facts</h4>
+          <table class="grid">
+            <tr><th>Platform</th><td class="mono">${esc(s.platform)} (${esc(s.expected_bands)} expected bands)</td></tr>
+            <tr><th>Acquired</th><td class="mono">${esc(s.datetime)}</td></tr>
+            <tr><th>Processing</th><td class="mono">${esc(s.processing_level)} · v${esc(s.processing_version || "?")}</td></tr>
+            <tr><th>STAC cloud cover</th><td class="mono">${fmt(s.stac_cloud_cover_pct)}%</td></tr>
+            <tr><th>GSD</th><td class="mono">${fmt(s.gsd_m)} m</td></tr>
+            <tr><th>Source files</th><td class="mono"><a class="link" href="${s.data_dir}" target="_blank">${esc(s.data_dir)}</a></td></tr>
+          </table>
+        </section>
+
+        <section>
+          <h4>QA metrics (from real masks + metadata)</h4>
+          <table class="grid">${metrics}</table>
+        </section>
+
+        <section>
+          <h4>Rule evaluations (PRD order — first failure decides)</h4>
+          <table class="grid">
+            <tr><th>Rule</th><th>Name</th><th>Status</th><th>Reasoning</th></tr>
+            ${rules}
+          </table>
+        </section>
+
+        ${notAssessed ? `<section><h4>Not assessed in this run</h4><ul style="margin-left:18px;color:var(--muted);font-size:13px">${notAssessed}</ul></section>` : ""}
+      `;
+      $("#overlay").classList.add("open");
+    }
+
+    function closeDetail() { $("#overlay").classList.remove("open"); }
+
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDetail(); });
+    $("#overlay").addEventListener("click", (e) => { if (e.target === $("#overlay")) closeDetail(); });
+
+    if (!D || !D.scenes) {
+      document.body.insertAdjacentHTML("beforeend",
+        `<div class="nofile">dashboard/data.js is missing or stale — regenerate it from the agent's real output:<br><br>
+         &nbsp;&nbsp;.venv/bin/python dashboard/build_data.py<br><br>
+         (reads ../agent/decisions.json, which is produced by .venv/bin/python agent/triage_agent.py --data data)</div>`);
+    } else {
+      renderSummary();
+      renderQueue();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+{
+  "schema": "pixxel.qa.rules.v1",
+  "source": "prd/qa-qc-prd.md (sections 2, 3, 4)",
+  "note": "Thresholds are the PRD's placeholders; every condition is mechanical. Rules are evaluated in order; the first failing rule determines the scene outcome (PRD section 3).",
+  "max_retries": 2,
+  "platforms": {
+    "Dragonette-001": { "expected_bands": 23 },
+    "Dragonette-002": { "expected_bands": 31 },
+    "Dragonette-003": { "expected_bands": 31 },
+    "Dragonette-004": { "expected_bands": 31 }
+  },
+  "rules": [
+    {
+      "id": "QA-1",
+      "name": "incomplete_data",
+      "levels": ["L1B"],
+      "category": "INCOMPLETE",
+      "routing": "escalate",
+      "checks": [
+        { "metric": "band_count", "op": "lt", "threshold_ref": "platform.expected_bands", "reasoning": "Fewer bands than the platform's expected band count" },
+        { "metric": "aoi_coverage_pct", "op": "lt", "threshold": 95, "reasoning": "Scene extent smaller than 95% of the tasked AOI" }
+      ]
+    },
+    {
+      "id": "QA-2",
+      "name": "mask_gap",
+      "levels": ["L1B", "L2A"],
+      "category": "MASK_GAP",
+      "routing": "escalate",
+      "checks": [
+        { "metric": "quality_mask_coverage_pct", "op": "lt", "threshold": 100, "reasoning": "Quality/cloud mask missing, unparseable, or covering less than the full scene footprint" }
+      ]
+    },
+    {
+      "id": "QA-3",
+      "name": "cloud_obstruction",
+      "levels": ["L1B", "L2A"],
+      "category": "CLOUD",
+      "routing": "retry",
+      "checks": [
+        { "metric": "cloud_or_haze_pct", "op": "gt", "threshold": 40, "reasoning": "Cloud/haze/smoke mask coverage exceeds the 40% usable threshold" }
+      ],
+      "note": "Re-task (not merely reprocess) when obstruction exceeds 80% — see PRD section 3 QA-3."
+    },
+    {
+      "id": "QA-4",
+      "name": "sensor_artifact",
+      "levels": ["L1B"],
+      "category": "SENSOR",
+      "routing": "escalate",
+      "checks": [
+        { "metric": "interpolated_pct", "op": "gt", "threshold": 2, "reasoning": "Dead/saturated (interpolated) pixel count exceeds 2% of total pixels" },
+        { "metric": "full_band_dropout", "op": "eq", "threshold": true, "reasoning": "Any full-band dropout detected in the pixel quality mask" }
+      ]
+    },
+    {
+      "id": "QA-5",
+      "name": "geometric_misalignment",
+      "levels": ["L1B", "L2A"],
+      "category": "GEOM",
+      "routing": "retry",
+      "checks": [
+        { "metric": "geolocation_rmse_px", "op": "gt", "threshold": 1, "reasoning": "Geolocation RMSE exceeds 1 pixel" },
+        { "metric": "coreg_offset_px", "op": "gt", "threshold": 0.5, "reasoning": "Cross-band co-registration offset exceeds 0.5 pixel" }
+      ]
+    },
+    {
+      "id": "QA-6",
+      "name": "radiometric_bounds",
+      "levels": ["L2A"],
+      "category": "RADIO",
+      "routing": "retry",
+      "checks": [
+        { "metric": "reflectance_out_of_bounds_pct", "op": "gt", "threshold": 0.5, "reasoning": "Reflectance outside physical [0,1] bounds on more than 0.5% of valid (unmasked) pixels" }
+      ]
+    },
+    {
+      "id": "QA-7",
+      "name": "radiometric_consistency",
+      "levels": ["L2A"],
+      "category": "RADIO",
+      "routing": "escalate",
+      "checks": [
+        { "metric": "band_corr_mean", "op": "lt", "threshold": 0.7, "reasoning": "Internally inconsistent reflectance: mean band-to-band correlation on clear pixels below the expected range for hyperspectral surface data (adjacent bands of a well-calibrated stack are strongly correlated) — the output contradicts its own inputs" }
+      ]
+    }
+  ]
+}

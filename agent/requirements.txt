@@ -1,0 +1,5 @@
+numpy>=2.0
+tifffile>=2024.0
+imagecodecs>=2024.0
+pillow>=10.0
+rasterio>=1.4      # only needed for QA-6/QA-7 when a local band stack (COG) is supplied

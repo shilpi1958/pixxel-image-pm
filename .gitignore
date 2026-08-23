@@ -1,0 +1,8 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+agent/tests/_tmp_cog/
+
+# OS
+.DS_Store

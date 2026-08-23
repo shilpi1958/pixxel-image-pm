@@ -7,11 +7,11 @@ labels: data
 Real imagery, not synthetic/mocked data, is the whole point — it's what proves hands-on understanding.
 
 ## Tasks
-- [ ] Browse Wyvern's public STAC catalog
-- [ ] Select and download 1 clean scene (e.g. crop field, minimal quality issues)
-- [ ] Select and download 1 scene with real quality issues (e.g. wildfire smoke/burn scar)
-- [ ] Select and download 1 industrial/infra scene (e.g. mine or solar site)
-- [ ] Save each with its STAC metadata, quality/cloud mask, and both L1B and L2A products where available
+- [x] Browse Wyvern's public STAC catalog
+- [x] Select and download 1 clean scene (e.g. crop field, minimal quality issues)
+- [x] Select and download 1 scene with real quality issues (e.g. wildfire smoke/burn scar)
+- [x] Select and download 1 industrial/infra scene (e.g. mine or solar site)
+- [x] Save each with its STAC metadata, quality/cloud mask, and both L1B and L2A products where available
 
 ## Acceptance criteria
 - `data/` contains 3 image sets, each with raw bands, quality mask, and STAC metadata JSON

@@ -7,10 +7,10 @@ labels: agent, learning
 Learning the harness is an explicit goal of this project, separate from the Pixxel-domain learning.
 
 ## Tasks
-- [ ] Install DeepSeek Harness locally (developer preview, released 2026-08-13)
-- [ ] Work through minimal quickstart
-- [ ] Get one basic test tool/agent running end to end
-- [ ] Note any rough edges, gaps, or surprises in `docs/deepseek-harness-notes.md` (it's a brand-new framework — expect some)
+- [x] Install DeepSeek Harness locally (developer preview, released 2026-08-13)
+- [x] Work through minimal quickstart
+- [x] Get one basic test tool/agent running end to end
+- [x] Note any rough edges, gaps, or surprises in `docs/deepseek-harness-notes.md` (it's a brand-new framework — expect some)
 
 ## Acceptance criteria
 - A working "hello world" agent runs locally using the harness

@@ -1,0 +1,54 @@
+Pixxel QA Triage Agent — reasoning trace
+scene:  wyvern_dragonette-003_20250531T173810_56fca26e_l2a
+role:   wildfire smoke (Saskatchewan)
+folder: 02-wildfire-smoke-saskatchewan
+platform: Dragonette-003 (expected 31 bands)
+datetime: 2025-05-31T17:38:14.026409Z  level: L2A
+STAC cloud cover: 37.85%
+
+--- metrics ---
+  band_count: 31
+  aoi_coverage_pct: None
+  quality_mask_coverage_pct: 100.0
+  cloud_or_haze_pct: 62.3
+  interpolated_pct: 0.0
+  full_band_dropout: False
+  geolocation_rmse_px: None
+  coreg_offset_px: None
+  reflectance_out_of_bounds_pct: None
+  band_corr_mean: None
+
+--- rule evaluations (in PRD order) ---
+  [NOT_APPLICABLE ] QA-1 incomplete_data (levels ['L1B'])
+        → Rule QA-1 applies to ['L1B']; scene is L2A — not evaluated at this processing level.
+  [PASS           ] QA-2 mask_gap (levels ['L1B', 'L2A'])
+        quality_mask_coverage_pct: observed=100.0 threshold=100 -> pass
+        → Rule QA-2 (mask_gap) passed: quality_mask_coverage_pct=100.0 (threshold 100)
+  [FAIL           ] QA-3 cloud_obstruction (levels ['L1B', 'L2A'])
+        cloud_or_haze_pct: observed=62.3 threshold=40 -> fail
+        → Rule QA-3 (cloud_obstruction) fired: cloud_or_haze_pct=62.3 gt threshold=40 → FAIL
+  [NOT_APPLICABLE ] QA-4 sensor_artifact (levels ['L1B'])
+        → Rule QA-4 applies to ['L1B']; scene is L2A — not evaluated at this processing level.
+  [NOT_ASSESSABLE ] QA-5 geometric_misalignment (levels ['L1B', 'L2A'])
+        geolocation_rmse_px: observed=None threshold=1 -> not_assessable
+        coreg_offset_px: observed=None threshold=0.5 -> not_assessable
+        → Rule QA-5 (geometric_misalignment) could not be fully evaluated: geolocation_rmse_px; coreg_offset_px not available.
+  [NOT_ASSESSABLE ] QA-6 radiometric_bounds (levels ['L2A'])
+        reflectance_out_of_bounds_pct: observed=None threshold=0.5 -> not_assessable
+        → Rule QA-6 (radiometric_bounds) could not be fully evaluated: reflectance_out_of_bounds_pct not available.
+  [NOT_ASSESSABLE ] QA-7 radiometric_consistency (levels ['L2A'])
+        band_corr_mean: observed=None threshold=0.7 -> not_assessable
+        → Rule QA-7 (radiometric_consistency) could not be fully evaluated: band_corr_mean not available.
+
+--- decision ---
+  outcome:          RETRY
+  failure category: CLOUD
+  fired rule:       QA-3
+  reasoning:        Rule QA-3 (cloud_obstruction) fired: cloud_or_haze_pct=62.3 gt threshold=40 → FAIL
+  retry count:      1
+  version:          v1
+  delivery ready:   False — Not delivery ready — see decision/reasoning.
+  NOT ASSESSED:     ['QA-5', 'QA-6', 'QA-7']
+        Rule QA-5 (geometric_misalignment) could not be fully evaluated: geolocation_rmse_px; coreg_offset_px not available.
+        Rule QA-6 (radiometric_bounds) could not be fully evaluated: reflectance_out_of_bounds_pct not available.
+        Rule QA-7 (radiometric_consistency) could not be fully evaluated: band_corr_mean not available.
