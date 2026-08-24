@@ -1,106 +1,125 @@
 # QA/QC PRD — Hyperspectral Image Pipeline Monitoring
 
-**Owner:** Image Product Manager (pipeline monitoring layer)
-**Scope:** This PRD governs QA/QC, failure categorization, retry/escalation, versioning, and delivery-readiness for hyperspectral image products moving through the pipeline, from raw capture (L0/L1B) to delivered product (L2A+).
-
-**Explicitly out of scope:** the image-processing algorithms themselves (radiometric calibration, atmospheric correction, orthorectification, band co-registration). This PRD defines what "good" and "bad" output looks like and what the pipeline does in response — not how the processing algorithms work internally.
+- **Owner:** Image Product Manager (pipeline monitoring layer)
+- **Scope:** QA/QC, failure categorization, retry/escalation, delivery-readiness
+- Covers raw capture (L0/L1B) through delivered product (L2A+)
+- **Out of scope:** the image-processing algorithms themselves (calibration, atmospheric correction, orthorectification, co-registration)
+- This PRD defines pass/fail and what happens in response, not how the algorithms work internally
 
 ---
 
-## 1. Processing levels in scope
+## 1. Processing levels
 
 | Level | Description | QA applies? |
 |---|---|---|
-| L0 | Raw sensor telemetry, unprocessed | No — QA starts at L1B |
-| L1B | Radiometrically calibrated, geolocated, not atmospherically corrected | Yes — structural/sensor QA |
-| L2A | Atmospherically corrected, surface reflectance, analysis-ready | Yes — full QA, this is the delivery product |
-
-Every rule below states which level(s) it applies to.
+| L0 | Raw sensor telemetry | No — QA starts at L1B |
+| L1B | Calibrated, geolocated, not atmospherically corrected | Yes — structural/sensor QA |
+| L2A | Atmospherically corrected, surface reflectance | Yes — full QA, delivery product |
 
 ---
 
 ## 2. Failure categories
 
-Every QA failure must be assigned exactly one primary category. Categories are mutually exclusive by definition (a scene can have multiple failures, but each failure event gets one category).
+- Every failure gets exactly one primary category
+- A scene can have multiple failures, one category each
+- No failures across all categories → `CLEAN`
 
-| Code | Category | Definition | Typical L level detected |
+| Code | Category | Definition | Level |
 |---|---|---|---|
-| `CLOUD` | Cloud/atmospheric obstruction | Cloud, haze, or smoke mask coverage exceeds usable threshold | L1B, L2A |
-| `SENSOR` | Sensor artifact | Striping, dead pixels, band dropout, saturation clipping | L1B |
-| `GEOM` | Geometric misalignment | Geolocation offset or band co-registration error exceeds tolerance | L1B, L2A |
-| `RADIO` | Radiometric anomaly | Reflectance values outside physically plausible range for the surface type; internally inconsistent band ratios | L2A |
-| `MASK_GAP` | Missing/incomplete quality mask | Quality or cloud mask absent, malformed, or covers less than the full scene extent | L1B, L2A |
-| `INCOMPLETE` | Incomplete data | Fewer than the expected 23 bands present, or scene extent smaller than tasked AOI | L1B |
+| `CLOUD` | Cloud/atmospheric obstruction | Cloud, haze, or smoke coverage exceeds threshold | L1B, L2A |
+| `SENSOR` | Sensor artifact | Striping, dead pixels, band dropout, saturation, or a single high-value band exceeding its own tighter ceiling | L1B, L2A |
+| `GEOM` | Geometric misalignment | Geolocation or co-registration error exceeds tolerance | L1B, L2A |
+| `RADIO` | Radiometric anomaly | Reflectance outside physical range, internally inconsistent overall, or inconsistent within a spatial tile | L2A |
+| `MASK_GAP` | Missing/incomplete quality mask | Mask absent, malformed, or partial coverage | L1B, L2A |
+| `INCOMPLETE` | Incomplete data | Band count below spec, or coverage below tasked AOI | L1B |
 
-A scene with **no** failures across all categories is `CLEAN`.
+- `SENSOR`'s pixel_quality_mask is delivered on L2A products in this catalog, so the category applies at both levels
 
 ---
 
 ## 3. QA pass/fail rules
 
-Rules are evaluated in order. First matching rule determines the outcome for that scene. All thresholds are placeholders to be tuned against real Wyvern data in step 2/3 of this project — the point here is that every rule is a **mechanical, executable condition**, not a judgment call.
+- Evaluated in order; first failing rule decides the outcome
+- Thresholds are placeholders, tuned against real data
+- Every rule is mechanical, not a judgment call
 
-| Rule ID | Level | Condition | Category if failed | Outcome |
+| Rule | Level | Condition | Category | Outcome |
 |---|---|---|---|---|
-| QA-1 | L1B | Band count < 23 or scene coverage < 95% of tasked AOI | `INCOMPLETE` | **Escalate** |
-| QA-2 | L1B/L2A | Quality mask missing, unparseable, or covers < 100% of scene extent | `MASK_GAP` | **Escalate** |
-| QA-3 | L1B/L2A | Cloud/haze/smoke mask coverage > 40% of scene | `CLOUD` | **Retry** (re-task if coverage > 80%, see §4) |
-| QA-4 | L1B | Dead/saturated pixel count > 2% of total pixels, or any full-band dropout | `SENSOR` | **Escalate** |
-| QA-5 | L1B/L2A | Geolocation RMSE > 1 pixel, or cross-band co-registration offset > 0.5 pixel | `GEOM` | **Retry** |
-| QA-6 | L2A | Reflectance values outside [0, 1] physical bounds for > 0.5% of valid pixels (excluding masked pixels) | `RADIO` | **Retry** |
-| QA-7 | L2A | Reflectance internally inconsistent — e.g. NIR/Red ratio implies vegetation where cloud mask says clear sky, or band-to-band correlation falls outside expected range for the scene's land-cover class | `RADIO` | **Escalate** (flag-for-review, not auto-fixable by reprocessing — don't silently trust output that contradicts its own inputs/metadata) |
-| — | — | No rule above fired | `CLEAN` | **Pass** |
+| QA-1 | L1B | Band count < platform spec, or coverage < 95% of AOI | `INCOMPLETE` | Escalate |
+| QA-2 | L1B/L2A | Quality mask missing/unparseable/< 100% coverage | `MASK_GAP` | Escalate |
+| QA-3 | L1B/L2A | Cloud/haze/smoke > 40% of scene | `CLOUD` | Retry (re-task if > 80%, §4) |
+| QA-4 | L1B/L2A | Dead/saturated > 2% scene-wide, full-band dropout, **or** any single 711–782nm band interpolated > 0.1% | `SENSOR` | Escalate |
+| QA-5 | L1B/L2A | Geolocation RMSE > 1px, or co-registration offset > 0.5px | `GEOM` | Retry |
+| QA-6 | L2A | Reflectance outside [0,1] for > 0.5% of valid pixels | `RADIO` | Retry |
+| QA-7 | L2A | Band-to-band correlation < 0.7 scene-wide, **or** < 0.5 in any single spatial tile (8×8 grid) | `RADIO` | Escalate |
+| — | — | No rule fired | `CLEAN` | Pass |
 
-**Design note:** rules that describe a fixable, mechanical problem (bad geolocation, bad atmospheric correction, transient cloud cover) route to **retry** — the processing pipeline re-runs, possibly with adjusted parameters. Rules that describe a problem reprocessing can't fix (missing bands, dead sensor pixels, an anomaly that contradicts its own metadata) route to **escalate** — a human has to look at it.
+- Fixable, mechanical problems (bad geolocation, transient cloud) → **retry**
+- Problems reprocessing can't fix (missing bands, dead sensor pixels, self-contradicting output) → **escalate**
+- QA-7 always escalates — needs human judgment, not another automated pass
+- QA-4's per-band condition exists because a defect confined to a few high-value (711–782nm, the red-edge range) bands can be a tiny fraction of the scene-wide average and still pass
+- QA-4's band list is wavelength-based, not index-based — indices shift between the 23-band and 31-band platforms (`agent/rules.json` → `platforms`)
+- QA-7's per-tile condition exists because a small localized defect is diluted by the rest of the clean pixels and can look fine in a scene-wide average
+- QA-7's tile threshold (0.5) is looser than its scene-wide threshold (0.7) — a smaller sample per tile is naturally noisier; the goal is catching a badly inconsistent tile, not flagging normal variance
 
 ---
 
 ## 4. Retry vs. escalate logic
 
-### Retry conditions
-A scene routes to **retry** when:
-- The failure category is `CLOUD`, `GEOM`, or `RADIO`, **and**
-- Retry count for this scene < `MAX_RETRIES` (default: 2), **and**
-- The failure is plausibly transient or parameter-fixable (e.g. cloud cover from a bad tasking window, geometric offset fixable by re-running co-registration with different tie points)
+**Retry** when:
+- Category is `CLOUD`/`GEOM`/`RADIO`
+- Retry count < `MAX_RETRIES` (default 2)
+- The failure is plausibly transient/parameter-fixable
+- On retry: increment count, log the rule, re-run only the affected processing stage
 
-On retry: increment retry count, log the triggering rule, re-run the affected processing stage (not necessarily the whole pipeline — e.g. a `GEOM` failure only needs orthorectification re-run, not radiometric calibration).
+**Escalate** when:
+- Category is `INCOMPLETE`/`SENSOR`/`MASK_GAP`
+- Or retry ceiling reached
+- Or QA-7 fires
+- On escalate: open a ticket with scene ID, category, rule, full trace
+- Assign to on-call
+- Scene held, not delivered
 
-### Escalate conditions
-A scene routes to **escalate** when:
-- The failure category is `INCOMPLETE`, `SENSOR`, or `MASK_GAP` (structural problems reprocessing cannot fix), **or**
-- Retry count has reached `MAX_RETRIES` and the scene still fails, **or**
-- QA-7 fires (internally inconsistent output — needs human judgment, not another automated pass)
-
-On escalate: create a ticket with the scene ID, failure category, rule that fired, and full reasoning trace. Assign to on-call Image PM / pipeline engineer. Scene is held at its current version, not delivered, until manually cleared.
-
-### Auto-retry ceiling
-If `MAX_RETRIES` is reached, the system **must** escalate rather than retry indefinitely. Silent infinite retry is treated as a pipeline bug, not acceptable behavior.
+**Ceiling:** at `MAX_RETRIES`, the system must escalate — silent infinite retry is a pipeline bug.
 
 ---
 
-## 5. Versioning rules
+## 5. Delivery-ready definition
 
-- **New version** (`v1` → `v2`) is created when: the *inputs* to processing change — reprocessing with different parameters after a retry, a corrected quality mask, or reprocessing triggered by an escalation resolution.
-- **Same version, new attempt** is used when: an automated retry re-runs the *same* parameters (e.g. transient failure, infra retry) and produces a materially identical result.
-- Every version is immutable once marked `delivered` — a delivered product is never silently overwritten. A correction after delivery always produces a new version and a delivery notice to the customer.
-- Version history retains the QA outcome, failure category (if any), and reasoning trace for every version — not just the final passing one. This is what makes the pipeline auditable.
+Delivery ready requires:
+- `CLEAN` status
+- L2A
+- Quality mask at 100% coverage
+- Not superseded by a newer version
 
----
+- A `CLEAN` scene under a pending escalation from an *earlier* version is still not delivery-ready until that's resolved
 
-## 6. Delivery-ready definition
-
-A scene is **delivery ready** if and only if:
-1. It reached `CLEAN` status (no rule in §3 fired), **and**
-2. It is at L2A, **and**
-3. Its quality mask is present and covers 100% of scene extent, **and**
-4. It has not been superseded by a newer version of the same acquisition
-
-A scene that is `CLEAN` but still under a pending escalation review from an *earlier* version is **not** delivery ready until that escalation is resolved and the current version independently passes QA.
-
-"Delivery ready" is a pipeline-monitoring determination, not a processing-algorithm determination — the algorithms produce output, this layer decides whether that output is fit to ship.
+**Partial delivery — `delivery_ready_partial`:** weaker than full `delivery_ready` — ships a scene with an `excluded_bands` list when QA-4's per-band check is the *sole* failure and the customer has opted in at the account level. Not available for QA-3/5/6/7 failures, which aren't band-isolable.
 
 ---
 
-## 7. What this PRD deliberately leaves as placeholders
+## 6. How the metrics behind these rules are computed
 
-Thresholds (40% cloud coverage, 2% dead pixels, 1-pixel geolocation RMSE, etc.) are reasonable starting points based on common hyperspectral QA practice, not values pulled from Pixxel's actual production system. Step 2/3 of this project (pulling real Wyvern scenes and walking through their actual quality masks) is what validates or adjusts these numbers against real data — that's the point of using real imagery instead of writing this PRD in the abstract.
+- This PRD defines the rules and thresholds; it does not define the computation itself
+- Every metric below is derived step-by-step, on real scene data, in [`notebooks/qa_pipeline_walkthrough.ipynb`](../notebooks/qa_pipeline_walkthrough.ipynb)
+- The notebook also re-runs the actual agent engine (`agent/analyze_scene.py`, `agent/qa_rules.py`) and checks its output against what's committed in `agent/decisions.json`
+- Results, per-scene findings, and the full rule-by-rule evaluation live in the [dashboard](../dashboard/)
+
+| Metric | Feeds | Meaning |
+|---|---|---|
+| `band_count` | QA-1 | Number of spectral bands in the pixel quality mask, checked against the platform's expected count |
+| `cloud_or_haze_pct` | QA-3 | % of the scene's valid footprint flagged cloud **or** haze/smoke in `data_mask.tiff` (union, not sum — a pixel flagged both counts once) |
+| `quality_mask_coverage_pct` | QA-2 | % of the scene's valid footprint that also has a value in `pixel_quality_mask.tiff` — below 100% means the quality mask is missing, shifted, or truncated |
+| `interpolated_pct` | QA-4 | % of band-pixels (pixels × bands, not just pixels) flagged as sensor-estimated rather than measured, scene-wide |
+| `max_high_value_band_interpolated_pct` | QA-4 | Same idea as `interpolated_pct`, but for the single worst red-edge (711–782nm) band alone — catches a defect concentrated in a few bands that a scene-wide average would dilute |
+| `band_corr_mean` | QA-7 | Mean correlation between adjacent spectral bands, scene-wide — low values mean the reflectance data is internally inconsistent |
+| `band_corr_min_tile` | QA-7 | Same correlation check, but the worst of an 8×8 grid of spatial tiles — catches a localized inconsistency a scene-wide mean would hide |
+| `reflectance_out_of_bounds_pct` | QA-6 | % of valid pixels with reflectance outside the physically valid [0,1] range |
+| `geolocation_rmse_px` / `coreg_offset_px` | QA-5 | Geolocation and cross-band co-registration error, in pixels — not published in this catalog, so QA-5 is not-assessable for all three scenes |
+
+---
+
+## 7. Future: LLM-assisted escalation summaries
+
+- Not built — no demo scene escalates yet to validate it against
+- Would only summarize an already-decided escalation ticket (§4) for the on-call human, in plain language — never touch the QA-1…QA-7 decision logic itself, which stays mechanical and auditable (§3)

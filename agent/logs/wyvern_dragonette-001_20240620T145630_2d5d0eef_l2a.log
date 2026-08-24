@@ -5,6 +5,7 @@ folder: 03-copper-mine-chile
 platform: Dragonette-001 (expected 23 bands)
 datetime: 2024-06-20T14:56:33.325008Z  level: L2A
 STAC cloud cover: 0.0%
+band stack source: prior one-off pull, recorded in band_stack_analysis.json
 
 --- metrics ---
   band_count: 23
@@ -13,10 +14,12 @@ STAC cloud cover: 0.0%
   cloud_or_haze_pct: 0.0
   interpolated_pct: 0.0034
   full_band_dropout: False
+  max_high_value_band_interpolated_pct: 0.0263
   geolocation_rmse_px: None
   coreg_offset_px: None
-  reflectance_out_of_bounds_pct: None
-  band_corr_mean: None
+  reflectance_out_of_bounds_pct: 0.0
+  band_corr_mean: 0.969
+  band_corr_min_tile: 0.9195
 
 --- rule evaluations (in PRD order) ---
   [NOT_APPLICABLE ] QA-1 incomplete_data (levels ['L1B'])
@@ -27,18 +30,22 @@ STAC cloud cover: 0.0%
   [PASS           ] QA-3 cloud_obstruction (levels ['L1B', 'L2A'])
         cloud_or_haze_pct: observed=0.0 threshold=40 -> pass
         → Rule QA-3 (cloud_obstruction) passed: cloud_or_haze_pct=0.0 (threshold 40)
-  [NOT_APPLICABLE ] QA-4 sensor_artifact (levels ['L1B'])
-        → Rule QA-4 applies to ['L1B']; scene is L2A — not evaluated at this processing level.
+  [PASS           ] QA-4 sensor_artifact (levels ['L1B', 'L2A'])
+        interpolated_pct: observed=0.0034 threshold=2 -> pass
+        full_band_dropout: observed=False threshold=True -> pass
+        max_high_value_band_interpolated_pct: observed=0.0263 threshold=0.1 -> pass
+        → Rule QA-4 (sensor_artifact) passed: interpolated_pct=0.0034 (threshold 2); full_band_dropout=False (threshold True); max_high_value_band_interpolated_pct=0.0263 (threshold 0.1)
   [NOT_ASSESSABLE ] QA-5 geometric_misalignment (levels ['L1B', 'L2A'])
         geolocation_rmse_px: observed=None threshold=1 -> not_assessable
         coreg_offset_px: observed=None threshold=0.5 -> not_assessable
         → Rule QA-5 (geometric_misalignment) could not be fully evaluated: geolocation_rmse_px; coreg_offset_px not available.
-  [NOT_ASSESSABLE ] QA-6 radiometric_bounds (levels ['L2A'])
-        reflectance_out_of_bounds_pct: observed=None threshold=0.5 -> not_assessable
-        → Rule QA-6 (radiometric_bounds) could not be fully evaluated: reflectance_out_of_bounds_pct not available.
-  [NOT_ASSESSABLE ] QA-7 radiometric_consistency (levels ['L2A'])
-        band_corr_mean: observed=None threshold=0.7 -> not_assessable
-        → Rule QA-7 (radiometric_consistency) could not be fully evaluated: band_corr_mean not available.
+  [PASS           ] QA-6 radiometric_bounds (levels ['L2A'])
+        reflectance_out_of_bounds_pct: observed=0.0 threshold=0.5 -> pass
+        → Rule QA-6 (radiometric_bounds) passed: reflectance_out_of_bounds_pct=0.0 (threshold 0.5)
+  [PASS           ] QA-7 radiometric_consistency (levels ['L2A'])
+        band_corr_mean: observed=0.969 threshold=0.7 -> pass
+        band_corr_min_tile: observed=0.9195 threshold=0.5 -> pass
+        → Rule QA-7 (radiometric_consistency) passed: band_corr_mean=0.969 (threshold 0.7); band_corr_min_tile=0.9195 (threshold 0.5)
 
 --- decision ---
   outcome:          PASS
@@ -48,7 +55,5 @@ STAC cloud cover: 0.0%
   retry count:      0
   version:          v1
   delivery ready:   True — Passed on all assessable rules and meets PRD section 6 conditions.
-  NOT ASSESSED:     ['QA-5', 'QA-6', 'QA-7']
+  NOT ASSESSED:     ['QA-5']
         Rule QA-5 (geometric_misalignment) could not be fully evaluated: geolocation_rmse_px; coreg_offset_px not available.
-        Rule QA-6 (radiometric_bounds) could not be fully evaluated: reflectance_out_of_bounds_pct not available.
-        Rule QA-7 (radiometric_consistency) could not be fully evaluated: band_corr_mean not available.

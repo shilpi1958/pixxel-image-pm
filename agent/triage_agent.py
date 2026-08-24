@@ -79,6 +79,7 @@ def run_scene(scene_dir: Path, rules: dict, cog_map: dict[str, Path]) -> dict:
                                   "cloud_shadow_pct", "cloud_or_haze_pct",
                                   "quality_mask_coverage_pct", "interpolated_pct",
                                   "per_band_interpolated_pct", "full_band_dropout")},
+        "band_stack_source": scene_info.get("band_stack_source"),
         "rules": evaluations,
         "decision": decision["decision"],
         "failure_category": decision["failure_category"],
@@ -104,6 +105,7 @@ def write_log(record: dict, log_dir: Path) -> None:
         f"platform: {record['platform']} (expected {record['expected_bands']} bands)",
         f"datetime: {record['datetime']}  level: {record['processing_level']}",
         f"STAC cloud cover: {record['stac_cloud_cover_pct']}%",
+        f"band stack source: {record['band_stack_source'] or 'not available (QA-6/QA-7 not assessable)'}",
         "",
         "--- metrics ---",
     ]

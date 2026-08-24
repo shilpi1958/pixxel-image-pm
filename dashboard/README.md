@@ -1,37 +1,29 @@
 # Dashboard — pipeline monitoring mockup
 
-A clickable, dependency-free single-page monitoring dashboard for the QA
-pipeline. Populated entirely with **real data**: the 3 Wyvern scenes in
-`data/` and the agent's actual decisions in `agent/decisions.json`. No
-placeholder or fake data.
+- A clickable, dependency-free single-page dashboard
+- Populated entirely with real data: the 3 Wyvern scenes in `data/` and the agent's actual decisions in `agent/decisions.json`
+- No placeholder or fake data
 
 ## Run
 
 ```bash
-# from the repo root — any static server works, e.g.:
 python3 -m http.server 8000
 # then open http://localhost:8000/dashboard/
 ```
 
-The page also works if you open `dashboard/index.html` directly from disk
-(`file://`) — the scene data is embedded in `dashboard/data.js` precisely so
-the dashboard needs no server and no network.
+- Also works opened directly from disk (`file://`) — scene data is embedded in `dashboard/data.js`, so no server or network is needed
 
 ## What you see
 
-- **Queue view** — one card per scene: thumbnail, role, scene ID, platform,
-  decision badge (pass / retry / escalate), failure category, retry count,
-  version, delivery-ready state.
-- **Detail view** — click any card: large preview, scene facts (from the STAC
-  metadata), **the two real masks rendered** (usable-data mask with
-  cloud/haze/shadow colors, and the pixel-quality mask with interpolated
-  pixels lit up), every QA metric (from the real masks), the full per-rule
-  evaluation table in PRD order with reasoning, the not-assessed list, and a
-  link to the scene's source files in `data/`.
-
-The mask previews are generated from the real TIFFs by
-`dashboard/make_mask_previews.py` (browsers can't render GeoTIFFs natively,
-so they're pre-rendered to small PNGs — still 100% real data).
+- **Queue view** — one card per scene: thumbnail, role, scene ID, platform, decision badge
+- Also on the card: failure category, retry count, version, delivery-ready state
+- **Detail view** — preview, STAC facts, both real masks rendered, every QA metric
+- Also in detail view: full per-rule evaluation table with reasoning, not-assessed list
+- Also in detail view: delivery-ready state including `delivery_ready_partial`/`excluded_bands` (PRD §6), link to source files
+- **Per-scene findings** — the copper-mine scene's detail view includes a written note on its real sensor defect (679/699/711nm)
+- Sourced from `dashboard/build_data.py`'s `SCENE_NOTES` — hand-written, kept separate from the agent's own decision output
+- Mask previews are pre-rendered PNGs from the real TIFFs (`dashboard/make_mask_previews.py`) since browsers can't render GeoTIFFs natively
+- Still real data, not synthetic
 
 ## Regenerating after a re-run of the agent
 
@@ -40,5 +32,4 @@ so they're pre-rendered to small PNGs — still 100% real data).
 .venv/bin/python dashboard/build_data.py             # refresh dashboard/data.js
 ```
 
-`dashboard/data.js` records the `generated_at` timestamp from the agent run,
-so a stale dashboard is visible at a glance.
+- `dashboard/data.js` records the `generated_at` timestamp from the agent run, so a stale dashboard is visible at a glance

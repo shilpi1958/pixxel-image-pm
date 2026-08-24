@@ -31,6 +31,19 @@ RULE_LABELS = {
     "QA-7": ("Radiometric consistency", "PRD §3 QA-7 — escalate"),
 }
 
+# Domain-context notes, not agent output — hand-written annotations for scenes
+# where a specific finding is worth surfacing. Keyed by folder name.
+SCENE_NOTES = {
+    "03-copper-mine-chile": [
+        "Real finding from this project: interpolated (sensor-estimated, not measured) pixels "
+        "appear only in bands 13/15/16 (679/699/711nm) — the red / red-edge boundary, the sensor's "
+        "most information-dense region (see PRD §8)",
+        "Spatially the defect is confined to ~10% of image height but spans ~71% of image width — "
+        "a scan-line signature consistent with a transient sensor glitch during one stretch of the "
+        "pushbroom sweep, not scattered noise or a permanently dead detector",
+    ],
+}
+
 METRIC_LABELS = {
     "band_count": "Band count",
     "aoi_coverage_pct": "AOI coverage %",
@@ -38,14 +51,36 @@ METRIC_LABELS = {
     "cloud_or_haze_pct": "Cloud + haze (smoke) % of valid pixels",
     "interpolated_pct": "Interpolated (dead/saturated) pixels %",
     "full_band_dropout": "Full-band dropout",
+    "max_high_value_band_interpolated_pct": "Worst red-edge band (711-782nm) interpolated %",
     "geolocation_rmse_px": "Geolocation RMSE (px)",
     "coreg_offset_px": "Cross-band co-registration offset (px)",
     "reflectance_out_of_bounds_pct": "Reflectance outside [0,1] %",
     "band_corr_mean": "Mean band-to-band correlation",
+    "band_corr_min_tile": "Worst spatial-tile band correlation",
 }
 
 
-def build(decisions_path: Path, out_path: Path) -> None:
+# What each data source contributes, and how to detect it's present for a
+# given scene. Order here is the order shown in the dashboard's data-inventory
+# grid, roughly cheapest/broadest evidence first, deepest/rarest last.
+DATA_SOURCES = [
+    ("imagery", "Imagery", "RGB preview + thumbnail", ["preview.png", "thumbnail.png"]),
+    ("stac", "Metadata", "STAC metadata (platform, bands, cloud cover, geometry)", ["stac_metadata.json", "item.json"]),
+    ("data_mask", "Data mask", "Usable-data mask (cloud/haze/shadow, real TIFF)", ["data_mask.tiff"]),
+    ("quality_mask", "Quality mask", "Pixel quality mask (dead/interpolated pixels, real TIFF)", ["pixel_quality_mask.tiff"]),
+    ("band_stack", "Band stack", "Full band-stack reflectance pull (QA-6/QA-7 spot-checked against real values)", ["band_stack_analysis.json"]),
+]
+
+
+def data_inventory(data_dir: Path) -> list[dict]:
+    inventory = []
+    for key, label, title, filenames in DATA_SOURCES:
+        present = any((data_dir / f).exists() for f in filenames)
+        inventory.append({"key": key, "label": label, "title": title, "present": present})
+    return inventory
+
+
+def build(decisions_path: Path, data_root: Path, out_path: Path) -> None:
     decisions = json.loads(decisions_path.read_text())
     scenes = []
     for s in decisions["scenes"]:
@@ -68,10 +103,13 @@ def build(decisions_path: Path, out_path: Path) -> None:
             "version": s["version"],
             "version_note": s.get("version_note"),
             "delivery_ready": s["delivery_ready"],
+            "delivery_ready_partial": s.get("delivery_ready_partial", False),
+            "excluded_bands": s.get("excluded_bands", []),
             "delivery_ready_note": s["delivery_ready_note"],
             "not_assessed": s["not_assessed"],
             "not_assessed_detail": s["not_assessed_detail"],
-            "metrics": [{k: METRIC_LABELS.get(k, k), "value": v} for k, v in s["metrics"].items()],
+            "band_stack_source": s.get("band_stack_source"),
+            "metrics": [{"key": k, "label": METRIC_LABELS.get(k, k), "value": v} for k, v in s["metrics"].items()],
             "mask_metrics": s.get("mask_metrics", {}),
             "rules": [
                 {
@@ -91,6 +129,8 @@ def build(decisions_path: Path, out_path: Path) -> None:
             "data_mask_preview": f"../data/{s['folder']}/data_mask_preview.png",
             "quality_mask_preview": f"../data/{s['folder']}/quality_mask_preview.png",
             "data_dir": f"../data/{s['folder']}/",
+            "scene_note": SCENE_NOTES.get(s["folder"]),
+            "data_inventory": data_inventory(data_root / s["folder"]),
         })
 
     payload = {
@@ -117,6 +157,7 @@ def build(decisions_path: Path, out_path: Path) -> None:
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--decisions", type=Path, default=ROOT.parent / "agent" / "decisions.json")
+    ap.add_argument("--data-root", type=Path, default=ROOT.parent / "data")
     ap.add_argument("--out", type=Path, default=ROOT / "data.js")
     args = ap.parse_args()
-    build(args.decisions, args.out)
+    build(args.decisions, args.data_root, args.out)

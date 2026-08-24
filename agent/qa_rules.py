@@ -141,7 +141,7 @@ def evaluate_rule(rule: dict, metrics: dict, scene: dict) -> dict:
 
 
 def decide(evaluations: list[dict], metrics: dict, scene: dict) -> dict:
-    """Synthesize the final decision from per-rule evaluations (PRD sections 3-4).
+    """Synthesize the final decision from per-rule evaluations (PRD sections 3-4, 6).
 
     Returns a decision record consumed by the triage agent / dashboard.
     """
@@ -176,6 +176,39 @@ def decide(evaluations: list[dict], metrics: dict, scene: dict) -> dict:
         and not scene.get("superseded", False)
     )
 
+    # PRD §6: partial (band-excluded) delivery — only when the SOLE failure is
+    # QA-4's band-isolable check, every other rule passes/n-a, and the customer
+    # has opted in. Never applies to QA-3/5/6/7 failures: those aren't confined
+    # to specific bands, so there's nothing coherent to exclude.
+    partial_eligible = (
+        len(failed) == 1
+        and failed[0]["rule_id"] == "QA-4"
+        and any(c["metric"] == "max_high_value_band_interpolated_pct" and c["status"] == "fail"
+                for c in failed[0]["checks"])
+        and all(c["status"] != "fail" for c in failed[0]["checks"]
+                if c["metric"] != "max_high_value_band_interpolated_pct")
+        and scene.get("processing_level") == "L2A"
+        and metrics.get("quality_mask_coverage_pct") == 100.0
+        and not scene.get("superseded", False)
+    )
+    delivery_ready_partial = partial_eligible and scene.get("partial_delivery_opt_in", False)
+    excluded_bands = metrics.get("high_value_band_indices", []) if delivery_ready_partial else []
+
+    if delivery_ready_partial:
+        delivery_ready_note = (
+            f"Partial delivery: bands {excluded_bands} excluded per PRD §6 "
+            "(customer has opted in to partial delivery)."
+        )
+    elif partial_eligible:
+        delivery_ready_note = (
+            "Eligible for partial delivery per PRD §6, but scene['partial_delivery_opt_in'] "
+            "is not set — partial delivery is opt-in per customer agreement, not automatic."
+        )
+    elif delivery_ready:
+        delivery_ready_note = "Passed on all assessable rules and meets PRD section 6 conditions."
+    else:
+        delivery_ready_note = "Not delivery ready — see decision/reasoning."
+
     return {
         "decision": outcome,
         "failure_category": failure_category,
@@ -183,11 +216,9 @@ def decide(evaluations: list[dict], metrics: dict, scene: dict) -> dict:
         "reasoning": reason,
         "retry_count": retry_count,
         "delivery_ready": delivery_ready,
-        "delivery_ready_note": (
-            "Passed on all assessable rules and meets PRD section 6 conditions."
-            if delivery_ready else
-            "Not delivery ready — see decision/reasoning."
-        ),
+        "delivery_ready_partial": delivery_ready_partial,
+        "delivery_ready_note": delivery_ready_note,
+        "excluded_bands": excluded_bands,
         "not_assessed": [e["rule_id"] for e in unassessed],
         "not_assessed_detail": [e["reasoning"] for e in unassessed],
     }

@@ -3,6 +3,7 @@
   "source": "prd/qa-qc-prd.md (sections 2, 3, 4)",
   "note": "Thresholds are the PRD's placeholders; every condition is mechanical. Rules are evaluated in order; the first failing rule determines the scene outcome (PRD section 3).",
   "max_retries": 2,
+  "high_value_band_range_nm": [711, 782],
   "platforms": {
     "Dragonette-001": { "expected_bands": 23 },
     "Dragonette-002": { "expected_bands": 31 },
@@ -45,12 +46,14 @@
     {
       "id": "QA-4",
       "name": "sensor_artifact",
-      "levels": ["L1B"],
+      "levels": ["L1B", "L2A"],
+      "levels_note": "The pixel_quality_mask (which QA-4 reads) is delivered on L2A products in this catalog (Wyvern's ODP publishes no L1B items — see data/README.md), so QA-4 applies at both L1B and L2A.",
       "category": "SENSOR",
       "routing": "escalate",
       "checks": [
         { "metric": "interpolated_pct", "op": "gt", "threshold": 2, "reasoning": "Dead/saturated (interpolated) pixel count exceeds 2% of total pixels" },
-        { "metric": "full_band_dropout", "op": "eq", "threshold": true, "reasoning": "Any full-band dropout detected in the pixel quality mask" }
+        { "metric": "full_band_dropout", "op": "eq", "threshold": true, "reasoning": "Any full-band dropout detected in the pixel quality mask" },
+        { "metric": "max_high_value_band_interpolated_pct", "op": "gt", "threshold": 0.1, "reasoning": "PRD §3: worst single red-edge band (711-782nm) exceeds the 0.1% ceiling — stricter than the scene-wide average because this range is the sensor's most information-dense region (PRD §8)" }
       ]
     },
     {
@@ -81,7 +84,8 @@
       "category": "RADIO",
       "routing": "escalate",
       "checks": [
-        { "metric": "band_corr_mean", "op": "lt", "threshold": 0.7, "reasoning": "Internally inconsistent reflectance: mean band-to-band correlation on clear pixels below the expected range for hyperspectral surface data (adjacent bands of a well-calibrated stack are strongly correlated) — the output contradicts its own inputs" }
+        { "metric": "band_corr_mean", "op": "lt", "threshold": 0.7, "reasoning": "Internally inconsistent reflectance: mean band-to-band correlation on clear pixels below the expected range for hyperspectral surface data (adjacent bands of a well-calibrated stack are strongly correlated) — the output contradicts its own inputs" },
+        { "metric": "band_corr_min_tile", "op": "lt", "threshold": 0.5, "reasoning": "PRD §3: worst spatial tile's band correlation falls below 0.5 — a localized inconsistency that a scene-wide average can dilute and miss; the tile threshold is looser than the scene-wide 0.7 because a single tile's smaller sample is naturally noisier" }
       ]
     }
   ]
