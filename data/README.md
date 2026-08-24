@@ -26,7 +26,7 @@
 | `data_mask.tiff` | 4-band usable-data mask: clear / cloud / haze / cloud-shadow (1 present, 0 absent, 255 NoData) |
 | `pixel_quality_mask.tiff` | Per-band quality flags: 0 ok, 1 interpolated, 255 NoData |
 
-- The mask files + `stac_metadata.json` are what the triage agent reads (`agent/`); previews are for humans (dashboard)
+- The mask files + `stac_metadata.json` are what the rule engine reads (`agent/`); previews are for humans (dashboard)
 
 ### Two masks, two different notions of "band"
 

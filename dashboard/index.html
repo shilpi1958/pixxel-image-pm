@@ -400,7 +400,7 @@
 
     if (!D || !D.scenes) {
       document.body.insertAdjacentHTML("beforeend",
-        `<div class="nofile">dashboard/data.js is missing or stale — regenerate it from the agent's real output:<br><br>
+        `<div class="nofile">dashboard/data.js is missing or stale — regenerate it from the rule engine's real output:<br><br>
          &nbsp;&nbsp;.venv/bin/python dashboard/build_data.py<br><br>
          (reads ../agent/decisions.json, which is produced by .venv/bin/python agent/triage_agent.py --data data)</div>`);
     } else {

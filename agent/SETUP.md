@@ -1,6 +1,6 @@
-# Agent setup & usage
+# Rule engine setup & usage
 
-- The triage agent (deterministic, rules-based — no LLM) executes the PRD's QA rules against real scene artifacts and decides **pass / retry / escalate** with a logged reasoning trace
+- The rule engine (deterministic, rules-based — no LLM) executes the PRD's QA rules against real scene artifacts and decides **pass / retry / escalate** with a logged reasoning trace
 
 ## 1. Setup
 
@@ -51,7 +51,7 @@ python3 -m venv .venv
 ```
 
 - 13 tests cover every rule's pass/fail path, decision routing, and QA-6/QA-7 against a synthetic band stack
-- The band-aware QA-4 check, tile-aware QA-7 check, and partial delivery are verified against real scene data (`prd/qa-qc-prd.md` §9.3) but have no dedicated unit tests
+- The band-aware QA-4 check, tile-aware QA-7 check, and partial delivery are verified against real scene data (see the copper-mine scene in the [dashboard](../dashboard/)) but have no dedicated unit tests
 
 ## 5. Notes / honest limitations
 

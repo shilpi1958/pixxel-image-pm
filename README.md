@@ -3,7 +3,7 @@
 - A hands-on project practicing the pipeline monitoring layer for hyperspectral satellite imagery
 - The kind of problem an Image Product Manager role at [Pixxel](https://pixxel.space) would involve
 - Built against real commercial hyperspectral imagery, not synthetic data
-- A rules-based triage agent (deterministic, no LLM) reads a scene's quality mask and applies mechanical QA rules
+- A deterministic rule engine (no LLM, no ML) reads a scene's quality mask and applies mechanical QA rules
 - Decides **pass / retry / escalate** with a logged reasoning trace
 - A dashboard shows the decisions against the real images
 
@@ -25,7 +25,7 @@
 |---|---|
 | [`prd/`](prd/qa-qc-prd.md) | QA/QC rules (QA-1…QA-7), failure categories, retry/escalate logic, delivery-ready definition |
 | [`data/`](data/README.md) | 3 real Wyvern scenes: clean crop field (Australia), wildfire smoke (Saskatchewan), copper mine (Chile) |
-| [`agent/`](agent/SETUP.md) | QA triage agent — executes the PRD's rules against real metadata + masks → [`agent/decisions.json`](agent/decisions.json) |
+| [`agent/`](agent/SETUP.md) | QA rule engine — executes the PRD's rules against real metadata + masks → [`agent/decisions.json`](agent/decisions.json) |
 | [`dashboard/`](dashboard/README.md) | Clickable pipeline-monitoring dashboard — raw input, mask, output, decision, and analysis per scene |
 | [`notebooks/`](notebooks/README.md) | Learning notebook — every QA calculation re-derived on the real data |
 
@@ -35,7 +35,7 @@
 # 1. setup
 python3 -m venv .venv && .venv/bin/pip install -r agent/requirements.txt
 
-# 2. run the QA triage agent on the 3 real scenes
+# 2. run the QA rule engine on the 3 real scenes
 .venv/bin/python agent/triage_agent.py --data data
 #   → writes agent/decisions.json + agent/logs/*.log
 
@@ -48,7 +48,7 @@ python3 -m http.server 8000        # open http://localhost:8000/dashboard/
 #   (or open dashboard/index.html directly — data is embedded, no server needed)
 ```
 
-## What the agent decided
+## What the rule engine decided
 
 | Scene | Decision | Why |
 |---|---|---|
@@ -60,13 +60,13 @@ python3 -m http.server 8000        # open http://localhost:8000/dashboard/
 
 ## What's genuinely real vs. scoped down
 
-- **Real:** imagery, masks, catalog metadata, agent decisions, dashboard numbers
+- **Real:** imagery, masks, catalog metadata, rule-engine decisions, dashboard numbers
 - **Scoped by default:** band stacks aren't mirrored (2.2–3.1 GB each), so QA-6/QA-7 log as *not assessable* unless one is supplied — the copper-mine scene is the one exception
 - Full breakdown, including the band-aware/region-aware checks and their real numbers: the [dashboard](dashboard/README.md)
 
 ## Built with
 
-- Python (numpy/tifffile/rasterio) for the agent and analysis
+- Python (numpy/tifffile/rasterio) for the rule engine and analysis
 - Vanilla HTML/JS for the dashboard
 - Imagery from [Wyvern's Open Data Program](https://wyvern.space/open-data/) (CC BY 4.0, attribution: Wyvern Inc.)
 

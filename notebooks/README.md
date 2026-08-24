@@ -1,7 +1,7 @@
 # Notebook — watch the QA calculations happen
 
 - [`qa_pipeline_walkthrough.ipynb`](qa_pipeline_walkthrough.ipynb) is the learning companion to this repo
-- Re-derives, step by step, how the QA agent turns real files in `data/` into a decision
+- Re-derives, step by step, how the QA rule engine turns real files in `data/` into a decision
 - Every intermediate number printed, every mask visualized
 - Includes an interactive slider: drag the QA-3 cloud threshold, watch the Saskatchewan scene's verdict flip
 - Falls back to a printed threshold sweep when run non-interactively (live widget needs a connected frontend)
@@ -27,9 +27,9 @@ python3 -m venv .venv
 - **The valid footprint** — why every percentage excludes the empty border
 - **The four metrics, re-derived** — `band_count`, `cloud_or_haze_pct` (union!), `quality_mask_coverage_pct`, `interpolated_pct` (band-pixels!)
 - **Band-13/15/16 defect localization** — which bands, spatial range, why it's a scan-line signature; 3D point clouds (cropped and whole-scene)
-- **All metrics, all 3 scenes** — the exact table the agent works from
+- **All metrics, all 3 scenes** — the exact table the rule engine works from
 - **`rules.json`** — the PRD as data
-- **Run the real agent engine** — verify decisions match `agent/decisions.json`
+- **Run the real rule engine** — verify decisions match `agent/decisions.json`
 - **Band-aware QA-4 and partial delivery** — the copper-mine scene's per-band and partial-delivery fields, computed live
 - **Interactive experiment** — drag the QA-3 threshold, watch the decision flip
 - **Challenges** — things to try on your own

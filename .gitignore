@@ -6,3 +6,7 @@ agent/tests/_tmp_cog/
 
 # OS
 .DS_Store
+
+# Jasper wildfire scene (evaluated, not selected for the repo's 3 demo scenes)
+data/jasper-wildfire/
+data/04-wildfire-jasper-alberta/

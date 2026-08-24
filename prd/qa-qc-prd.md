@@ -102,7 +102,7 @@ Delivery ready requires:
 
 - This PRD defines the rules and thresholds; it does not define the computation itself
 - Every metric below is derived step-by-step, on real scene data, in [`notebooks/qa_pipeline_walkthrough.ipynb`](../notebooks/qa_pipeline_walkthrough.ipynb)
-- The notebook also re-runs the actual agent engine (`agent/analyze_scene.py`, `agent/qa_rules.py`) and checks its output against what's committed in `agent/decisions.json`
+- The notebook also re-runs the actual rule engine (`agent/analyze_scene.py`, `agent/qa_rules.py`) and checks its output against what's committed in `agent/decisions.json`
 - Results, per-scene findings, and the full rule-by-rule evaluation live in the [dashboard](../dashboard/)
 
 | Metric | Feeds | Meaning |
