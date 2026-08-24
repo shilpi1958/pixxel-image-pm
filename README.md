@@ -1,5 +1,7 @@
 # Pixxel Image Product Manager — QA/QC Pipeline Practice Project
 
+**🔗 Live dashboard: [shilpi1958.github.io/pixxel-image-pm/dashboard/](https://shilpi1958.github.io/pixxel-image-pm/dashboard/)**
+
 - A hands-on project practicing the pipeline monitoring layer for hyperspectral satellite imagery
 - The kind of problem an Image Product Manager role at [Pixxel](https://pixxel.space) would involve
 - Built against real commercial hyperspectral imagery, not synthetic data
@@ -17,7 +19,7 @@
 - The copper-mine scene (Atacama Desert, Chile) is the deepest evidence in this repo
 - Atmospherically perfect — 0% cloud, 0% haze — but a real, localized sensor defect: 3 wavelength bands corrupted in a scan-line pattern
 - The full 2.07 GB hyperspectral band stack was pulled for this scene and QA-6/QA-7 run against real reflectance values — the only scene assessed that deeply
-- Full writeup: [dashboard](dashboard/README.md) → copper-mine scene detail view
+- Full writeup: [live dashboard](https://shilpi1958.github.io/pixxel-image-pm/dashboard/) → copper-mine scene detail view
 
 ## What's in the repo
 
@@ -26,7 +28,7 @@
 | [`prd/`](prd/qa-qc-prd.md) | QA/QC rules (QA-1…QA-7), failure categories, retry/escalate logic, delivery-ready definition |
 | [`data/`](data/README.md) | 3 real Wyvern scenes: clean crop field (Australia), wildfire smoke (Saskatchewan), copper mine (Chile) |
 | [`agent/`](agent/SETUP.md) | QA rule engine — executes the PRD's rules against real metadata + masks → [`agent/decisions.json`](agent/decisions.json) |
-| [`dashboard/`](dashboard/README.md) | Clickable pipeline-monitoring dashboard — raw input, mask, output, decision, and analysis per scene |
+| [`dashboard/`](dashboard/README.md) | Clickable pipeline-monitoring dashboard — raw input, mask, output, decision, and analysis per scene ([live](https://shilpi1958.github.io/pixxel-image-pm/dashboard/)) |
 | [`notebooks/`](notebooks/README.md) | Learning notebook — every QA calculation re-derived on the real data |
 
 ## Quick start
@@ -62,7 +64,7 @@ python3 -m http.server 8000        # open http://localhost:8000/dashboard/
 
 - **Real:** imagery, masks, catalog metadata, rule-engine decisions, dashboard numbers
 - **Scoped by default:** band stacks aren't mirrored (2.2–3.1 GB each), so QA-6/QA-7 log as *not assessable* unless one is supplied — the copper-mine scene is the one exception
-- Full breakdown, including the band-aware/region-aware checks and their real numbers: the [dashboard](dashboard/README.md)
+- Full breakdown, including the band-aware/region-aware checks and their real numbers: the [live dashboard](https://shilpi1958.github.io/pixxel-image-pm/dashboard/)
 
 ## Built with
 
