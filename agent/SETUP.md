@@ -1,6 +1,6 @@
 # Rule engine setup & usage
 
-- The rule engine (deterministic, rules-based — no LLM) executes the PRD's QA rules against real scene artifacts and decides **pass / retry / escalate** with a logged reasoning trace
+- The rule engine (deterministic, rules-based — no LLM) executes the PRD's QA rules against real scene artifacts and decides **pass / retry / hold / re-task / escalate** with a logged reasoning trace
 
 ## 1. Setup
 

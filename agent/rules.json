@@ -37,11 +37,12 @@
       "name": "cloud_obstruction",
       "levels": ["L1B", "L2A"],
       "category": "CLOUD",
-      "routing": "retry",
+      "routing": "hold",
       "checks": [
-        { "metric": "cloud_or_haze_pct", "op": "gt", "threshold": 40, "reasoning": "Cloud/haze/smoke mask coverage exceeds the 40% usable threshold" }
+        { "metric": "aoi_cloud_or_haze_pct", "fallback_metric": "cloud_or_haze_pct", "op": "gt", "threshold": 80, "routing": "retask", "reasoning": "Cloud/haze/smoke covers more than 80% — too little usable ground; reprocessing can't remove cloud, so re-task a new capture" },
+        { "metric": "aoi_cloud_or_haze_pct", "fallback_metric": "cloud_or_haze_pct", "op": "gt", "threshold": 40, "routing": "hold", "reasoning": "Cloud/haze/smoke covers more than 40% — hold for the customer to accept or request a re-task; reprocessing can't remove cloud" }
       ],
-      "note": "Re-task (not merely reprocess) when obstruction exceeds 80% — see PRD section 3 QA-3."
+      "note": "Checks are ordered most severe first; the first failing check sets the routing. Measured over the tasked AOI when known, scene-wide otherwise (PRD section 3 QA-3)."
     },
     {
       "id": "QA-4",

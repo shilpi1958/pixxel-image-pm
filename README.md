@@ -6,7 +6,7 @@
 - The kind of problem an Image Product Manager role at [Pixxel](https://pixxel.space) would involve
 - Built against real commercial hyperspectral imagery, not synthetic data
 - A deterministic rule engine (no LLM, no ML) reads a scene's quality mask and applies mechanical QA rules
-- Decides **pass / retry / escalate** with a logged reasoning trace
+- Decides **pass / retry / hold / re-task / escalate** with a logged reasoning trace
 - A dashboard shows the decisions against the real images
 
 ## Why this project
@@ -25,7 +25,7 @@
 
 | Folder | Contents |
 |---|---|
-| [`prd/`](prd/qa-qc-prd.md) | QA/QC rules (QA-1…QA-7), failure categories, retry/escalate logic, delivery-ready definition |
+| [`prd/`](prd/qa-qc-prd.md) | QA/QC rules (QA-1…QA-7), failure categories, retry/hold/re-task/escalate logic, delivery-ready definition |
 | [`data/`](data/README.md) | 3 real Wyvern scenes: clean crop field (Australia), wildfire smoke (Saskatchewan), copper mine (Chile) |
 | [`agent/`](agent/SETUP.md) | QA rule engine — executes the PRD's rules against real metadata + masks → [`agent/decisions.json`](agent/decisions.json) |
 | [`dashboard/`](dashboard/README.md) | Clickable pipeline-monitoring dashboard — raw input, mask, output, decision, and analysis per scene ([live](https://shilpi1958.github.io/pixxel-image-pm/dashboard/)) |
@@ -55,7 +55,7 @@ python3 -m http.server 8000        # open http://localhost:8000/dashboard/
 | Scene | Decision | Why |
 |---|---|---|
 | Clean crop field, Australia | pass ✅ | No rule fired — CLEAN, delivery ready |
-| Wildfire smoke, Saskatchewan | retry 🔁 | QA-3: cloud + smoke obstruct **62.3%** (> 40% threshold) |
+| Wildfire smoke, Saskatchewan | hold ⏸️ | QA-3: cloud + smoke obstruct **62.3%** (> 40%, ≤ 80%) — reprocessing can't remove cloud, so the customer decides: accept or re-task |
 | Copper mine, Chile | pass ✅ | CLEAN, delivery ready — the only scene with QA-6/QA-7 run against real reflectance |
 
 - Every decision traces to a specific rule; logs state exactly which metrics were measured and which rules couldn't be assessed, and why

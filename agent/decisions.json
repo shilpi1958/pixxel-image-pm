@@ -1,6 +1,6 @@
 {
   "schema": "pixxel.qa.decisions.v1",
-  "generated_at": "2026-11-05T07:06:23.440248+00:00",
+  "generated_at": "2026-11-05T07:46:58.678615+00:00",
   "rules_source": "prd/qa-qc-prd.md \u00a72-\u00a74 (agent/rules.json)",
   "max_retries": 2,
   "scenes": [
@@ -26,6 +26,7 @@
         "band_count": 31,
         "aoi_coverage_pct": null,
         "quality_mask_coverage_pct": 100.0,
+        "aoi_cloud_or_haze_pct": null,
         "cloud_or_haze_pct": 0.0,
         "interpolated_pct": 0.0,
         "full_band_dropout": false,
@@ -111,6 +112,7 @@
               "threshold": 100,
               "op": "lt",
               "status": "pass",
+              "routing": "escalate",
               "reasoning": "Quality/cloud mask missing, unparseable, or covering less than the full scene footprint"
             }
           ],
@@ -120,7 +122,7 @@
           "rule_id": "QA-3",
           "name": "cloud_obstruction",
           "category": "CLOUD",
-          "routing": "retry",
+          "routing": "hold",
           "level": [
             "L1B",
             "L2A"
@@ -130,13 +132,23 @@
             {
               "metric": "cloud_or_haze_pct",
               "observed": 0.0,
+              "threshold": 80,
+              "op": "gt",
+              "status": "pass",
+              "routing": "retask",
+              "reasoning": "Cloud/haze/smoke covers more than 80% \u2014 too little usable ground; reprocessing can't remove cloud, so re-task a new capture (aoi_cloud_or_haze_pct not available \u2014 used cloud_or_haze_pct)"
+            },
+            {
+              "metric": "cloud_or_haze_pct",
+              "observed": 0.0,
               "threshold": 40,
               "op": "gt",
               "status": "pass",
-              "reasoning": "Cloud/haze/smoke mask coverage exceeds the 40% usable threshold"
+              "routing": "hold",
+              "reasoning": "Cloud/haze/smoke covers more than 40% \u2014 hold for the customer to accept or request a re-task; reprocessing can't remove cloud (aoi_cloud_or_haze_pct not available \u2014 used cloud_or_haze_pct)"
             }
           ],
-          "reasoning": "Rule QA-3 (cloud_obstruction) passed: cloud_or_haze_pct=0.0 (threshold 40)"
+          "reasoning": "Rule QA-3 (cloud_obstruction) passed: cloud_or_haze_pct=0.0 (threshold 80); cloud_or_haze_pct=0.0 (threshold 40)"
         },
         {
           "rule_id": "QA-4",
@@ -155,6 +167,7 @@
               "threshold": 2,
               "op": "gt",
               "status": "pass",
+              "routing": "escalate",
               "reasoning": "Dead/saturated (interpolated) pixel count exceeds 2% of total pixels"
             },
             {
@@ -163,6 +176,7 @@
               "threshold": true,
               "op": "eq",
               "status": "pass",
+              "routing": "escalate",
               "reasoning": "Any full-band dropout detected in the pixel quality mask"
             },
             {
@@ -171,6 +185,7 @@
               "threshold": 0.1,
               "op": "gt",
               "status": "pass",
+              "routing": "escalate",
               "reasoning": "PRD \u00a73: worst single red-edge band (711-782nm) exceeds the 0.1% ceiling \u2014 stricter than the scene-wide average because the PRD treats the red edge as the high-value range"
             }
           ],
@@ -294,6 +309,7 @@
         "band_count": 31,
         "aoi_coverage_pct": null,
         "quality_mask_coverage_pct": 100.0,
+        "aoi_cloud_or_haze_pct": null,
         "cloud_or_haze_pct": 62.3,
         "interpolated_pct": 0.0,
         "full_band_dropout": false,
@@ -379,6 +395,7 @@
               "threshold": 100,
               "op": "lt",
               "status": "pass",
+              "routing": "escalate",
               "reasoning": "Quality/cloud mask missing, unparseable, or covering less than the full scene footprint"
             }
           ],
@@ -388,7 +405,7 @@
           "rule_id": "QA-3",
           "name": "cloud_obstruction",
           "category": "CLOUD",
-          "routing": "retry",
+          "routing": "hold",
           "level": [
             "L1B",
             "L2A"
@@ -398,10 +415,20 @@
             {
               "metric": "cloud_or_haze_pct",
               "observed": 62.3,
+              "threshold": 80,
+              "op": "gt",
+              "status": "pass",
+              "routing": "retask",
+              "reasoning": "Cloud/haze/smoke covers more than 80% \u2014 too little usable ground; reprocessing can't remove cloud, so re-task a new capture (aoi_cloud_or_haze_pct not available \u2014 used cloud_or_haze_pct)"
+            },
+            {
+              "metric": "cloud_or_haze_pct",
+              "observed": 62.3,
               "threshold": 40,
               "op": "gt",
               "status": "fail",
-              "reasoning": "Cloud/haze/smoke mask coverage exceeds the 40% usable threshold"
+              "routing": "hold",
+              "reasoning": "Cloud/haze/smoke covers more than 40% \u2014 hold for the customer to accept or request a re-task; reprocessing can't remove cloud (aoi_cloud_or_haze_pct not available \u2014 used cloud_or_haze_pct)"
             }
           ],
           "reasoning": "Rule QA-3 (cloud_obstruction) fired: cloud_or_haze_pct=62.3 gt threshold=40 \u2192 FAIL"
@@ -423,6 +450,7 @@
               "threshold": 2,
               "op": "gt",
               "status": "pass",
+              "routing": "escalate",
               "reasoning": "Dead/saturated (interpolated) pixel count exceeds 2% of total pixels"
             },
             {
@@ -431,6 +459,7 @@
               "threshold": true,
               "op": "eq",
               "status": "pass",
+              "routing": "escalate",
               "reasoning": "Any full-band dropout detected in the pixel quality mask"
             },
             {
@@ -439,6 +468,7 @@
               "threshold": 0.1,
               "op": "gt",
               "status": "pass",
+              "routing": "escalate",
               "reasoning": "PRD \u00a73: worst single red-edge band (711-782nm) exceeds the 0.1% ceiling \u2014 stricter than the scene-wide average because the PRD treats the red edge as the high-value range"
             }
           ],
@@ -520,11 +550,11 @@
           "reasoning": "Rule QA-7 (radiometric_consistency) could not be fully evaluated: band_corr_mean; band_corr_min_tile not available."
         }
       ],
-      "decision": "retry",
+      "decision": "hold",
       "failure_category": "CLOUD",
       "fired_rule": "QA-3",
       "reasoning": "Rule QA-3 (cloud_obstruction) fired: cloud_or_haze_pct=62.3 gt threshold=40 \u2192 FAIL",
-      "retry_count": 1,
+      "retry_count": 0,
       "version": "v1",
       "version_note": "Initial assessment.",
       "delivery_ready": false,
@@ -562,6 +592,7 @@
         "band_count": 23,
         "aoi_coverage_pct": null,
         "quality_mask_coverage_pct": 100.0,
+        "aoi_cloud_or_haze_pct": null,
         "cloud_or_haze_pct": 0.0,
         "interpolated_pct": 0.0034,
         "full_band_dropout": false,
@@ -639,6 +670,7 @@
               "threshold": 100,
               "op": "lt",
               "status": "pass",
+              "routing": "escalate",
               "reasoning": "Quality/cloud mask missing, unparseable, or covering less than the full scene footprint"
             }
           ],
@@ -648,7 +680,7 @@
           "rule_id": "QA-3",
           "name": "cloud_obstruction",
           "category": "CLOUD",
-          "routing": "retry",
+          "routing": "hold",
           "level": [
             "L1B",
             "L2A"
@@ -658,13 +690,23 @@
             {
               "metric": "cloud_or_haze_pct",
               "observed": 0.0,
+              "threshold": 80,
+              "op": "gt",
+              "status": "pass",
+              "routing": "retask",
+              "reasoning": "Cloud/haze/smoke covers more than 80% \u2014 too little usable ground; reprocessing can't remove cloud, so re-task a new capture (aoi_cloud_or_haze_pct not available \u2014 used cloud_or_haze_pct)"
+            },
+            {
+              "metric": "cloud_or_haze_pct",
+              "observed": 0.0,
               "threshold": 40,
               "op": "gt",
               "status": "pass",
-              "reasoning": "Cloud/haze/smoke mask coverage exceeds the 40% usable threshold"
+              "routing": "hold",
+              "reasoning": "Cloud/haze/smoke covers more than 40% \u2014 hold for the customer to accept or request a re-task; reprocessing can't remove cloud (aoi_cloud_or_haze_pct not available \u2014 used cloud_or_haze_pct)"
             }
           ],
-          "reasoning": "Rule QA-3 (cloud_obstruction) passed: cloud_or_haze_pct=0.0 (threshold 40)"
+          "reasoning": "Rule QA-3 (cloud_obstruction) passed: cloud_or_haze_pct=0.0 (threshold 80); cloud_or_haze_pct=0.0 (threshold 40)"
         },
         {
           "rule_id": "QA-4",
@@ -683,6 +725,7 @@
               "threshold": 2,
               "op": "gt",
               "status": "pass",
+              "routing": "escalate",
               "reasoning": "Dead/saturated (interpolated) pixel count exceeds 2% of total pixels"
             },
             {
@@ -691,6 +734,7 @@
               "threshold": true,
               "op": "eq",
               "status": "pass",
+              "routing": "escalate",
               "reasoning": "Any full-band dropout detected in the pixel quality mask"
             },
             {
@@ -699,6 +743,7 @@
               "threshold": 0.1,
               "op": "gt",
               "status": "pass",
+              "routing": "escalate",
               "reasoning": "PRD \u00a73: worst single red-edge band (711-782nm) exceeds the 0.1% ceiling \u2014 stricter than the scene-wide average because the PRD treats the red edge as the high-value range"
             }
           ],
@@ -748,6 +793,7 @@
               "threshold": 0.5,
               "op": "gt",
               "status": "pass",
+              "routing": "retry",
               "reasoning": "Reflectance outside physical [0,1] bounds on more than 0.5% of valid (unmasked) pixels"
             }
           ],
@@ -769,6 +815,7 @@
               "threshold": 0.7,
               "op": "lt",
               "status": "pass",
+              "routing": "escalate",
               "reasoning": "Internally inconsistent reflectance: mean band-to-band correlation on clear pixels below the expected range for hyperspectral surface data (adjacent bands of a well-calibrated stack are strongly correlated) \u2014 the output contradicts its own inputs"
             },
             {
@@ -777,6 +824,7 @@
               "threshold": 0.5,
               "op": "lt",
               "status": "pass",
+              "routing": "escalate",
               "reasoning": "PRD \u00a73: worst spatial tile's band correlation falls below 0.5 \u2014 a localized inconsistency that a scene-wide average can dilute and miss; the tile threshold is looser than the scene-wide 0.7 because a single tile's smaller sample is naturally noisier"
             }
           ],

@@ -15,10 +15,14 @@
     --pass: #2ecc71;
     --retry: #f39c12;
     --escalate: #e74c3c;
+    --hold: #f1c40f;
+    --retask: #a37cf0;
     --info: #3498db;
     --warn-bg: rgba(243, 156, 18, 0.12);
     --pass-bg: rgba(46, 204, 113, 0.12);
     --esc-bg: rgba(231, 76, 60, 0.12);
+    --hold-bg: rgba(241, 196, 15, 0.12);
+    --retask-bg: rgba(163, 124, 240, 0.14);
     --mono: "SF Mono", "Cascadia Mono", Consolas, "Liberation Mono", monospace;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -42,6 +46,7 @@
   .chip b { color: var(--text); font-family: var(--mono); }
   .chip .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
   .dot.pass { background: var(--pass); } .dot.retry { background: var(--retry); } .dot.escalate { background: var(--escalate); }
+  .dot.hold { background: var(--hold); } .dot.retask { background: var(--retask); }
   .meta-line { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: 6px; }
 
   .queue { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; margin-top: 26px; }
@@ -65,6 +70,8 @@
   .badge.pass { background: var(--pass-bg); color: var(--pass); }
   .badge.retry { background: var(--warn-bg); color: var(--retry); }
   .badge.escalate { background: var(--esc-bg); color: var(--escalate); }
+  .badge.hold { background: var(--hold-bg); color: var(--hold); }
+  .badge.retask { background: var(--retask-bg); color: var(--retask); }
   .badge.grey { background: rgba(139,152,165,0.12); color: var(--muted); }
   .tag { font-size: 11px; color: var(--muted); background: var(--panel-2); border: 1px solid var(--border); border-radius: 5px; padding: 2px 8px; font-family: var(--mono); }
   .tag.ready { color: var(--pass); border-color: rgba(46,204,113,0.4); }
@@ -145,7 +152,7 @@
   <header class="top">
     <div>
       <h1>Pixxel Image QA — <span class="accent">Pipeline Monitor</span></h1>
-      <div class="subtitle">Hyperspectral scene triage — pass, retry, or escalate, with a logged reason for each</div>
+      <div class="subtitle">Hyperspectral scene triage — pass, retry, hold, re-task, or escalate, with a logged reason for each</div>
     </div>
     <div class="summary" id="summary"></div>
   </header>
@@ -188,7 +195,7 @@
     }
 
     function badge(decision) {
-      return `<span class="badge ${decision}">${decision}</span>`;
+      return `<span class="badge ${decision}">${decision === "retask" ? "re-task" : decision}</span>`;
     }
 
     const PROCESSING_LEVELS = {
@@ -205,6 +212,8 @@
       $("#summary").innerHTML = `
         <span class="chip"><span class="dot pass"></span> pass <b>${s.pass}</b></span>
         <span class="chip"><span class="dot retry"></span> retry <b>${s.retry}</b></span>
+        <span class="chip"><span class="dot hold"></span> hold <b>${s.hold}</b></span>
+        <span class="chip"><span class="dot retask"></span> re-task <b>${s.retask}</b></span>
         <span class="chip"><span class="dot escalate"></span> escalate <b>${s.escalate}</b></span>
         <span class="chip">scenes <b>${D.scene_count}</b></span>
         <span class="chip">max retries <b>${D.max_retries}</b></span>`;

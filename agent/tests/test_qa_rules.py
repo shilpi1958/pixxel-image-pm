@@ -4,7 +4,7 @@ synthetic inputs. Run with:  python -m pytest agent/tests  (or python agent/test
 
 Covers:
   * every rule: pass / fail / not_assessable / not_applicable paths
-  * decision synthesis: clean pass, cloud retry, retry ceiling -> escalate,
+  * decision synthesis: clean pass, cloud hold / retask (AOI-first), retry ceiling -> escalate,
     mask gap -> escalate, L1B band-count failure -> escalate
   * analyze_cog: QA-6 (reflectance out of bounds) and QA-7 (band correlation)
     from a synthetic band stack + clear mask
@@ -48,28 +48,63 @@ def test_clean_l2a_passes():
     assert d["retry_count"] == 0
 
 
-def test_cloud_retry():
+def test_cloud_hold():
+    # 40-80% cloud: hold for the customer — reprocessing can't remove cloud,
+    # so no retry is consumed
     metrics = {"band_count": 31, "quality_mask_coverage_pct": 100.0, "cloud_or_haze_pct": 62.3,
                "interpolated_pct": 0.0, "full_band_dropout": False,
                "reflectance_out_of_bounds_pct": 0.0, "band_corr_mean": 0.99}
     ev = eval_all(metrics, L2A)
     d = decide(ev, metrics, L2A)
-    assert d["decision"] == "retry"
+    assert d["decision"] == "hold"
     assert d["failure_category"] == "CLOUD"
     assert d["fired_rule"] == "QA-3"
-    assert d["retry_count"] == 1
+    assert d["retry_count"] == 0
     assert d["delivery_ready"] is False
 
 
-def test_retry_ceiling_escalates():
+def test_cloud_over_80_retasks():
+    metrics = {"band_count": 31, "quality_mask_coverage_pct": 100.0, "cloud_or_haze_pct": 91.0,
+               "interpolated_pct": 0.0, "full_band_dropout": False,
+               "reflectance_out_of_bounds_pct": 0.0, "band_corr_mean": 0.99}
+    ev = eval_all(metrics, L2A)
+    d = decide(ev, metrics, L2A)
+    assert d["decision"] == "retask"
+    assert d["fired_rule"] == "QA-3"
+    assert d["retry_count"] == 0
+
+
+def test_cloud_uses_aoi_when_known():
+    # scene is 62% cloudy, but the customer's AOI is clear -> pass
+    metrics = {"band_count": 31, "quality_mask_coverage_pct": 100.0, "cloud_or_haze_pct": 62.3,
+               "aoi_cloud_or_haze_pct": 3.0, "interpolated_pct": 0.0, "full_band_dropout": False,
+               "reflectance_out_of_bounds_pct": 0.0, "band_corr_mean": 0.99}
+    ev = eval_all(metrics, L2A)
+    qa3 = next(e for e in ev if e["rule_id"] == "QA-3")
+    assert qa3["status"] == "pass"
+    assert all(c["metric"] == "aoi_cloud_or_haze_pct" for c in qa3["checks"])
+    assert decide(ev, metrics, L2A)["decision"] == "pass"
+
+
+def test_cloud_hold_ignores_retry_ceiling():
     metrics = {"band_count": 31, "quality_mask_coverage_pct": 100.0, "cloud_or_haze_pct": 62.3,
                "interpolated_pct": 0.0, "full_band_dropout": False,
+               "reflectance_out_of_bounds_pct": 0.0, "band_corr_mean": 0.99}
+    scene = dict(L2A, retry_count=2)
+    ev = eval_all(metrics, scene)
+    assert decide(ev, metrics, scene)["decision"] == "hold"
+
+
+def test_retry_ceiling_escalates():
+    metrics = {"band_count": 31, "quality_mask_coverage_pct": 100.0, "cloud_or_haze_pct": 0.0,
+               "interpolated_pct": 0.0, "full_band_dropout": False,
+               "geolocation_rmse_px": 2.1, "coreg_offset_px": 0.1,
                "reflectance_out_of_bounds_pct": 0.0, "band_corr_mean": 0.99}
     scene = dict(L2A, retry_count=2)   # already at MAX_RETRIES
     ev = eval_all(metrics, scene)
     d = decide(ev, metrics, scene)
     assert d["decision"] == "escalate"
-    assert d["failure_category"] == "CLOUD"
+    assert d["failure_category"] == "GEOM"
 
 
 def test_mask_gap_escalates():

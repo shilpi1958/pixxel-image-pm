@@ -253,6 +253,7 @@ def compute_metrics(scene_dir: Path, cog_path: Path | None = None) -> tuple[dict
         "band_count": mask_metrics["band_count"],
         "aoi_coverage_pct": None,          # ODP items have no tasked-AOI record
         "quality_mask_coverage_pct": mask_metrics["quality_mask_coverage_pct"],
+        "aoi_cloud_or_haze_pct": None,     # no tasked AOI, so QA-3 falls back to scene-wide
         "cloud_or_haze_pct": mask_metrics["cloud_or_haze_pct"],
         "interpolated_pct": mask_metrics["interpolated_pct"],
         "full_band_dropout": mask_metrics["full_band_dropout"],

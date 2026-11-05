@@ -11,6 +11,7 @@ band stack source: not available (QA-6/QA-7 not assessable)
   band_count: 31
   aoi_coverage_pct: None
   quality_mask_coverage_pct: 100.0
+  aoi_cloud_or_haze_pct: None
   cloud_or_haze_pct: 0.0
   interpolated_pct: 0.0
   full_band_dropout: False
@@ -28,8 +29,9 @@ band stack source: not available (QA-6/QA-7 not assessable)
         quality_mask_coverage_pct: observed=100.0 threshold=100 -> pass
         → Rule QA-2 (mask_gap) passed: quality_mask_coverage_pct=100.0 (threshold 100)
   [PASS           ] QA-3 cloud_obstruction (levels ['L1B', 'L2A'])
+        cloud_or_haze_pct: observed=0.0 threshold=80 -> pass
         cloud_or_haze_pct: observed=0.0 threshold=40 -> pass
-        → Rule QA-3 (cloud_obstruction) passed: cloud_or_haze_pct=0.0 (threshold 40)
+        → Rule QA-3 (cloud_obstruction) passed: cloud_or_haze_pct=0.0 (threshold 80); cloud_or_haze_pct=0.0 (threshold 40)
   [PASS           ] QA-4 sensor_artifact (levels ['L1B', 'L2A'])
         interpolated_pct: observed=0.0 threshold=2 -> pass
         full_band_dropout: observed=False threshold=True -> pass

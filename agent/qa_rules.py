@@ -13,7 +13,12 @@ pass / retry / escalate decision, following PRD sections 2-4:
   - A check whose metric is missing/unknown is `not_assessable` — it can
     never *fail* the rule, but it is reported so the trace shows exactly
     what could and could not be verified.
-  - Retry vs escalate comes from the rule's `routing` (PRD section 4).
+  - Routing comes from the rule's `routing`, or from the first failing
+    check's own `routing` when it has one (PRD section 4). Only `retry`
+    (reprocess) consumes the retry budget; `hold`/`retask` don't, because
+    reprocessing the same capture can't change their outcome.
+  - A check may name a `fallback_metric`, used when its preferred metric is
+    unavailable (e.g. QA-3 prefers AOI cloud, falls back to scene-wide).
 
 No file I/O here — unit tests can drive every rule with synthetic numbers.
 """
@@ -24,7 +29,7 @@ from typing import Any, Optional
 
 CATEGORIES = ("CLOUD", "SENSOR", "GEOM", "RADIO", "MASK_GAP", "INCOMPLETE")
 
-OUTCOMES = ("pass", "retry", "escalate")
+OUTCOMES = ("pass", "retry", "hold", "retask", "escalate")
 
 
 def _resolve_threshold(check: dict, platform: dict) -> Optional[float]:
@@ -78,6 +83,12 @@ def evaluate_rule(rule: dict, metrics: dict, scene: dict) -> dict:
     for check in rule["checks"]:
         metric_name = check["metric"]
         observed = metrics.get(metric_name)
+        fallback_note = ""
+        if observed is None and check.get("fallback_metric"):
+            fallback = check["fallback_metric"]
+            if metrics.get(fallback) is not None:
+                fallback_note = f" ({metric_name} not available — used {fallback})"
+                metric_name, observed = fallback, metrics[fallback]
         threshold = _resolve_threshold(check, platform)
 
         if observed is None:
@@ -99,11 +110,15 @@ def evaluate_rule(rule: dict, metrics: dict, scene: dict) -> dict:
             "threshold": threshold,
             "op": check["op"],
             "status": status,
-            "reasoning": check["reasoning"],
+            "routing": check.get("routing", rule["routing"]),
+            "reasoning": check["reasoning"] + fallback_note,
         })
 
     failed = [c for c in check_results if c["status"] == "fail"]
     unassessed = [c for c in check_results if c["status"] == "not_assessable"]
+
+    # checks are ordered most severe first, so the first failure sets routing
+    routing = failed[0]["routing"] if failed else rule["routing"]
 
     if failed:
         status = "fail"
@@ -132,7 +147,7 @@ def evaluate_rule(rule: dict, metrics: dict, scene: dict) -> dict:
         "rule_id": rule["id"],
         "name": rule["name"],
         "category": rule["category"],
-        "routing": rule["routing"],
+        "routing": routing,
         "level": rule["levels"],
         "status": status,
         "checks": check_results,
@@ -153,7 +168,8 @@ def decide(evaluations: list[dict], metrics: dict, scene: dict) -> dict:
     if first_failure is not None:
         outcome = first_failure["routing"]
         retry_count = scene.get("retry_count", 0)
-        # PRD section 4: retry only while retries remain; ceiling escalates.
+        # PRD section 4: retry (reprocess) only while retries remain; ceiling
+        # escalates. hold/retask never consume retries.
         if outcome == "retry":
             if retry_count >= scene.get("max_retries", 2):
                 outcome = "escalate"

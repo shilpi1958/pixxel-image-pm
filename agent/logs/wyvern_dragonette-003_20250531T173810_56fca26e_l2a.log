@@ -11,6 +11,7 @@ band stack source: not available (QA-6/QA-7 not assessable)
   band_count: 31
   aoi_coverage_pct: None
   quality_mask_coverage_pct: 100.0
+  aoi_cloud_or_haze_pct: None
   cloud_or_haze_pct: 62.3
   interpolated_pct: 0.0
   full_band_dropout: False
@@ -28,6 +29,7 @@ band stack source: not available (QA-6/QA-7 not assessable)
         quality_mask_coverage_pct: observed=100.0 threshold=100 -> pass
         → Rule QA-2 (mask_gap) passed: quality_mask_coverage_pct=100.0 (threshold 100)
   [FAIL           ] QA-3 cloud_obstruction (levels ['L1B', 'L2A'])
+        cloud_or_haze_pct: observed=62.3 threshold=80 -> pass
         cloud_or_haze_pct: observed=62.3 threshold=40 -> fail
         → Rule QA-3 (cloud_obstruction) fired: cloud_or_haze_pct=62.3 gt threshold=40 → FAIL
   [PASS           ] QA-4 sensor_artifact (levels ['L1B', 'L2A'])
@@ -48,11 +50,11 @@ band stack source: not available (QA-6/QA-7 not assessable)
         → Rule QA-7 (radiometric_consistency) could not be fully evaluated: band_corr_mean; band_corr_min_tile not available.
 
 --- decision ---
-  outcome:          RETRY
+  outcome:          HOLD
   failure category: CLOUD
   fired rule:       QA-3
   reasoning:        Rule QA-3 (cloud_obstruction) fired: cloud_or_haze_pct=62.3 gt threshold=40 → FAIL
-  retry count:      1
+  retry count:      0
   version:          v1
   delivery ready:   False — Not delivery ready — see decision/reasoning.
   NOT ASSESSED:     ['QA-5', 'QA-6', 'QA-7']

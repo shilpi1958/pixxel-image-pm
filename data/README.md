@@ -14,7 +14,7 @@
 | Folder | Scene ID | Platform | Bands | Date (UTC) | Location | Why picked |
 |---|---|---|---|---|---|---|
 | `01-clean-cropfield-australia` | `wyvern_dragonette-003_20250319T000402_d5ebab06_l2a` | Dragonette-003 | 31 | 2025-03-19 | Victoria, Australia | Clean scene — 0% cloud/haze, 100% clear, 0 interpolated pixels → expected pass |
-| `02-wildfire-smoke-saskatchewan` | `wyvern_dragonette-003_20250531T173810_56fca26e_l2a` | Dragonette-003 | 31 | 2025-05-31 | N. Saskatchewan, Canada | Real quality issues — 62.3% cloud+smoke, past QA-3's 40% threshold → expected retry |
+| `02-wildfire-smoke-saskatchewan` | `wyvern_dragonette-003_20250531T173810_56fca26e_l2a` | Dragonette-003 | 31 | 2025-05-31 | N. Saskatchewan, Canada | Real quality issues — 62.3% cloud+smoke, past QA-3's 40% threshold → expected hold |
 | `03-copper-mine-chile` | `wyvern_dragonette-001_20240620T145630_2d5d0eef_l2a` | Dragonette-001 | 23 | 2024-06-20 | Atacama Desert, Chile | Industrial scene, 0% cloud → expected pass; exercises the 23-band platform spec |
 
 ## What's in each scene folder
