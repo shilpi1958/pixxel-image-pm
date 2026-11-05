@@ -54,6 +54,6 @@ band stack source: prior one-off pull, recorded in band_stack_analysis.json
   reasoning:        No QA rule failed. Scene is CLEAN.
   retry count:      0
   version:          v1
-  delivery ready:   True — Passed on all assessable rules and meets PRD section 6 conditions.
+  delivery ready:   True — Passed on all assessable rules and meets PRD section 5 conditions.
   NOT ASSESSED:     ['QA-5']
         Rule QA-5 (geometric_misalignment) could not be fully evaluated: geolocation_rmse_px; coreg_offset_px not available.

@@ -53,7 +53,7 @@
       "checks": [
         { "metric": "interpolated_pct", "op": "gt", "threshold": 2, "reasoning": "Dead/saturated (interpolated) pixel count exceeds 2% of total pixels" },
         { "metric": "full_band_dropout", "op": "eq", "threshold": true, "reasoning": "Any full-band dropout detected in the pixel quality mask" },
-        { "metric": "max_high_value_band_interpolated_pct", "op": "gt", "threshold": 0.1, "reasoning": "PRD §3: worst single red-edge band (711-782nm) exceeds the 0.1% ceiling — stricter than the scene-wide average because this range is the sensor's most information-dense region (PRD §8)" }
+        { "metric": "max_high_value_band_interpolated_pct", "op": "gt", "threshold": 0.1, "reasoning": "PRD §3: worst single red-edge band (711-782nm) exceeds the 0.1% ceiling — stricter than the scene-wide average because the PRD treats the red edge as the high-value range" }
       ]
     },
     {

@@ -141,7 +141,7 @@ def evaluate_rule(rule: dict, metrics: dict, scene: dict) -> dict:
 
 
 def decide(evaluations: list[dict], metrics: dict, scene: dict) -> dict:
-    """Synthesize the final decision from per-rule evaluations (PRD sections 3-4, 6).
+    """Synthesize the final decision from per-rule evaluations (PRD sections 3-5).
 
     Returns a decision record consumed by the triage agent / dashboard.
     """
@@ -176,7 +176,7 @@ def decide(evaluations: list[dict], metrics: dict, scene: dict) -> dict:
         and not scene.get("superseded", False)
     )
 
-    # PRD §6: partial (band-excluded) delivery — only when the SOLE failure is
+    # PRD §5: partial (band-excluded) delivery — only when the SOLE failure is
     # QA-4's band-isolable check, every other rule passes/n-a, and the customer
     # has opted in. Never applies to QA-3/5/6/7 failures: those aren't confined
     # to specific bands, so there's nothing coherent to exclude.
@@ -196,16 +196,16 @@ def decide(evaluations: list[dict], metrics: dict, scene: dict) -> dict:
 
     if delivery_ready_partial:
         delivery_ready_note = (
-            f"Partial delivery: bands {excluded_bands} excluded per PRD §6 "
+            f"Partial delivery: bands {excluded_bands} excluded per PRD §5 "
             "(customer has opted in to partial delivery)."
         )
     elif partial_eligible:
         delivery_ready_note = (
-            "Eligible for partial delivery per PRD §6, but scene['partial_delivery_opt_in'] "
+            "Eligible for partial delivery per PRD §5, but scene['partial_delivery_opt_in'] "
             "is not set — partial delivery is opt-in per customer agreement, not automatic."
         )
     elif delivery_ready:
-        delivery_ready_note = "Passed on all assessable rules and meets PRD section 6 conditions."
+        delivery_ready_note = "Passed on all assessable rules and meets PRD section 5 conditions."
     else:
         delivery_ready_note = "Not delivery ready — see decision/reasoning."
 

@@ -19,8 +19,8 @@ python3 -m http.server 8000
 - Also on the card: failure category, retry count, version, delivery-ready state
 - **Detail view** — preview, STAC facts, both real masks rendered, every QA metric
 - Also in detail view: full per-rule evaluation table with reasoning, not-assessed list
-- Also in detail view: delivery-ready state including `delivery_ready_partial`/`excluded_bands` (PRD §6), link to source files
-- **Per-scene findings** — the copper-mine scene's detail view includes a written note on its real sensor defect (679/699/711nm)
+- Also in detail view: delivery-ready state including `delivery_ready_partial`/`excluded_bands` (PRD §5), link to source files
+- **Per-scene findings** — the copper-mine scene's detail view includes a written note on its interpolated-pixel finding (bands 679/699/711nm)
 - Sourced from `dashboard/build_data.py`'s `SCENE_NOTES` — hand-written, kept separate from the rule engine's own decision output
 - Mask previews are pre-rendered PNGs from the real TIFFs (`dashboard/make_mask_previews.py`) since browsers can't render GeoTIFFs natively
 - Still real data, not synthetic

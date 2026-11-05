@@ -87,7 +87,7 @@ def run_scene(scene_dir: Path, rules: dict, cog_map: dict[str, Path]) -> dict:
         "reasoning": decision["reasoning"],
         "retry_count": decision["retry_count"],
         "version": "v1",
-        "version_note": "Initial assessment. A retry that re-runs processing with changed parameters creates a new version (PRD §5); an automated retry with identical parameters is the same version, new attempt.",
+        "version_note": "Initial assessment.",
         "delivery_ready": decision["delivery_ready"],
         "delivery_ready_note": decision["delivery_ready_note"],
         "not_assessed": decision["not_assessed"],

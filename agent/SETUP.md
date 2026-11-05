@@ -38,7 +38,7 @@ python3 -m venv .venv
 3. **`agent/qa_rules.py`** — the mechanical engine
    - Rules evaluated in order, first failure decides the outcome
    - `not_assessable` metrics never fail a rule
-   - Partial-delivery fields per PRD §6
+   - Partial-delivery fields per PRD §5
 4. **`agent/triage_agent.py`** — CLI orchestration, decisions.json + logs
 
 - Metrics the public catalog doesn't provide (geolocation RMSE, co-registration offset, AOI coverage, reflectance without a COG) are reported as **not assessable**

@@ -11,7 +11,7 @@ Outputs per scene in data/<scene>/:
                                   cloud-shadow=blue, clear=dark, outside scene=black
   * quality_mask_preview.png    — pixel quality mask: per-pixel count of bands that
                                   were interpolated, scaled 0..5+ (nearly black when
-                                  the sensor is healthy)
+                                  nothing is flagged)
 """
 
 from __future__ import annotations

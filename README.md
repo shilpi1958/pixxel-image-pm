@@ -14,10 +14,10 @@
 1. **Hands-on hyperspectral data fluency** — what a 23/31-band scene looks like, and what "quality" means for it
 2. **Vocabulary translation** — QA rules, retries, versioning, SLAs → L1B/L2A, cloud/quality masks, spectral bands, STAC catalogs
 
-## The centerpiece: a real sensor defect
+## The centerpiece: interpolated pixels in a clean scene
 
 - The copper-mine scene (Atacama Desert, Chile) is the deepest evidence in this repo
-- Atmospherically perfect — 0% cloud, 0% haze — but a real, localized sensor defect: 3 wavelength bands corrupted in a scan-line pattern
+- Atmospherically perfect — 0% cloud, 0% haze — but 3 wavelength bands each have a thin stripe of pixels that Wyvern's quality mask flags as interpolated (filled in, not measured)
 - The full 2.07 GB hyperspectral band stack was pulled for this scene and QA-6/QA-7 run against real reflectance values — the only scene assessed that deeply
 - Full writeup: [live dashboard](https://shilpi1958.github.io/pixxel-image-pm/dashboard/) → copper-mine scene detail view
 

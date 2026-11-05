@@ -1,6 +1,6 @@
 {
   "schema": "pixxel.qa.decisions.v1",
-  "generated_at": "2026-08-24T10:24:44.356750+00:00",
+  "generated_at": "2026-11-04T15:35:10.378237+00:00",
   "rules_source": "prd/qa-qc-prd.md \u00a72-\u00a74 (agent/rules.json)",
   "max_retries": 2,
   "scenes": [
@@ -171,7 +171,7 @@
               "threshold": 0.1,
               "op": "gt",
               "status": "pass",
-              "reasoning": "PRD \u00a73: worst single red-edge band (711-782nm) exceeds the 0.1% ceiling \u2014 stricter than the scene-wide average because this range is the sensor's most information-dense region (PRD \u00a78)"
+              "reasoning": "PRD \u00a73: worst single red-edge band (711-782nm) exceeds the 0.1% ceiling \u2014 stricter than the scene-wide average because the PRD treats the red edge as the high-value range"
             }
           ],
           "reasoning": "Rule QA-4 (sensor_artifact) passed: interpolated_pct=0.0 (threshold 2); full_band_dropout=False (threshold True); max_high_value_band_interpolated_pct=0.0 (threshold 0.1)"
@@ -258,9 +258,9 @@
       "reasoning": "No QA rule failed. Scene is CLEAN.",
       "retry_count": 0,
       "version": "v1",
-      "version_note": "Initial assessment. A retry that re-runs processing with changed parameters creates a new version (PRD \u00a75); an automated retry with identical parameters is the same version, new attempt.",
+      "version_note": "Initial assessment.",
       "delivery_ready": true,
-      "delivery_ready_note": "Passed on all assessable rules and meets PRD section 6 conditions.",
+      "delivery_ready_note": "Passed on all assessable rules and meets PRD section 5 conditions.",
       "not_assessed": [
         "QA-5",
         "QA-6",
@@ -439,7 +439,7 @@
               "threshold": 0.1,
               "op": "gt",
               "status": "pass",
-              "reasoning": "PRD \u00a73: worst single red-edge band (711-782nm) exceeds the 0.1% ceiling \u2014 stricter than the scene-wide average because this range is the sensor's most information-dense region (PRD \u00a78)"
+              "reasoning": "PRD \u00a73: worst single red-edge band (711-782nm) exceeds the 0.1% ceiling \u2014 stricter than the scene-wide average because the PRD treats the red edge as the high-value range"
             }
           ],
           "reasoning": "Rule QA-4 (sensor_artifact) passed: interpolated_pct=0.0 (threshold 2); full_band_dropout=False (threshold True); max_high_value_band_interpolated_pct=0.0 (threshold 0.1)"
@@ -526,7 +526,7 @@
       "reasoning": "Rule QA-3 (cloud_obstruction) fired: cloud_or_haze_pct=62.3 gt threshold=40 \u2192 FAIL",
       "retry_count": 1,
       "version": "v1",
-      "version_note": "Initial assessment. A retry that re-runs processing with changed parameters creates a new version (PRD \u00a75); an automated retry with identical parameters is the same version, new attempt.",
+      "version_note": "Initial assessment.",
       "delivery_ready": false,
       "delivery_ready_note": "Not delivery ready \u2014 see decision/reasoning.",
       "not_assessed": [
@@ -699,7 +699,7 @@
               "threshold": 0.1,
               "op": "gt",
               "status": "pass",
-              "reasoning": "PRD \u00a73: worst single red-edge band (711-782nm) exceeds the 0.1% ceiling \u2014 stricter than the scene-wide average because this range is the sensor's most information-dense region (PRD \u00a78)"
+              "reasoning": "PRD \u00a73: worst single red-edge band (711-782nm) exceeds the 0.1% ceiling \u2014 stricter than the scene-wide average because the PRD treats the red edge as the high-value range"
             }
           ],
           "reasoning": "Rule QA-4 (sensor_artifact) passed: interpolated_pct=0.0034 (threshold 2); full_band_dropout=False (threshold True); max_high_value_band_interpolated_pct=0.0263 (threshold 0.1)"
@@ -789,9 +789,9 @@
       "reasoning": "No QA rule failed. Scene is CLEAN.",
       "retry_count": 0,
       "version": "v1",
-      "version_note": "Initial assessment. A retry that re-runs processing with changed parameters creates a new version (PRD \u00a75); an automated retry with identical parameters is the same version, new attempt.",
+      "version_note": "Initial assessment.",
       "delivery_ready": true,
-      "delivery_ready_note": "Passed on all assessable rules and meets PRD section 6 conditions.",
+      "delivery_ready_note": "Passed on all assessable rules and meets PRD section 5 conditions.",
       "not_assessed": [
         "QA-5"
       ],

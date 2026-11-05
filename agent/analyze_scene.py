@@ -68,7 +68,7 @@ def load_stac_metadata(path: Path) -> dict:
 
 
 def high_value_band_indices(eo_bands: list[dict], lo_nm: float = 711, hi_nm: float = 782) -> list[int]:
-    """Indices of eo_bands whose center_wavelength falls in [lo_nm, hi_nm] (PRD §3/§8).
+    """Indices of eo_bands whose center_wavelength falls in [lo_nm, hi_nm] (PRD §3).
 
     Wavelength-based, not position-based: band count and ordering differ between
     the 23-band (Dragonette-001) and 31-band (Dragonette-002/003/004) platforms.

@@ -32,15 +32,15 @@
 
 | | `data_mask.tiff` | `pixel_quality_mask.tiff` |
 |---|---|---|
-| Answers | Is atmosphere blocking the view? | Did the sensor capture this pixel correctly, per wavelength? |
+| Answers | Is atmosphere blocking the view? | Which pixels, per wavelength, were filled in by interpolation? |
 | Layer count | Always 4 — fixed | Matches the scene's real band count (31 or 23) |
 | Layer meaning | 1 clear, 2 cloud, 3 haze, 4 cloud-shadow | One layer per wavelength |
-| Cause of a flag | Weather / atmosphere / lighting | Sensor hardware defect at that wavelength |
+| Cause of a flag | Weather / atmosphere / lighting | Interpolation of missing pixel rows (per Wyvern's release notes) |
 | PRD rule fed | QA-2, QA-3 | QA-4 |
 
 - `data_mask.tiff` stays at 4 layers — it's a derived classification *across* bands
 - `pixel_quality_mask.tiff` tracks each wavelength independently
-- That's why a defect can hit some bands and not others
+- That's why interpolation can affect some bands and not others
 
 ## Scoping: no full-resolution band stack mirrored by default
 

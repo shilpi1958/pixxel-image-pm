@@ -26,8 +26,8 @@ python3 -m venv .venv
 - **The data mask** — 4 layers, raw values, NoData; rendered as a 3D point cloud
 - **The valid footprint** — why every percentage excludes the empty border
 - **The four metrics, re-derived** — `band_count`, `cloud_or_haze_pct` (union!), `quality_mask_coverage_pct`, `interpolated_pct` (band-pixels!)
-- **Band-13/15/16 defect localization** — which bands, spatial range, why it's a scan-line signature; 3D point clouds (cropped and whole-scene)
-- **All metrics, all 3 scenes** — the exact table the rule engine works from
+- **Band-13/15/16 interpolated-pixel localization** — which bands, where, and that they form thin stripes rather than scattered noise; a top-down stripe map, a per-band bar chart, and a true-scale proportion bar
+- **All metrics, all 3 scenes** — the same metrics the rule engine works from
 - **`rules.json`** — the PRD as data
 - **Run the real rule engine** — verify decisions match `agent/decisions.json`
 - **Band-aware QA-4 and partial delivery** — the copper-mine scene's per-band and partial-delivery fields, computed live

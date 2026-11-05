@@ -35,12 +35,11 @@ RULE_LABELS = {
 # where a specific finding is worth surfacing. Keyed by folder name.
 SCENE_NOTES = {
     "03-copper-mine-chile": [
-        "Real finding from this project: interpolated (sensor-estimated, not measured) pixels "
-        "appear only in bands 13/15/16 (679/699/711nm) — the red / red-edge boundary, the sensor's "
-        "most information-dense region (see PRD §8)",
-        "Spatially the defect is confined to ~10% of image height but spans ~71% of image width — "
-        "a scan-line signature consistent with a transient sensor glitch during one stretch of the "
-        "pushbroom sweep, not scattered noise or a permanently dead detector",
+        "Real finding from this project: pixels flagged as interpolated in Wyvern's pixel quality "
+        "mask appear only in bands 13/15/16 (679/699/711nm) — the red / red-edge boundary",
+        "Each band's flagged pixels form a thin diagonal stripe (~10% of image height, ~71% of width), "
+        "at different rows per band — ~31% of image height combined. Not scattered noise; consistent "
+        "with missing scan lines, which Wyvern says it fills by interpolation (cause not confirmed)",
     ],
 }
 
@@ -49,7 +48,7 @@ METRIC_LABELS = {
     "aoi_coverage_pct": "AOI coverage %",
     "quality_mask_coverage_pct": "Quality-mask coverage of scene footprint %",
     "cloud_or_haze_pct": "Cloud + haze (smoke) % of valid pixels",
-    "interpolated_pct": "Interpolated (dead/saturated) pixels %",
+    "interpolated_pct": "Interpolated pixels % (of band-pixels)",
     "full_band_dropout": "Full-band dropout",
     "max_high_value_band_interpolated_pct": "Worst red-edge band (711-782nm) interpolated %",
     "geolocation_rmse_px": "Geolocation RMSE (px)",
@@ -67,7 +66,7 @@ DATA_SOURCES = [
     ("imagery", "Imagery", "RGB preview + thumbnail", ["preview.png", "thumbnail.png"]),
     ("stac", "Metadata", "STAC metadata (platform, bands, cloud cover, geometry)", ["stac_metadata.json", "item.json"]),
     ("data_mask", "Data mask", "Usable-data mask (cloud/haze/shadow, real TIFF)", ["data_mask.tiff"]),
-    ("quality_mask", "Quality mask", "Pixel quality mask (dead/interpolated pixels, real TIFF)", ["pixel_quality_mask.tiff"]),
+    ("quality_mask", "Quality mask", "Pixel quality mask (interpolated pixels per band, real TIFF)", ["pixel_quality_mask.tiff"]),
     ("band_stack", "Band stack", "Full band-stack reflectance pull (QA-6/QA-7 spot-checked against real values)", ["band_stack_analysis.json"]),
 ]
 

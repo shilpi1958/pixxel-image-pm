@@ -110,7 +110,7 @@ Delivery ready requires:
 | `band_count` | QA-1 | Number of spectral bands in the pixel quality mask, checked against the platform's expected count |
 | `cloud_or_haze_pct` | QA-3 | % of the scene's valid footprint flagged cloud **or** haze/smoke in `data_mask.tiff` (union, not sum — a pixel flagged both counts once) |
 | `quality_mask_coverage_pct` | QA-2 | % of the scene's valid footprint that also has a value in `pixel_quality_mask.tiff` — below 100% means the quality mask is missing, shifted, or truncated |
-| `interpolated_pct` | QA-4 | % of band-pixels (pixels × bands, not just pixels) flagged as sensor-estimated rather than measured, scene-wide |
+| `interpolated_pct` | QA-4 | % of band-pixels (pixels × bands, not just pixels) flagged as interpolated in the pixel quality mask, scene-wide |
 | `max_high_value_band_interpolated_pct` | QA-4 | Same idea as `interpolated_pct`, but for the single worst red-edge (711–782nm) band alone — catches a defect concentrated in a few bands that a scene-wide average would dilute |
 | `band_corr_mean` | QA-7 | Mean correlation between adjacent spectral bands, scene-wide — low values mean the reflectance data is internally inconsistent |
 | `band_corr_min_tile` | QA-7 | Same correlation check, but the worst of an 8×8 grid of spatial tiles — catches a localized inconsistency a scene-wide mean would hide |
