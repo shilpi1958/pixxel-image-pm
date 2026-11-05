@@ -175,7 +175,7 @@
   <div class="footer">
     Practice project for the Image Product Manager role · real imagery from
     <a class="link" href="https://wyvern.space/open-data/" target="_blank">Wyvern's Open Data Program</a> (CC BY 4.0) ·
-    no placeholder data — every number traces to files in <span class="meta-line" style="display:inline">data/</span> and <span class="meta-line" style="display:inline">agent/decisions.json</span>.
+    no placeholder data (QA thresholds are placeholders, not Pixxel's) — every number traces to files in <span class="meta-line" style="display:inline">data/</span> and <span class="meta-line" style="display:inline">agent/decisions.json</span>.
   </div>
 
   <script src="data.js"></script>
@@ -278,7 +278,6 @@
               <span>platform <b>${esc(s.platform)}</b></span>
               <span>${esc((s.datetime || "").slice(0, 10))}</span>
               <span title="${levelTitle(s.processing_level)}">${esc(s.processing_level)}</span>
-              <span>${esc(s.version)}</span>
             </div>
             <div class="row" style="margin-top:12px">
               <span>
@@ -306,7 +305,8 @@
         const cls = c.status === "fail" ? "c-fail" : "";
         const obs = c.observed === null || c.observed === undefined ? "—" : c.observed;
         const thr = c.threshold === null || c.threshold === undefined ? "—" : c.threshold;
-        return `<div class="${cls}">${esc(c.metric)}: observed ${obs} ${c.op || ""} threshold ${thr} → ${c.status}</div>`;
+        const sym = {gt: ">", lt: "<", eq: "=", ge: "≥", le: "≤"}[c.op] || c.op || "";
+        return `<div class="${cls}">${esc(c.metric)}: ${obs} (fails if ${sym} ${thr}) → ${c.status}</div>`;
       }).join("");
       return `<tr>
         <td class="mono">${r.rule_id}</td>
@@ -321,7 +321,6 @@
       const metrics = s.metrics.map((m) =>
         `<tr><td>${esc(m.label)}</td><td class="mono">${fmt(m.value)}</td></tr>`).join("");
       const rules = s.rules.map(ruleRow).join("");
-      const notAssessed = (s.not_assessed_detail || []).map((d) => `<li>${esc(d)}</li>`).join("");
       $("#detail").innerHTML = `
         <button class="close" onclick="closeDetail()">✕ close</button>
         <h2>${esc(s.role)}</h2>
@@ -338,13 +337,13 @@
           </div>
         </div>
         <div class="note">
-          Version ${esc(s.version)} · retry count ${s.retry_count} ·
-          delivery ready: <b>${s.delivery_ready ? "yes" : s.delivery_ready_partial ? "partial" : "no"}</b> — ${esc(s.delivery_ready_note)}
+          Retry count ${s.retry_count} ·
+          delivery ready: <b>${s.delivery_ready ? "yes" : s.delivery_ready_partial ? "partial" : "no"}</b>${(s.delivery_ready || s.delivery_ready_partial) ? " — " + esc(s.delivery_ready_note) : " — held"}
           ${s.excluded_bands && s.excluded_bands.length ? `<br>excluded bands (indices): <span class="mono">${esc(s.excluded_bands.join(", "))}</span>` : ""}
         </div>
 
         <section>
-          <h4>Rasters — real TIFFs rendered</h4>
+          <h4>Masks</h4>
           <div style="display:flex;gap:14px;flex-wrap:wrap">
             <figure style="flex:1 1 260px;min-width:220px">
               <img class="preview" style="max-height:300px" src="${s.data_mask_preview}" alt="usable data mask of ${s.scene_id}">
@@ -354,28 +353,28 @@
             </figure>
             <figure style="flex:1 1 260px;min-width:220px">
               <img class="preview" style="max-height:300px" src="${s.quality_mask_preview}" alt="pixel quality mask of ${s.scene_id}">
-              <figcaption class="meta-line">Pixel quality mask — brightness = bands interpolated
-              · black = not flagged</figcaption>
+              <figcaption class="meta-line">Pixel quality mask — <span style="color:#ff3cdc">interpolated (any band)</span> ·
+              dark = healthy · black = outside scene</figcaption>
             </figure>
           </div>
         </section>
 
-        ${s.scene_note && s.scene_note.length ? `<section><h4>Finding — worth reading</h4><ul style="margin-left:18px;font-size:13px;color:var(--text);display:flex;flex-direction:column;gap:6px">${s.scene_note.map((n) => `<li>${esc(n)}</li>`).join("")}</ul></section>` : ""}
+        ${s.scene_note && s.scene_note.length ? `<section><h4>Finding</h4><ul style="margin-left:18px;font-size:13px;color:var(--text);display:flex;flex-direction:column;gap:6px">${s.scene_note.map((n) => `<li>${esc(n)}</li>`).join("")}</ul></section>` : ""}
 
         <section>
           <h4>Scene facts</h4>
           <table class="grid">
             <tr><th>Platform</th><td class="mono">${esc(s.platform)} (${esc(s.expected_bands)} expected bands)</td></tr>
-            <tr><th>Acquired</th><td class="mono">${esc(s.datetime)}</td></tr>
+            <tr><th>Acquired</th><td class="mono">${esc((s.datetime || "").replace("T", " ").slice(0, 19))} UTC</td></tr>
             <tr><th>Processing</th><td class="mono" title="${levelTitle(s.processing_level)}">${esc(s.processing_level)} · v${esc(s.processing_version || "?")}</td></tr>
             <tr><th>STAC cloud cover</th><td class="mono">${fmt(s.stac_cloud_cover_pct)}%</td></tr>
-            <tr><th>GSD</th><td class="mono">${fmt(s.gsd_m)} m</td></tr>
-            <tr><th>Source files</th><td class="mono"><a class="link" href="${s.data_dir}" target="_blank">${esc(s.data_dir)}</a></td></tr>
+            <tr><th>Pixel size (GSD)</th><td class="mono">${fmt(s.gsd_m)} m</td></tr>
+            <tr><th>Source files</th><td class="mono"><a class="link" href="https://github.com/shilpi1958/pixxel-image-pm/tree/main/data/${esc(s.folder)}" target="_blank">data/${esc(s.folder)}/</a></td></tr>
           </table>
         </section>
 
         <section>
-          <h4>QA metrics (from real masks + metadata)</h4>
+          <h4>QA metrics</h4>
           <table class="grid">${metrics}</table>
         </section>
 
@@ -388,7 +387,6 @@
           </table>
         </section>
 
-        ${notAssessed ? `<section><h4>Not assessed in this run</h4><ul style="margin-left:18px;color:var(--muted);font-size:13px">${notAssessed}</ul></section>` : ""}
       `;
       $("#overlay").classList.add("open");
     }

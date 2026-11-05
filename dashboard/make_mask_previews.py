@@ -9,9 +9,9 @@ visualization of the real raster — nothing is synthesized.
 Outputs per scene in data/<scene>/:
   * data_mask_preview.png       — usable-data mask: cloud=red, haze/smoke=green,
                                   cloud-shadow=blue, clear=dark, outside scene=black
-  * quality_mask_preview.png    — pixel quality mask: per-pixel count of bands that
-                                  were interpolated, scaled 0..5+ (nearly black when
-                                  nothing is flagged)
+  * quality_mask_preview.png    — pixel quality mask: magenta where any band is
+                                  interpolated, dark grey = healthy footprint,
+                                  black = outside scene
 """
 
 from __future__ import annotations
@@ -57,22 +57,29 @@ def render_data_mask(path: Path, width: int) -> np.ndarray:
     return rgb
 
 
+def _block_any(mask: np.ndarray, f: int) -> np.ndarray:
+    # True if any pixel in each f×f block is True — unlike striding, a sparse
+    # defect can't fall between the sampled pixels and vanish from the preview
+    h, w = mask.shape[0] // f * f, mask.shape[1] // f * f
+    return mask[:h, :w].reshape(h // f, f, w // f, f).any(axis=(1, 3))
+
+
 def render_quality_mask(path: Path, width: int) -> np.ndarray:
     pq = _read_bands_last(path)
-    f = max(1, pq.shape[1] // width)
-    pq = pq[::f, ::f, :]
-    h, w = pq.shape[:2]
+    # coarser blocks than the data mask: the page shows this at ~300px tall,
+    # so a block per preview pixel keeps single flagged pixels visible
+    f = max(1, pq.shape[1] // (width // 2))
 
-    interp_per_pixel = (pq == 1).sum(axis=-1).astype(np.float32)  # 0..n_bands
-    anyd = np.any(pq != 255, axis=-1)
+    flagged = _block_any(np.any(pq == 1, axis=-1), f)
+    anyd = _block_any(np.any(pq != 255, axis=-1), f)
+    # grow flags by 1px so a one-row defect stripe survives the browser's downscale
+    flagged = flagged | np.roll(flagged, 1, 0) | np.roll(flagged, -1, 0)
 
-    # 0 interpolated bands -> black; 5+ -> bright magenta/white
-    scaled = np.clip(interp_per_pixel / 5.0, 0, 1)
-    rgb = np.zeros((h, w, 3), dtype=np.uint8)
-    rgb[..., 0] = (255 * scaled).astype(np.uint8)
-    rgb[..., 1] = (120 * scaled).astype(np.uint8)
-    rgb[..., 2] = (255 * scaled).astype(np.uint8)
-    rgb[~anyd] = (0, 0, 0)
+    # healthy footprint = dark grey (same as the data mask's clear),
+    # any interpolated band in the block = bright magenta, outside scene = black
+    rgb = np.zeros(flagged.shape + (3,), dtype=np.uint8)
+    rgb[anyd] = (24, 24, 26)
+    rgb[flagged] = (255, 60, 220)
     return rgb
 
 
