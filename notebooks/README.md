@@ -19,7 +19,7 @@ python3 -m venv .venv
 - Launching Jupyter from the venv picks up the right Python automatically
 - The notebook locates the repo root whether started from the root or from `notebooks/`
 
-## What's inside (37 cells)
+## What's inside (36 cells)
 
 - **Setup** — imports, path detection, scene discovery
 - **Inspect one scene** — the files QA actually reads

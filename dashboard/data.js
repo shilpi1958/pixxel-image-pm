@@ -963,7 +963,7 @@ window.PIXXEL_DATA = {
       "data_dir": "../data/03-copper-mine-chile/",
       "scene_note": [
         "Real finding from this project: pixels flagged as interpolated in Wyvern's pixel quality mask appear only in bands 13/15/16 (679/699/711nm) \u2014 the red / red-edge boundary",
-        "Each band's flagged pixels form a thin diagonal stripe (~10% of image height, ~71% of width), at different rows per band \u2014 ~31% of image height combined. Not scattered noise; consistent with missing scan lines, which Wyvern says it fills by interpolation (cause not confirmed)"
+        "Each band's flagged pixels form one thin diagonal stripe running edge to edge across the scene, at different rows per band (~31% of image height combined). Not scattered noise; consistent with missing scan lines, which Wyvern says it fills by interpolation (cause not confirmed)"
       ],
       "data_inventory": [
         {
