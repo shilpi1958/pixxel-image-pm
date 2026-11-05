@@ -8,6 +8,8 @@ window.PIXXEL_DATA = {
   "summary": {
     "pass": 2,
     "retry": 1,
+    "hold": 0,
+    "retask": 0,
     "escalate": 0
   },
   "scenes": [
@@ -183,7 +185,7 @@ window.PIXXEL_DATA = {
         {
           "rule_id": "QA-3",
           "name": "Cloud/haze obstruction",
-          "anchor": "PRD \u00a73 QA-3 \u2014 retry (re-task if > 80%)",
+          "anchor": "PRD \u00a73 QA-3 \u2014 hold (> 40%), re-task (> 80%)",
           "status": "pass",
           "category": "CLOUD",
           "routing": "retry",
@@ -303,8 +305,8 @@ window.PIXXEL_DATA = {
           ]
         }
       ],
-      "preview": "../data/01-clean-cropfield-australia/preview.png?v=5bf48bd4",
-      "thumbnail": "../data/01-clean-cropfield-australia/thumbnail.png?v=a6658958",
+      "preview": "../data/01-clean-cropfield-australia/preview_web.jpg?v=43776e10",
+      "thumbnail": "../data/01-clean-cropfield-australia/thumbnail_web.jpg?v=d2e975d7",
       "data_mask_preview": "../data/01-clean-cropfield-australia/data_mask_preview.png?v=181eec79",
       "quality_mask_preview": "../data/01-clean-cropfield-australia/quality_mask_preview.png?v=9c22a53d",
       "data_dir": "../data/01-clean-cropfield-australia/",
@@ -514,7 +516,7 @@ window.PIXXEL_DATA = {
         {
           "rule_id": "QA-3",
           "name": "Cloud/haze obstruction",
-          "anchor": "PRD \u00a73 QA-3 \u2014 retry (re-task if > 80%)",
+          "anchor": "PRD \u00a73 QA-3 \u2014 hold (> 40%), re-task (> 80%)",
           "status": "fail",
           "category": "CLOUD",
           "routing": "retry",
@@ -634,8 +636,8 @@ window.PIXXEL_DATA = {
           ]
         }
       ],
-      "preview": "../data/02-wildfire-smoke-saskatchewan/preview.png?v=8c75bb2c",
-      "thumbnail": "../data/02-wildfire-smoke-saskatchewan/thumbnail.png?v=815ae758",
+      "preview": "../data/02-wildfire-smoke-saskatchewan/preview_web.jpg?v=da57c825",
+      "thumbnail": "../data/02-wildfire-smoke-saskatchewan/thumbnail_web.jpg?v=06e20202",
       "data_mask_preview": "../data/02-wildfire-smoke-saskatchewan/data_mask_preview.png?v=c9b550f7",
       "quality_mask_preview": "../data/02-wildfire-smoke-saskatchewan/quality_mask_preview.png?v=3c714789",
       "data_dir": "../data/02-wildfire-smoke-saskatchewan/",
@@ -833,7 +835,7 @@ window.PIXXEL_DATA = {
         {
           "rule_id": "QA-3",
           "name": "Cloud/haze obstruction",
-          "anchor": "PRD \u00a73 QA-3 \u2014 retry (re-task if > 80%)",
+          "anchor": "PRD \u00a73 QA-3 \u2014 hold (> 40%), re-task (> 80%)",
           "status": "pass",
           "category": "CLOUD",
           "routing": "retry",
@@ -956,8 +958,8 @@ window.PIXXEL_DATA = {
           ]
         }
       ],
-      "preview": "../data/03-copper-mine-chile/preview.png?v=2d5581ee",
-      "thumbnail": "../data/03-copper-mine-chile/thumbnail.png?v=b9c9471e",
+      "preview": "../data/03-copper-mine-chile/preview_web.jpg?v=8e1c6ad2",
+      "thumbnail": "../data/03-copper-mine-chile/thumbnail_web.jpg?v=0160c8f5",
       "data_mask_preview": "../data/03-copper-mine-chile/data_mask_preview.png?v=d6a95fb0",
       "quality_mask_preview": "../data/03-copper-mine-chile/quality_mask_preview.png?v=d396faf7",
       "data_dir": "../data/03-copper-mine-chile/",

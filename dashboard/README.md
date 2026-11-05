@@ -23,6 +23,7 @@ python3 -m http.server 8000
 - **Per-scene findings** — the copper-mine scene's detail view includes a written note on its interpolated-pixel finding (bands 679/699/711nm)
 - Sourced from `dashboard/build_data.py`'s `SCENE_NOTES` — hand-written, kept separate from the rule engine's own decision output
 - Mask previews are pre-rendered PNGs from the real TIFFs (`dashboard/make_mask_previews.py`) since browsers can't render GeoTIFFs natively
+- The scene preview and thumbnail load as small JPEG copies (`dashboard/make_web_images.py` → `preview_web.jpg`, `thumbnail_web.jpg`, a few hundred KB) instead of the 7–20 MB originals, which stay in `data/`
 - Still real data, not synthetic
 
 ## Regenerating after a re-run of the rule engine

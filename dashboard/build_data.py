@@ -25,7 +25,7 @@ ROOT = Path(__file__).resolve().parent
 RULE_LABELS = {
     "QA-1": ("Incomplete data", "PRD §3 QA-1 — escalate"),
     "QA-2": ("Quality mask gap", "PRD §3 QA-2 — escalate"),
-    "QA-3": ("Cloud/haze obstruction", "PRD §3 QA-3 — retry (re-task if > 80%)"),
+    "QA-3": ("Cloud/haze obstruction", "PRD §3 QA-3 — hold (> 40%), re-task (> 80%)"),
     "QA-4": ("Sensor artifact", "PRD §3 QA-4 — escalate"),
     "QA-5": ("Geometric misalignment", "PRD §3 QA-5 — retry"),
     "QA-6": ("Radiometric bounds", "PRD §3 QA-6 — retry"),
@@ -49,6 +49,7 @@ METRIC_LABELS = {
     "band_count": "Band count",
     "aoi_coverage_pct": "AOI coverage %",
     "quality_mask_coverage_pct": "Quality-mask coverage of scene footprint %",
+    "aoi_cloud_or_haze_pct": "Cloud + haze (smoke) % of tasked AOI",
     "cloud_or_haze_pct": "Cloud + haze (smoke) % of valid pixels",
     "interpolated_pct": "Interpolated pixels % (of band-pixels)",
     "full_band_dropout": "Full-band dropout",
@@ -135,8 +136,8 @@ def build(decisions_path: Path, data_root: Path, out_path: Path) -> None:
                 }
                 for r in s["rules"]
             ],
-            "preview": image_url(data_root, s["folder"], "preview.png"),
-            "thumbnail": image_url(data_root, s["folder"], "thumbnail.png"),
+            "preview": image_url(data_root, s["folder"], "preview_web.jpg"),
+            "thumbnail": image_url(data_root, s["folder"], "thumbnail_web.jpg"),
             "data_mask_preview": image_url(data_root, s["folder"], "data_mask_preview.png"),
             "quality_mask_preview": image_url(data_root, s["folder"], "quality_mask_preview.png"),
             "data_dir": f"../data/{s['folder']}/",
@@ -153,6 +154,8 @@ def build(decisions_path: Path, data_root: Path, out_path: Path) -> None:
         "summary": {
             "pass": sum(1 for s in scenes if s["decision"] == "pass"),
             "retry": sum(1 for s in scenes if s["decision"] == "retry"),
+            "hold": sum(1 for s in scenes if s["decision"] == "hold"),
+            "retask": sum(1 for s in scenes if s["decision"] == "retask"),
             "escalate": sum(1 for s in scenes if s["decision"] == "escalate"),
         },
         "scenes": scenes,
