@@ -68,7 +68,7 @@ DATA_SOURCES = [
     ("stac", "Metadata", "STAC metadata (platform, bands, cloud cover, geometry)", ["stac_metadata.json", "item.json"]),
     ("data_mask", "Data mask", "Usable-data mask (cloud/haze/shadow, real TIFF)", ["data_mask.tiff"]),
     ("quality_mask", "Quality mask", "Pixel quality mask (interpolated pixels per band, real TIFF)", ["pixel_quality_mask.tiff"]),
-    ("band_stack", "Band stack", "Full band-stack reflectance pull (QA-6/QA-7 spot-checked against real values)", ["band_stack_analysis.json"]),
+    ("band_stack", "Band-stack results", "Numbers from a one-off pull of the full band-stack image (the ~2 GB file itself isn't stored); used for QA-6/QA-7", ["band_stack_analysis.json"]),
 ]
 
 

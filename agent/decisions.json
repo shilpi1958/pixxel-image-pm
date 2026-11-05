@@ -1,6 +1,6 @@
 {
   "schema": "pixxel.qa.decisions.v1",
-  "generated_at": "2026-11-04T15:35:10.378237+00:00",
+  "generated_at": "2026-11-05T07:06:23.440248+00:00",
   "rules_source": "prd/qa-qc-prd.md \u00a72-\u00a74 (agent/rules.json)",
   "max_retries": 2,
   "scenes": [
@@ -92,7 +92,7 @@
           ],
           "status": "not_applicable",
           "checks": [],
-          "reasoning": "Rule QA-1 applies to ['L1B']; scene is L2A \u2014 not evaluated at this processing level."
+          "reasoning": "Rule QA-1 applies at L1B; scene is L2A \u2014 not evaluated at this processing level."
         },
         {
           "rule_id": "QA-2",
@@ -360,7 +360,7 @@
           ],
           "status": "not_applicable",
           "checks": [],
-          "reasoning": "Rule QA-1 applies to ['L1B']; scene is L2A \u2014 not evaluated at this processing level."
+          "reasoning": "Rule QA-1 applies at L1B; scene is L2A \u2014 not evaluated at this processing level."
         },
         {
           "rule_id": "QA-2",
@@ -620,7 +620,7 @@
           ],
           "status": "not_applicable",
           "checks": [],
-          "reasoning": "Rule QA-1 applies to ['L1B']; scene is L2A \u2014 not evaluated at this processing level."
+          "reasoning": "Rule QA-1 applies at L1B; scene is L2A \u2014 not evaluated at this processing level."
         },
         {
           "rule_id": "QA-2",

@@ -71,7 +71,7 @@ def evaluate_rule(rule: dict, metrics: dict, scene: dict) -> dict:
             "level": rule["levels"],
             "status": "not_applicable",
             "checks": [],
-            "reasoning": f"Rule {rule['id']} applies to {rule['levels']}; scene is {level} — not evaluated at this processing level.",
+            "reasoning": f"Rule {rule['id']} applies at {'/'.join(rule['levels'])}; scene is {level} — not evaluated at this processing level.",
         }
 
     check_results = []
