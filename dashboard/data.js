@@ -303,10 +303,10 @@ window.PIXXEL_DATA = {
           ]
         }
       ],
-      "preview": "../data/01-clean-cropfield-australia/preview.png",
-      "thumbnail": "../data/01-clean-cropfield-australia/thumbnail.png",
-      "data_mask_preview": "../data/01-clean-cropfield-australia/data_mask_preview.png",
-      "quality_mask_preview": "../data/01-clean-cropfield-australia/quality_mask_preview.png",
+      "preview": "../data/01-clean-cropfield-australia/preview.png?v=5bf48bd4",
+      "thumbnail": "../data/01-clean-cropfield-australia/thumbnail.png?v=a6658958",
+      "data_mask_preview": "../data/01-clean-cropfield-australia/data_mask_preview.png?v=181eec79",
+      "quality_mask_preview": "../data/01-clean-cropfield-australia/quality_mask_preview.png?v=9c22a53d",
       "data_dir": "../data/01-clean-cropfield-australia/",
       "scene_note": null,
       "data_inventory": [
@@ -634,10 +634,10 @@ window.PIXXEL_DATA = {
           ]
         }
       ],
-      "preview": "../data/02-wildfire-smoke-saskatchewan/preview.png",
-      "thumbnail": "../data/02-wildfire-smoke-saskatchewan/thumbnail.png",
-      "data_mask_preview": "../data/02-wildfire-smoke-saskatchewan/data_mask_preview.png",
-      "quality_mask_preview": "../data/02-wildfire-smoke-saskatchewan/quality_mask_preview.png",
+      "preview": "../data/02-wildfire-smoke-saskatchewan/preview.png?v=8c75bb2c",
+      "thumbnail": "../data/02-wildfire-smoke-saskatchewan/thumbnail.png?v=815ae758",
+      "data_mask_preview": "../data/02-wildfire-smoke-saskatchewan/data_mask_preview.png?v=c9b550f7",
+      "quality_mask_preview": "../data/02-wildfire-smoke-saskatchewan/quality_mask_preview.png?v=3c714789",
       "data_dir": "../data/02-wildfire-smoke-saskatchewan/",
       "scene_note": null,
       "data_inventory": [
@@ -956,10 +956,10 @@ window.PIXXEL_DATA = {
           ]
         }
       ],
-      "preview": "../data/03-copper-mine-chile/preview.png",
-      "thumbnail": "../data/03-copper-mine-chile/thumbnail.png",
-      "data_mask_preview": "../data/03-copper-mine-chile/data_mask_preview.png",
-      "quality_mask_preview": "../data/03-copper-mine-chile/quality_mask_preview.png",
+      "preview": "../data/03-copper-mine-chile/preview.png?v=2d5581ee",
+      "thumbnail": "../data/03-copper-mine-chile/thumbnail.png?v=b9c9471e",
+      "data_mask_preview": "../data/03-copper-mine-chile/data_mask_preview.png?v=d6a95fb0",
+      "quality_mask_preview": "../data/03-copper-mine-chile/quality_mask_preview.png?v=d396faf7",
       "data_dir": "../data/03-copper-mine-chile/",
       "scene_note": [
         "Real finding from this project: pixels flagged as interpolated in Wyvern's pixel quality mask appear only in bands 13/15/16 (679/699/711nm) \u2014 the red / red-edge boundary",

@@ -14,6 +14,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -80,6 +81,16 @@ def data_inventory(data_dir: Path) -> list[dict]:
     return inventory
 
 
+def image_url(data_root: Path, folder: str, name: str) -> str:
+    # ?v=<content hash> so a regenerated image gets a new URL — GitHub Pages
+    # serves images with a 10-minute browser cache, which otherwise shows the old one
+    path = data_root / folder / name
+    url = f"../data/{folder}/{name}"
+    if path.exists():
+        url += "?v=" + hashlib.sha1(path.read_bytes()).hexdigest()[:8]
+    return url
+
+
 def build(decisions_path: Path, data_root: Path, out_path: Path) -> None:
     decisions = json.loads(decisions_path.read_text())
     scenes = []
@@ -124,10 +135,10 @@ def build(decisions_path: Path, data_root: Path, out_path: Path) -> None:
                 }
                 for r in s["rules"]
             ],
-            "preview": f"../data/{s['folder']}/preview.png",
-            "thumbnail": f"../data/{s['folder']}/thumbnail.png",
-            "data_mask_preview": f"../data/{s['folder']}/data_mask_preview.png",
-            "quality_mask_preview": f"../data/{s['folder']}/quality_mask_preview.png",
+            "preview": image_url(data_root, s["folder"], "preview.png"),
+            "thumbnail": image_url(data_root, s["folder"], "thumbnail.png"),
+            "data_mask_preview": image_url(data_root, s["folder"], "data_mask_preview.png"),
+            "quality_mask_preview": image_url(data_root, s["folder"], "quality_mask_preview.png"),
             "data_dir": f"../data/{s['folder']}/",
             "scene_note": SCENE_NOTES.get(s["folder"]),
             "data_inventory": data_inventory(data_root / s["folder"]),
