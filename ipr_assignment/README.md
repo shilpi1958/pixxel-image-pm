@@ -2,6 +2,8 @@
 
 Repo copies of every deliverable. Each doc is a Markdown export of its claude.ai artifact as of 8 Nov 2026; the artifact link is the live version.
 
+All of it in one page: [IPR_Submission.html](IPR_Submission.html) (open in a browser; [live artifact](https://claude.ai/artifact/BBpD6yqokL7aBGAYBJN71q)).
+
 | # | Deliverable | File | Live artifact |
 | --- | --- | --- | --- |
 | 0 | Submission index | [docs/00_submission.md](docs/00_submission.md) | [link](https://claude.ai/artifact/YERCxxAoFTdiiqDmm6uJEC) |
