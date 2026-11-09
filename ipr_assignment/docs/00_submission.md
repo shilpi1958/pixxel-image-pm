@@ -18,17 +18,10 @@ Nov 7, 2026 · @Sj
 - [IPR Data Cleaning Rules](https://claude.ai/artifact/55PXGiyx3VkYovwm47s61s): every cleaning decision, with counts.
 - **IPR\_Cleaned\_Data.xlsx** (attached): the cleaned data, one row per image attempt. It includes a column guide and a log of every changed cell.
 
-## In short
-
-- **58% of processable images were on time** (52 of 89), and **no P0 met its 8h SLA** (0 of 8).
-- **28 images are late,** most by more than two weeks. 5 only need a release (2 more passed QC but have a stuck run); 8 are held for a bright-banding (BBR) defect.
-- **Every priority takes about the same time** (median 9–12h), so urgent orders get no faster path.
-- **QC may not gate delivery:** 74% of attempts were released before QC started (still to confirm with IPR / QA), and QC review can't be timed.
-
 ## Key assumptions
 
 - **One row per image:** the latest valid attempt. 136 export rows → 95 images, 89 of them processable.
-- **Delivered** = passed QC and released. Released without a QC pass doesn't count.
+- **Delivered** = passed QC and uploaded. Uploaded without a QC pass doesn't count.
 - **SLA** runs from acquisition, locked to the attempt-1 priority.
 - **"Now"** = 30 Jun 2026 16:06 UTC, the latest timestamp in the export (it has no pull time).
 - **Step targets** (share of the SLA window) are my proposal, still to be agreed with Engineering and QA.

@@ -6,10 +6,10 @@ To Customer Success, for a delayed high-priority image: UrbanAtlas.
 
 **For CS (internal, don't forward):** UrbanAtlas (Tier 1) has two late P0 images over Dubai Urban, and they have already asked for an update.
 
-- **FF01\_20260601\_1084\_DUBAI** (acquired 1 Jun): passed quality checks but was never released. Release is planned for today.
+- **FF01\_20260601\_1084\_DUBAI** (acquired 1 Jun): passed quality checks but was never delivered. Delivery is planned for today.
 - **FF02\_20260605\_1088\_DUBAI** (acquired 5 Jun): first in the QC queue for a decision. If it passes, it ships the same day; if it fails, it needs reprocessing and we'll give a new date.
 
-One message covers both. Send it once the first image is actually released. Don't share image IDs, internal step names, or a date for the second image until QC has decided.
+One message covers both. Send it once the first image is actually delivered. Don't share image IDs, internal step names, or a date for the second image until QC has decided.
 
 **Message to the customer:**
 

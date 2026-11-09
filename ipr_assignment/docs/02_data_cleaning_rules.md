@@ -114,7 +114,7 @@ Where it disagrees with the other fields (valid attempts):
 | --- | --- | --- |
 | Manual QC pending | QC Result = Pass | 10 |
 | Done / Complete / L2A Passed | QC still Pending | 8 |
-| DataHub upload complete | QC still Pending (released without a pass) | 2 |
+| DataHub upload complete | QC still Pending (uploaded without a pass) | 2 |
 | L2A Passed / Complete / Sent to Aurora | No Processing End (stuck) | 3 |
 | Stuck in queue | Processing finished | 2 |
 
@@ -205,7 +205,8 @@ Only unexplained blanks are gaps (26 of 130 attempt rows). Gaps are never filled
 ## Rule 7: Naming
 
 - **QC** = per-image review; **QA** = process quality (metrics only).
-- Renamed: QA Assigned → QC Start (assumed; may be a post-release QA audit), Manual QC Status → QC Result, Image Priority / Deadline → SLA Priority / Deadline, Failure Category → QC Finding.
+- Renamed: QA Assigned → QC Start (assumed; may be a post-upload QA audit), Manual QC Status → QC Result, Image Priority / Deadline → SLA Priority / Deadline, Failure Category → QC Finding.
+- **Upload** = sent to DataHub (DataHub Upload); **Delivered** = passed QC and uploaded. "Release" is not used. Column_Map wording for QC Start and DataHub Upload updated to match.
 - "Attempt …" = this run; "SLA …" = locked attempt-1 value; "(raw)" = original text; all times UTC; units in the name.
 
 ## Rule 8: Conflicts
@@ -233,9 +234,9 @@ Each row is a rule that must hold between two columns, how often this export bre
 | QC | QC Result (raw) | BBR Severity | The severity in the status and in the reason agree | 1 | Block |
 | QC | Failure Reason | Attempt | "Recovered after reprocess" only on attempt 2+ | 2 | Block |
 | QC | QC Result | Notes | A pass with a "recurring BBR" note gets a second look | 7 | Review |
-| QC | QC Start | DataHub Upload | Release only after QC starts | 55 of 74 attempts | Warn, then Block |
-| Delivery | QC Result | DataHub Upload | Release only after a pass | 3 images | Block (with a P0 override) |
-| Delivery | Delivered (earlier attempt) | Later attempt | A rerun after delivery has a recorded reason, and is released or closed | 3 | Warn |
+| QC | QC Start | DataHub Upload | Upload only after QC starts | 55 of 74 attempts | Warn, then Block |
+| Delivery | QC Result | DataHub Upload | Upload only after a pass | 3 images | Block (with a P0 override) |
+| Delivery | Delivered (earlier attempt) | Later attempt | A rerun after delivery has a recorded reason, and is uploaded or closed | 3 | Warn |
 | Delivery | Strip Fulfillment Time | DataHub Upload | Rule unclear: fulfillment comes after upload in 44 of 53 | — | Open question |
 | Customer | Customer Status (shown) | Customer Status (derived) | Equal | 45 | Shown status set from derived |
 
@@ -261,7 +262,7 @@ Run the checks where the data is written, not only in this sheet. The sheet flag
 | 1. Ingest | Acquisition → Trigger | Ingest Wait (h) | 20% | 9.1h |
 | 2. Processing | Trigger → Processing End | Processing (h) | 30% | 5.2h |
 | 3. QC wait | Processing End → QC Start | QC Wait (h) | 10% | 3.5h |
-| 4. QC review + release | QC Start → QC End (missing) | Not measurable | 25% |  |
+| 4. QC review + upload | QC Start → QC End (missing) | Not measurable | 25% |  |
 | End-to-end | Acquisition → Delivered | End-to-end (h) | 85% | 13.1h |
 
 **Dropped as duplicates:** Delivered, Segment, Processability, Image/Attempt SLA hours, On Time + Hours Late (→ Hours vs Deadline), Reprocessed, Attempt Count, Awaiting QC, Re-delivery In Progress, Hours Stuck, Rework Wait, Failed Stage, Pipeline Step, 5 mismatch flags (→ Conflicts), Label/Timestamp Fixes (→ Fixes\_Log).

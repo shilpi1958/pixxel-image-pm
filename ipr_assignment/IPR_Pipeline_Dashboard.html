@@ -319,7 +319,7 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
       </div>
       <div class="ipr-card" id="lead-late">
         <h2>Late images by customer, and what blocks them <span class="ipr-unit">per image</span></h2>
-        <p class="ipr-note">Open late images, Tier 1 first. Colour = gate where each is stuck. "Waiting for release" is a quick win; "stuck" and "failed" need escalation. Hover for the oldest delay.</p>
+        <p class="ipr-note">Open late images, Tier 1 first. Colour = gate where each is stuck. "Waiting for upload" is a quick win; "stuck" and "failed" need escalation. Hover for the oldest delay.</p>
         <div class="ipr-chart" data-draw="lead-late-chart" data-source="images"></div>
       </div>
       <div class="ipr-card" id="lead-act">
@@ -584,8 +584,8 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
       <dt>At risk</dt><dd>Not late yet, but the upper ETA (p80) falls after the deadline.</dd>
       <dt>Hours vs Deadline (h)</dt><dd>Positive = late. Days in brackets from 24h.</dd>
       <dt>Expected ETA</dt><dd>Now + remaining steps, from past attempts at the same priority (median–p80). None if stuck or not captured.</dd>
-      <dt>ETA confidence</dt><dd>Estimated = 10+ past attempts back the slowest remaining step. Otherwise Low confidence (e.g. only QC review and release left, which use stage targets).</dd>
-      <dt>Stage targets (proposed)</dt><dd>Ingest 20%, processing 30%, QC wait 10%, QC review 25%, release 15% of SLA. Red = under 50% met.</dd>
+      <dt>ETA confidence</dt><dd>Estimated = 10+ past attempts back the slowest remaining step. Otherwise Low confidence (e.g. only QC review and upload left, which use stage targets).</dd>
+      <dt>Stage targets (proposed)</dt><dd>Ingest 20%, processing 30%, QC wait 10%, QC review 25%, upload 15% of SLA. Red = under 50% met.</dd>
       <dt>Escalation (inferred)</dt><dd>No escalation log exists; inferred from status, retry notes or later attempts. Else No signal.</dd>
       <dt>Customer tier</dt><dd>Set by Customer Success; untiered = Tier 2. Internal accounts count in pipeline views, not customer views.</dd>
       <dt>Source</dt><dd>IPR_Cleaned_Data.xlsx; rules in the IPR Data Cleaning Rules doc.</dd>
@@ -846,7 +846,7 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
       : `incomplete, ${d3.format('.0f')(x.plan_coverage_pct ?? 0)}% of plan covered` + ((x.cloud_cover_pct ?? 0) > 70 ? `, ${d3.format('.0f')(x.cloud_cover_pct)}% cloud` : ''))
     : g === '2' ? 'Processing: stuck (triggered, no Processing End)'
     : g === '3' ? (x.delivery_status === 'Failed' ? `QC: failed (${x.qc_finding})` : x.delivery_status === 'Uploaded without QC pass' ? 'QC: pending (uploaded without QC pass)' : 'QC: pending')
-    : g === '4' ? 'Delivery: waiting for release' : '';
+    : g === '4' ? 'Delivery: waiting for upload' : '';
   const gated = (r) => r.map((x) => { const g = iprGate(x), G = GATES.find((d) => d.id === g);
     return { ...x, gate: g, gate_name: G.h, blocked_because: because(x, g), escalation: g === 'Done' ? '' : iprEsc(x), gate_skipped: skipped(x, g) }; });
   const isLate = (x) => x.in_kpi === 'Yes' && x.delivery_status !== 'Delivered' && (x.hours_vs_deadline ?? 0) > 0;
@@ -916,8 +916,8 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
     { f: (x) => x.delivery_status === 'Not processable', team: 'Tasking', act: 'Retake or close' },
     { f: (x) => x.delivery_status === 'Failed', team: 'Engineering', act: 'Reprocess' },
     { f: (x) => x.stuck === 'Yes', team: 'Engineering', act: 'Unstick run' },
-    { f: (x) => x.delivery_status === 'QC passed, not uploaded', team: 'IPR ops', act: 'Release' },
-    { f: (x) => x.delivery_status === 'Uploaded without QC pass', team: 'QC', act: (x) => x.customer_shown === 'Delivered' ? 'Review now: customer already sees Delivered' : 'Review now; hold release' },
+    { f: (x) => x.delivery_status === 'QC passed, not uploaded', team: 'Engineering (upload)', act: 'Upload' },
+    { f: (x) => x.delivery_status === 'Uploaded without QC pass', team: 'QC', act: (x) => x.customer_shown === 'Delivered' ? 'Review now: customer already sees Delivered' : 'Review now; hold upload' },
     { f: (x) => x.delivery_status === 'In progress', team: 'QC', act: 'Review by deadline' },
   ];
   const routed = (r) => r.filter((x) => x.delivery_status !== 'Delivered').map((x) => {
@@ -939,7 +939,7 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
     if (!x) { el.replaceChildren(mk('p', 'ipr-note', 'Nothing waiting for QC in this filter.')); return; }
     const v = x.hours_vs_deadline;
     const due = v == null ? '' : v > 0 ? `${iprHrs(v)}h past SLA deadline`.replace(/ \((.*)d\)h/, 'h ($1d)') : `${iprHrs(-v)}h to SLA deadline`.replace(/ \((.*)d\)h/, 'h ($1d)');
-    const why = x.delivery_status === 'Uploaded without QC pass' ? 'Already uploaded without a QC pass: review now and hold release.' + (x.customer_shown === 'Delivered' ? ' The customer already sees it as Delivered: tell CS if it fails.' : '') : `Highest SLA Priority waiting for QC (${x.priority}).`;
+    const why = x.delivery_status === 'Uploaded without QC pass' ? 'Already uploaded without a QC pass: review now and hold upload.' + (x.customer_shown === 'Delivered' ? ' The customer already sees it as Delivered: tell CS if it fails.' : '') : `Highest SLA Priority waiting for QC (${x.priority}).`;
     el.replaceChildren(mk('div', 'ipr-tile-value', x.image_id), mk('div', 'ipr-box-l', `${x.priority} · ${x.bandset} · ${x.customer} · ${due}`), mk('p', 'ipr-note', why));
   });
   dash.draw('qc-esc-table', (tb) => {
@@ -1104,7 +1104,7 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
 
   // Customer-safe wording per Delivery Status.
   const SAY = { 'Not processable': 'Capture missed; retake being planned', Failed: 'Being reprocessed to meet quality standards',
-    'In progress': 'In final quality check', 'Uploaded without QC pass': 'In final quality check', 'QC passed, not uploaded': 'Passed quality check; release in progress' };
+    'In progress': 'In final quality check', 'Uploaded without QC pass': 'In final quality check', 'QC passed, not uploaded': 'Passed quality check; delivery in progress' };
   dash.draw('cs-tell-table', (tb) => {
     const r = iprRows('images'); if (!r) { tb.replaceChildren(); return; }
     const m = etaModel();
@@ -1132,8 +1132,8 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
         `${n((x) => x.delivery_status === 'Failed', k)} failed${worstBand ? ` (most on ${worstBand[0]}: ${worstBand[1]})` : ''}; ${n((x) => x.stuck === 'Yes')} stuck`, `Alert on stuck runs; P0/P1 lane; root-cause ${worstBand ? worstBand[0] + ' and ' : ''}${worstFind ? worstFind[0] : ''} failures`],
       ['QA/QC', 'QC wait (≤ 10% of SLA) and QC decision', pc(budget(a, ...STEPS[2])), openN('QC'),
         `${up.length ? iprFmt.pct(up.filter((x) => x.uploaded_before_qc === 'Yes').length / up.length) : '—'} of attempts uploaded before QC Start; median QC wait ${qw.length ? iprFmt.h(d3.quantile(qw, 0.5)) : '—'}`, 'Work the queue by deadline; log QC End; no upload before a pass'],
-      ['IPR ops (release)', 'Release after QC pass (no target set)', '—', openN('IPR ops'),
-        `${n((x) => x.delivery_status === 'QC passed, not uploaded')} passed QC but not uploaded`, 'Release passed images the same shift; agree a release target'],
+      ['Engineering (upload)', 'Upload after QC pass (no target set)', '—', openN('Engineering (upload)'),
+        `${n((x) => x.delivery_status === 'QC passed, not uploaded')} passed QC but not uploaded`, 'Upload passed images the same shift; agree an upload target'],
       ['Customer Success', 'Keeping customers informed on delays', '—', `${n((x) => iprExt(x) && isLate(x))}`,
         `${n((x) => isLate(x) && iprTier(x.customer) === 'Tier 1')} Tier 1 images late`, 'Update customers before the deadline passes, Tier 1 first; use the dashboard status, not a manual one'],
     ];
@@ -1301,8 +1301,8 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
   };
   // Same words as the gates and the Act now "Blocked because" column.
   const LATE_STATE = (x) => x.stuck === 'Yes' ? 'Processing: stuck' : x.delivery_status === 'Failed' ? 'QC: failed'
-    : x.delivery_status === 'QC passed, not uploaded' ? 'Delivery: waiting for release' : 'QC: pending';
-  const LATE_COLORS = { 'Delivery: waiting for release': 0, 'QC: pending': 1, 'QC: failed': 2, 'Processing: stuck': 3 };
+    : x.delivery_status === 'QC passed, not uploaded' ? 'Delivery: waiting for upload' : 'QC: pending';
+  const LATE_COLORS = { 'Delivery: waiting for upload': 0, 'QC: pending': 1, 'QC: failed': 2, 'Processing: stuck': 3 };
   // Act now aggregate: open late images per customer (most important tier first), stacked by what blocks them.
   dash.draw('lead-late-chart', (el) => {
     const r = iprRows('images'); el.replaceChildren(); if (!r) return;

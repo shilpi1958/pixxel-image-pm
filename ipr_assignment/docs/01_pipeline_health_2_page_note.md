@@ -16,7 +16,7 @@ Images are late far more often than they fail, and P0 is worst: no P0 image met 
 Four causes:
 
 - **No priority lane:** processing and QC wait take the same time at every priority, so P0s queue behind P4s.
-- **QC may not gate release:** most uploads are logged before QC starts. Not yet confirmed: it could be late logging rather than a skipped check.
+- **QC may not gate upload:** most uploads are logged before QC starts. Not yet confirmed: it could be late logging rather than a skipped check.
 - **Incomplete imagery enters processing:** incomplete images fail QC far more often than complete ones (an association, not proven cause).
 - **The data can't measure QC:** there is no QC-end timestamp.
 
@@ -32,7 +32,7 @@ Every processable image that wasn't delivered is past its deadline. \
 | Not captured | 6 | Never imaged; out of KPIs |
 | Cloudy, not processable | 0 | Over 70% cloud |
 | Delivered | 61 | QC pass + upload |
-| QC passed, not uploaded | 7 | 5 ready to release; 2 have a stuck run to check first |
+| QC passed, not uploaded | 7 | 5 ready to upload; 2 have a stuck run to check first |
 | Uploaded without QC pass | 3 | On DataHub, not counted; 2 shown to customers as Delivered while QC is pending |
 | In progress | 7 | Processing or in QC |
 | Failed | 11 | Processing or QC failed |
@@ -53,8 +53,8 @@ Four steps, timestamp to timestamp. **Targets are my proposed split of each SLA,
 | 1. Acquisition → processing start | 20% | 9.1 | 6.1 | 51% |
 | 2. Processing | 30% | 5.2 | 9.2 | 31% |
 | 3. Waiting for QC | 10% | 3.5 | 3.1 | 59% |
-| 4. QC review (QC start → release) | 25% | −1.4 | 8.0 | Negative in 74% of attempts |
-| 5. Release | 15% |  |  |  |
+| 4. QC review (QC start → upload) | 25% | −1.4 | 8.0 | Negative in 74% of attempts |
+| 5. Upload | 15% |  |  |  |
 | End-to-end delivery time (per delivered image) | 85% | 13.1 | 26.3 | 21% |
 
 Few attempts meet the three measurable targets (ingest, processing, QC wait), and P0 almost never does. These cover three of the five stages, not the full SLA.
@@ -73,7 +73,7 @@ A missing timestamp counts as not met. P4 looks fine only because its 48h window
 ## Root causes
 
 1. **Priority isn't in the workflow.** Processing and QC run first come, first served; nothing moves a P0 ahead. P0 median delivery is 10.4h against an 8h SLA.
-2. **QC sequencing is unclear.** Upload precedes QC start in 74% of attempts, and some images sit on DataHub without a pass. Either QC start is logged late or QA audits after release; IPR / QA must confirm which.
+2. **QC sequencing is unclear.** Upload precedes QC start in 74% of attempts, and some images sit on DataHub without a pass. Either QC start is logged late or QA audits after upload; IPR / QA must confirm which.
 3. **Incomplete imagery is processed anyway.** Almost every incomplete attempt ran, and incomplete images fail QC far more often (table below). No gate holds them for re-downlink or re-task.
 4. **BBR recurs.** It is the top failure reason, concentrated in Vegetation, and comes back on retry, so reprocessing alone doesn't fix it (patterns table).
 
@@ -99,17 +99,17 @@ Processing time barely varies with any of these (4.5–5.7h; correlation with an
 
 ## Immediate actions: 5 cases, 6 images
 
-Ranked by priority, hours late and ease of fix. Two need only a release.
+Ranked by priority, hours late and ease of fix. Two need only an upload.
 
 | # | Image | Customer | Priority | State | Overdue | Action (owner) |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | FF01\_20260601\_1084\_DUBAI | UrbanAtlas | P0 | Passed QC, never uploaded | 697h | Release today (Eng). Customer has asked for an update |
+| 1 | FF01\_20260601\_1084\_DUBAI | UrbanAtlas | P0 | Passed QC, never uploaded | 697h | Upload today (Eng). Customer has asked for an update |
 | 2 | FF01\_20260614\_1040\_GUJAR | MineralsCo | P0 | Passed QC, never uploaded | 375h | Upload today (Eng) |
 | 3 | FF02\_20260605\_1088\_DUBAI | UrbanAtlas | P0 | QC pending | 592h | QC decision first in the queue (QA/QC). Second late P0 for UrbanAtlas, so one CS update covers both |
-| 4 | FF02\_20260613\_1042\_RAJAS | AgriSense | P1 | Passed QC, but processing never recorded an end | 401h | Confirm the output exists, then release (Eng) |
+| 4 | FF02\_20260613\_1042\_RAJAS | AgriSense | P1 | Passed QC, but processing never recorded an end | 401h | Confirm the output exists, then upload (Eng) |
 | 5 | FF01\_20260623\_1026\_NILED, FF03\_20260624\_1086\_DUBAI | AgriSense, UrbanAtlas | P1 | Never captured, but customers are told "Delivered" | n/a | Correct the customer status and offer a re-task (CS) |
 
-After these, 3 more QC-passed images can be released today, and one more (P3, FF01\_20260611\_1089\_GUJAR) has a stuck run to check first. The 3 uploaded without a QC pass need a QC decision; 2 of them show Delivered to customers.
+After these, 3 more QC-passed images can be uploaded today, and one more (P3, FF01\_20260611\_1089\_GUJAR) has a stuck run to check first. The 3 uploaded without a QC pass need a QC decision; 2 of them show Delivered to customers.
 
 ## Measure it: top 5 daily metrics
 
@@ -156,11 +156,11 @@ All 15 gaps, the cleaning decisions and the checks to enforce at the source: App
 
 **For IPR / QA**
 
-- **Why are 74% of attempts uploaded before QC starts?** DataHub as QC staging is ruled out (no QC fail was ever uploaded). Either QC start is logged late, or a QA audit runs after release.
+- **Why are 74% of attempts uploaded before QC starts?** DataHub as QC staging is ruled out (no QC fail was ever uploaded). Either QC start is logged late, or a QA audit runs after upload.
 - **Does the SLA start at acquisition or at order?** If it's order time, every on-time number here is optimistic.
 - **Is moderate BBR a fail?** I mapped Severe and Moderate BBR to Fail. If moderate banding is sometimes acceptable, that row becomes Pass with a caveat.
 - **How long does a manual QC review take, and where is QC recorded?** A rough estimate per bandset helps; whether that system can take QC End decides if week 2's logging is a setting or a build.
-- **Do the proposed step targets fit?** Ingest 20, processing 30, QC wait 10, QC review 25 and release 15% of SLA.
+- **Do the proposed step targets fit?** Ingest 20, processing 30, QC wait 10, QC review 25 and upload 15% of SLA.
 - **Why are images reprocessed?** 23 of 34 reprocesses followed a QC pass, and 3 delivered images were reworked. No reason is recorded.
 
 ## Index: the brief's questions
@@ -168,7 +168,7 @@ All 15 gaps, the cleaning decisions and the checks to enforce at the source: App
 |  | Question | Short answer | Where |
 | --- | --- | --- | --- |
 | A | Processing health | 95 images: 89 processable, 6 not captured. Of the 89: 61 delivered, 7 in progress, 11 failed, 7 passed QC but not uploaded, 3 uploaded without a QC pass | Pipeline health |
-| B | Images needing attention | 5 cases, 6 images: two P0s that only need a release, a P0 waiting for QC, a stuck P1 that passed QC, and two never-captured images shown as Delivered | Immediate actions |
+| B | Images needing attention | 5 cases, 6 images: two P0s that only need an upload, a P0 waiting for QC, a stuck P1 that passed QC, and two never-captured images shown as Delivered | Immediate actions |
 | C | Patterns | FF02 (36% on time) and Vegetation (7 of 11 failures, 5 BBR) stand out; incomplete images fail far more; cloud and off-nadir angle show no pattern | Root causes |
 | D | Duplicates and attempts | One row per Image ID + attempt (6 stale duplicates removed); the latest valid attempt is the image's row; SLA locked to attempt 1 | Assumptions; Appendix |
 | E | What counts as delivered | QC Result Pass and uploaded; a pass with a caveat counts, shown apart. SLA assumed to run from acquisition | Assumptions; Top 5, metric 1 |
