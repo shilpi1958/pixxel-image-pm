@@ -13,7 +13,7 @@ Images are late far more often than they fail, and P0 is worst: no P0 image met 
 | P0 on time | 0 of 8; 3 never arrived |
 | Customer status wrong | 45 of 95 images |
 
-Four root causes: no priority lane, QC not clearly gating upload, incomplete imagery processed anyway, and recurring BBR (see Root causes).
+Five root causes: no priority lane, QC not clearly gating upload, incomplete imagery processed anyway, recurring BBR, and no owner or escalation path for blocked images (see Root causes).
 
 **Next:** the fix for each cause is sequenced in the [IPR 2-Week Plan](https://claude.ai/artifact/7TYRU23LDK93ek3b6BkZGc).
 
@@ -68,9 +68,10 @@ A missing timestamp counts as not met. P4 looks fine only because its 48h window
 ## Root causes
 
 1. **Priority isn't in the workflow.** Processing and QC run first come, first served; nothing moves a P0 ahead. P0 median delivery is 10.4h against an 8h SLA.
-2. **QC sequencing is unclear.** Upload precedes QC start in 74% of attempts, and some images sit on DataHub without a pass. Either QC start is logged late or QA audits after upload; IPR / QA must confirm which. There is also no QC-end timestamp, so QC review can't be timed.
+2. **QC sequencing is unclear.** Upload precedes QC start in 74% of attempts, and some images sit on DataHub without a pass. Either QC start is logged late or QA audits after upload; IPR / QA must confirm which. There is also no QC-end timestamp, so QC review can't be timed. And 23 of 34 reprocesses came after a QC pass, with no reason recorded.
 3. **Incomplete imagery is processed anyway.** Almost every incomplete attempt ran, and incomplete images fail QC far more often (table below). No gate holds them for re-downlink or re-task.
 4. **BBR recurs.** It is the top failure reason, concentrated in Vegetation, and comes back on retry, so reprocessing alone doesn't fix it (patterns table).
+5. **Blocked images have no owner or recorded escalation.** 7 images passed QC but were never uploaded, one for 697h. Stuck runs went unnoticed, and 25 of 34 blocked images show no escalation. This is why late images stay late (median 17.9 days). IPR to confirm whether any escalation process exists outside the data.
 
 | Incomplete vs complete | Incomplete | Complete |
 | --- | --- | --- |
