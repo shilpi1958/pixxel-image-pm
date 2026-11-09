@@ -4,27 +4,35 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>IPR Pipeline Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-:root { color-scheme: light dark;
-  --color-fg:#1f1e1c; --color-fg-muted:#6b6862; --color-bg:#faf9f6; --color-panel:#ffffff; --color-border-line:#e4e1da;
-  --color-ok:#2f7d4f; --color-warn:#b7791f; --color-bad:#c0392b;
-  --cds-chart-status-critical:#c0392b; --cds-chart-status-positive:#2f7d4f; --cds-chart-reference:#8a8680;
-  --cds-surface-popover:#ffffff; --cds-shadow-popover:0 4px 16px rgba(0,0,0,.14); --cds-text-secondary:#6b6862; --cds-border:#e4e1da;
-}
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --color-fg:#ecebe8; --color-fg-muted:#a39f98; --color-bg:#1b1a19; --color-panel:#242321; --color-border-line:#3a3835;
-  --color-ok:#5cb57f; --color-warn:#e0a84a; --color-bad:#e5675a;
-  --cds-chart-status-critical:#e5675a; --cds-chart-status-positive:#5cb57f; --cds-chart-reference:#8a8680;
-  --cds-surface-popover:#2c2b29; --cds-shadow-popover:0 4px 16px rgba(0,0,0,.5); --cds-text-secondary:#a39f98; --cds-border:#3a3835; } }
+:root { color-scheme: light dark; --bg:#f4f6f5; --panel:#ffffff; --fg:#172126; --muted:#5a676d; --line:#d9e0de; --accent:#1f5f7a; --accent-soft:#e3eef2; --bad:#b23a2e; --warn:#9a6b12; --ok:#2c7a4b; --code-bg:#eef2f1; --pop-shadow:0 4px 16px rgba(0,0,0,.14); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#10171a; --panel:#172024; --fg:#e3e9e8; --muted:#93a3a8; --line:#2a373c; --accent:#7cc0d8; --accent-soft:#1d3540; --bad:#ef8a7c; --warn:#e0b45a; --ok:#7fcc98; --code-bg:#1d282c; --pop-shadow:0 4px 16px rgba(0,0,0,.5); color-scheme:dark; } }
+:root[data-theme="dark"] { --bg:#10171a; --panel:#172024; --fg:#e3e9e8; --muted:#93a3a8; --line:#2a373c; --accent:#7cc0d8; --accent-soft:#1d3540; --bad:#ef8a7c; --warn:#e0b45a; --ok:#7fcc98; --code-bg:#1d282c; --pop-shadow:0 4px 16px rgba(0,0,0,.5); color-scheme:dark; }
 :root {
-  --font-anthropic-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif;
-  --font-anthropic-serif: Georgia, "Times New Roman", serif;
+  --color-fg:var(--fg); --color-fg-muted:var(--muted); --color-bg:var(--bg); --color-panel:var(--panel); --color-border-line:var(--line);
+  --color-ok:var(--ok); --color-warn:var(--warn); --color-bad:var(--bad);
+  --cds-chart-status-critical:var(--bad); --cds-chart-status-positive:var(--ok); --cds-chart-reference:var(--muted);
+  --cds-surface-popover:var(--panel); --cds-shadow-popover:var(--pop-shadow); --cds-text-secondary:var(--muted); --cds-border:var(--line);
+  --font-display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-anthropic-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-anthropic-serif: var(--font-display);
   --cds-font-size-title:28px; --cds-font-size-heading:18px; --cds-font-size-body:15px; --cds-font-size-caption:12.5px; --cds-font-weight-medium:600;
   --cds-gap-xs:4px; --cds-gap-sm:8px; --cds-gap-md:16px; --cds-gap-lg:28px;
   --cds-pad-xs:4px; --cds-pad-sm:8px; --cds-pad-md:12px; --cds-pad-lg:20px; --cds-radius:8px; --cds-dur-slow:.3s;
 }
 [hidden] { display:none !important; }
-html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-family:var(--font-anthropic-sans); font-size:15px; line-height:1.45; }
+html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-family:var(--font-anthropic-sans); font-size:15px; line-height:1.5; }
+a { color:var(--accent); text-underline-offset:2px; }
+.band { height:6px; background:linear-gradient(90deg, #4b3aa8 0%, #2f6fd0 14%, #1f9fb0 28%, #3fa64a 42%, #c9c32a 55%, #e08a2a 68%, #c63b2b 80%, #7a1f2b 100%); }
+header.top { border-bottom:1px solid var(--line); background:var(--panel); }
+.top-inner { max-width:1280px; margin:0 auto; padding:18px 16px 16px; display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:8px 24px; box-sizing:border-box; }
+.top-inner h1 { margin:0; font-family:var(--font-display); font-weight:600; font-size:1.6rem; letter-spacing:.01em; }
+.meta { font-family:var(--font-mono); font-size:.78rem; color:var(--muted); display:flex; flex-wrap:wrap; gap:4px 16px; }
+.band-label { font-size:.7rem; letter-spacing:.06em; text-transform:uppercase; }
 #dash-root { max-width:1280px; margin:0 auto; padding:24px 16px 48px; box-sizing:border-box; }
 #dash-root .dash-select { font:inherit; color:var(--color-fg); background:var(--color-panel); border:1px solid var(--color-border-line); border-radius:var(--cds-radius); padding:4px 8px; }
 .export-note { font-size:12px; color:var(--color-fg-muted); text-align:center; padding:0 16px 24px; }
@@ -73,7 +81,7 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
     resetParams() { params = {}; schedule(); },
     setLink(id) { try { history.replaceState(null, '', '#' + id); } catch (e) {} schedule(); },
     refresh() { schedule(); },
-    colors: ['#3b6fd8', '#d9822b', '#2f9e8f', '#c2410c', '#7c5cc4', '#b8860b', '#4b8bbe', '#9a6b4f'],
+    colors: ['var(--accent)', '#d9822b', '#2f9e8f', '#c2410c', '#7c5cc4', '#b8860b', '#4b8bbe', '#9a6b4f'],
   };
   let w = window.innerWidth;
   window.addEventListener('resize', () => { w = window.innerWidth; schedule(); });
@@ -81,12 +89,22 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
 </script>
 </head>
 <body>
+<div class="band" aria-hidden="true"></div>
+<header class="top">
+  <div class="top-inner">
+    <h1 id="top">IPR Pipeline Dashboard</h1>
+    <div class="meta">
+      <a href="index.html">← Submission</a>
+      <span class="band-label">VNIR 470–900 nm</span>
+    </div>
+  </div>
+</header>
 <div id="dash-root">
 
 <style>
   .ipr { display: flex; flex-direction: column; gap: var(--cds-gap-lg); font-family: var(--font-anthropic-sans); }
   .ipr h1 { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0; text-wrap: balance; }
-  .ipr h2 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0; }
+  .ipr h2 { font-family: var(--font-display); font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0; }
   .ipr h3 { font-size: var(--cds-font-size-body); font-weight: var(--cds-font-weight-medium); margin: 0; }
   .ipr-take { margin: var(--cds-gap-xs) 0 0; color: var(--color-fg-muted); max-width: 70ch; }
   .ipr .ipr-take b { color: var(--color-fg); font-weight: var(--cds-font-weight-medium); }
@@ -95,16 +113,16 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
   .ipr-reset { align-self: flex-end; background: none; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); color: var(--color-fg); padding: var(--cds-pad-xs) var(--cds-pad-sm); cursor: pointer; font: inherit; }
   .ipr-reset:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
   .ipr-view { scroll-margin-top: 12px; }
-  .ipr-view-h { font-family: var(--font-anthropic-serif); font-weight: 400 !important; font-size: var(--cds-font-size-title) !important; padding-top: var(--cds-gap-md); border-top: 1px solid var(--color-border-line); }
+  .ipr-view-h { font-family: var(--font-display); font-weight: 600 !important; font-size: var(--cds-font-size-title) !important; padding-top: var(--cds-gap-md); border-top: 1px solid var(--color-border-line); }
   .ipr-personas { display: flex; flex-direction: column; gap: var(--cds-gap-sm); }
   .ipr-persona-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: var(--cds-gap-md); }
   .ipr-persona { display: flex; flex-direction: column; gap: var(--cds-gap-xs); text-align: left; background: var(--color-panel); color: var(--color-fg); font: inherit; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-md); cursor: pointer; min-width: 0; }
-  .ipr-persona[aria-pressed="true"] { border-color: var(--color-fg); box-shadow: inset 0 0 0 1px var(--color-fg); }
+  .ipr-persona[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
   .ipr-persona:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
   .ipr-persona-top { display: flex; justify-content: space-between; align-items: baseline; gap: var(--cds-gap-sm); }
   .ipr-persona-name { font-weight: var(--cds-font-weight-medium); }
   .ipr-persona-tag { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); border: 1px solid var(--color-border-line); border-radius: 999px; padding: 0 6px; white-space: nowrap; }
-  .ipr-persona-q { font-family: var(--font-anthropic-serif); line-height: 1.35; }
+  .ipr-persona-q { line-height: 1.4; }
   .ipr-persona-row { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
   .ipr-persona-row b { color: var(--color-fg); font-weight: var(--cds-font-weight-medium); margin-right: 4px; }
   .ipr-persona-exp { margin-top: auto; padding-top: var(--cds-gap-xs); font-size: var(--cds-font-size-caption); font-weight: var(--cds-font-weight-medium); }
@@ -114,7 +132,7 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
   .ipr-tile, .ipr-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); min-width: 0; }
   .ipr-tile { display: flex; flex-direction: column; gap: var(--cds-gap-xs); }
   .ipr-tile-label { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
-  .ipr-tile-value { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); font-variant-numeric: tabular-nums; min-height: 1.3em; }
+  .ipr-tile-value { font-family: var(--font-display); font-weight: 600; font-size: var(--cds-font-size-title); font-variant-numeric: tabular-nums; min-height: 1.3em; }
   .ipr-tile-note { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
   .ipr-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: var(--cds-gap-md); }
   .ipr-card { display: flex; flex-direction: column; gap: var(--cds-gap-sm); }
@@ -124,13 +142,13 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
   .ipr-tip span { color: var(--cds-text-secondary); }
   .ipr-tablebox { max-height: 24rem; overflow: auto; }
   .ipr table { width: 100%; border-collapse: collapse; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
-  .ipr th { position: sticky; top: 0; background: var(--color-panel); text-align: left; font-weight: var(--cds-font-weight-medium); color: var(--color-fg-muted); padding: var(--cds-pad-xs) var(--cds-pad-sm); border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
+  .ipr th { position: sticky; top: 0; background: var(--code-bg); text-align: left; font-weight: var(--cds-font-weight-medium); color: var(--color-fg-muted); padding: var(--cds-pad-xs) var(--cds-pad-sm); border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
   .ipr td { padding: var(--cds-pad-xs) var(--cds-pad-sm); border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
   .ipr td.num, .ipr th.num { text-align: right; }
   .ipr .ipr-wrap td { white-space: normal; vertical-align: top; min-width: 6rem; }
   .ipr .ipr-act td { padding-top: var(--cds-pad-sm); padding-bottom: var(--cds-pad-sm); font-size: var(--cds-font-size-body, 14px); }
   .ipr .ipr-act th:first-child, .ipr .ipr-act td:first-child { position: sticky; left: 0; background: var(--color-panel); z-index: 1; }
-  .ipr .ipr-act th:first-child { z-index: 2; }
+  .ipr .ipr-act th:first-child { z-index: 2; background: var(--code-bg); }
   .ipr-next { border-color: var(--color-fg); }
   .ipr-meter-cell { display: flex; align-items: center; gap: var(--cds-gap-sm); min-width: 9rem; }
   .ipr-meter { flex: 1; height: 8px; border-radius: 4px; background: var(--color-border-line); overflow: hidden; }
@@ -141,7 +159,7 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
   .ipr .ipr-sum td { font-weight: var(--cds-font-weight-medium); color: var(--color-fg); }
   .ipr-subtabs { display: flex; flex-wrap: wrap; gap: var(--cds-gap-xs); }
   .ipr-subtab { background: none; border: 1px solid var(--color-border-line); border-radius: 999px; color: var(--color-fg-muted); padding: var(--cds-pad-xs) var(--cds-pad-md); cursor: pointer; font: inherit; font-size: var(--cds-font-size-caption); }
-  .ipr-subtab[aria-selected="true"] { background: var(--color-fg); border-color: var(--color-fg); color: var(--color-bg, var(--color-panel)); }
+  .ipr-subtab[aria-selected="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); font-weight: 600; }
   .ipr-subtab:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
   .ipr-group { display: flex; flex-direction: column; gap: var(--cds-gap-md); }
   .ipr-group[hidden] { display: none; }
@@ -168,13 +186,11 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
   button.ipr-box { background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; justify-content: flex-start; }
   button.ipr-box.on { border-color: var(--color-fg); border-width: 2px; }
   button.ipr-box:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
-  .ipr-box-n { font-family: var(--font-anthropic-serif); font-size: var(--cds-font-size-heading); font-variant-numeric: tabular-nums; }
+  .ipr-box-n { font-family: var(--font-display); font-weight: 600; font-size: var(--cds-font-size-heading); font-variant-numeric: tabular-nums; }
   .ipr-box-l, .ipr-box-s { font-size: var(--cds-font-size-caption); }
   .ipr-box-s { color: var(--color-fg-muted); }
   .ipr-box-s.late { color: var(--color-bad); }
   .ipr-box-s.warn { color: var(--color-warn); }
-  .ipr-hl { margin: var(--cds-gap-sm) 0 0; font-size: var(--cds-font-size-heading); line-height: 1.4; max-width: 70ch; text-wrap: pretty; }
-  .ipr .ipr-hl b { font-family: var(--font-anthropic-serif); font-weight: 400; color: var(--color-bad); font-variant-numeric: tabular-nums; }
   .ipr-snapshot { margin: var(--cds-gap-sm) 0 0; display: flex; flex-wrap: wrap; gap: var(--cds-gap-xs) var(--cds-gap-sm); align-items: baseline; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); border: 1px solid var(--color-border-line); border-left: 3px solid var(--color-warn); border-radius: var(--cds-radius); padding: var(--cds-pad-xs) var(--cds-pad-sm); max-width: 70ch; }
   .ipr .ipr-snapshot b { color: var(--color-fg); font-weight: var(--cds-font-weight-medium); }
   @media (max-width: 640px) { .ipr-arrow { display: none; } }
@@ -195,8 +211,6 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
 
 <div class="ipr">
   <header>
-    <h1 id="top">IPR Pipeline Dashboard</h1>
-    <p class="ipr-hl" id="headline">Only <b data-draw="hl-ontime" data-source="images">—</b> of processable images delivered on time. <b data-draw="hl-p0" data-source="images">—</b> P0 images met their 8h SLA. <b data-draw="hl-late" data-source="images">—</b> images are late and undelivered.</p>
     <p class="ipr-snapshot" id="snapshot"><span class="ipr-pill warn">Data as of</span> <span><b data-draw="snap-time" data-source="images">—</b> UTC: the latest timestamp in the export (it has no pull time). Lateness and ETAs count from here.</span></p>
     <p class="ipr-take" data-draw="take-range" data-source="images">—</p>
   </header>
@@ -308,12 +322,12 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
       </div>
       <div class="ipr-card" id="lead-late">
         <h2>Late images by customer, and what blocks them <span class="ipr-unit">per image</span></h2>
-        <p class="ipr-note">Open late images, Tier 1 first. Colour = gate where each is stuck. "Waiting for upload" is a quick win; "stuck" and "failed" need escalation. Hover for the oldest delay.</p>
+        <p class="ipr-note">Open late images, most late first. Colour = gate where each is stuck. "Waiting for upload" is a quick win; "stuck" and "failed" need escalation. Hover for the oldest delay.</p>
         <div class="ipr-chart" data-draw="lead-late-chart" data-source="images"></div>
       </div>
       <div class="ipr-card" id="lead-act">
         <h2>Act now <span class="ipr-unit">per image</span></h2>
-        <p class="ipr-note">All undelivered images: late and at-risk first, then priority, tier, lateness. Owner = team that acts next.</p>
+        <p class="ipr-note">All undelivered images: late and at-risk first, then priority, lateness. Owner = team that acts next.</p>
         <div class="ipr-tablebox">
           <table class="ipr-act" data-source="images" data-row-key="image_id">
             <thead><tr><th data-field="image_id">Image ID</th><th data-field="customer">Customer</th><th data-field="sla_state">State</th><th data-field="priority">SLA Priority</th><th data-field="blocked_because">Blocked because</th><th data-field="route_to">Owner</th><th data-field="next_action">Next action</th><th data-field="escalation">Escalation (inferred)</th><th data-field="eta">Expected ETA</th><th data-field="hours_vs_deadline" class="num">Hours vs Deadline (h)</th></tr></thead>
@@ -325,10 +339,10 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
     <div class="ipr-group" data-group="customers" hidden>
       <div class="ipr-card" id="lead-cust">
         <h2>Work complete, by customer <span class="ipr-unit">per image</span></h2>
-        <p class="ipr-note">% complete = delivered ÷ processable. Tier 1 first, then least complete.</p>
+        <p class="ipr-note">% complete = delivered ÷ processable. Least complete first.</p>
         <div class="ipr-tablebox">
           <table data-source="images" data-row-key="customer">
-            <thead><tr><th data-field="customer">Customer</th><th data-field="tier">Tier</th><th data-field="images" class="num">Processable</th><th data-field="delivered" class="num">Delivered</th><th data-field="pct">% complete</th><th data-field="on_time" class="num">On time</th><th data-field="overdue" class="num">Late</th></tr></thead>
+            <thead><tr><th data-field="customer">Customer</th><th data-field="images" class="num">Processable</th><th data-field="delivered" class="num">Delivered</th><th data-field="pct">% complete</th><th data-field="on_time" class="num">On time</th><th data-field="overdue" class="num">Late</th></tr></thead>
             <tbody data-draw="lead-cust-table"></tbody>
           </table>
         </div>
@@ -413,7 +427,7 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
     </div>
     <div class="ipr-card" id="qc-queue">
       <h2>Your queue (QC)</h2>
-      <p class="ipr-note">Order: uploaded without QC pass first, then priority, tier, deadline.</p>
+      <p class="ipr-note">Order: uploaded without QC pass first, then priority, deadline.</p>
       <div class="ipr-tablebox">
         <table data-source="images" data-row-key="image_id">
           <thead><tr><th data-field="rank" class="num">#</th><th data-field="image_id">Image ID</th><th data-field="priority">SLA Priority</th><th data-field="delivery_status">Delivery Status</th><th data-field="bandset">Bandset</th><th data-field="next_action">Next action</th><th data-field="hours_vs_deadline" class="num">Hours vs Deadline (h)</th></tr></thead>
@@ -531,16 +545,14 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
     <div class="ipr-tiles">
       <div class="ipr-tile"><div class="ipr-tile-label">Late images</div><div class="ipr-tile-value" data-draw="cs-overdue" data-source="images">—</div><div class="ipr-tile-note">Processable, not delivered, past SLA deadline</div></div>
       <div class="ipr-tile"><div class="ipr-tile-label">Customers affected</div><div class="ipr-tile-value" data-draw="cs-cust" data-source="images">—</div><div class="ipr-tile-note">With at least one late image</div></div>
-      <div class="ipr-tile"><div class="ipr-tile-label">Tier 1 late</div><div class="ipr-tile-value" data-draw="cs-t1" data-source="images">—</div><div class="ipr-tile-note">Late images for Tier 1 customers</div></div>
-            <div class="ipr-tile"><div class="ipr-tile-label">Tier 1 on time</div><div class="ipr-tile-value" data-draw="cs-t1-ontime" data-source="images">—</div><div class="ipr-tile-note">Delivered by deadline, Tier 1</div></div>
     </div>
     <div class="ipr-grid">
       <div class="ipr-card" id="cs-bycust">
         <h2>Work complete, by customer</h2>
-        <p class="ipr-note">% complete = delivered ÷ processable. Tier 1 first, then least complete.</p>
+        <p class="ipr-note">% complete = delivered ÷ processable. Least complete first.</p>
         <div class="ipr-tablebox">
           <table data-source="images" data-row-key="customer">
-            <thead><tr><th data-field="customer">Customer</th><th data-field="tier">Tier</th><th data-field="images" class="num">Processable</th><th data-field="delivered" class="num">Delivered</th><th data-field="pct">% complete</th><th data-field="on_time" class="num">On time</th><th data-field="overdue" class="num">Late</th></tr></thead>
+            <thead><tr><th data-field="customer">Customer</th><th data-field="images" class="num">Processable</th><th data-field="delivered" class="num">Delivered</th><th data-field="pct">% complete</th><th data-field="on_time" class="num">On time</th><th data-field="overdue" class="num">Late</th></tr></thead>
             <tbody data-draw="cs-cust-table"></tbody>
           </table>
         </div>
@@ -549,11 +561,11 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
     </div>
     <div class="ipr-group" data-group="cs-tell" hidden>
     <div class="ipr-card" id="cs-tell">
-      <h2>Delayed images: what to tell the customer</h2>
-      <p class="ipr-note">Late or not captured, Tier 1 first. Updates are customer-safe; round ETAs up.</p>
+      <h2>Delayed or partial images: what to tell the customer</h2>
+      <p class="ipr-note">Late or not captured, by priority; then delivered with partial coverage. Updates are customer-safe; round ETAs up.</p>
       <div class="ipr-tablebox">
         <table data-source="images" data-row-key="image_id">
-          <thead><tr><th data-field="image_id">Image ID</th><th data-field="customer">Customer</th><th data-field="tier">Tier</th><th data-field="priority">SLA Priority</th><th data-field="customer_update">Customer update</th><th data-field="eta">Expected ETA</th><th data-field="hours_vs_deadline" class="num">Hours vs Deadline (h)</th></tr></thead>
+          <thead><tr><th data-field="image_id">Image ID</th><th data-field="customer">Customer</th><th data-field="priority">SLA Priority</th><th data-field="customer_update">Customer update</th><th data-field="eta">Expected ETA</th><th data-field="hours_vs_deadline" class="num">Hours vs Deadline (h)</th></tr></thead>
           <tbody data-draw="cs-tell-table"></tbody>
         </table>
       </div>
@@ -576,7 +588,8 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
       <dt>ETA confidence</dt><dd>Estimated = 10+ past attempts back the slowest remaining step. Otherwise Low confidence (e.g. only QC review and upload left, which use stage targets).</dd>
       <dt>Stage targets (proposed)</dt><dd>Ingest 20%, processing 30%, QC wait 10%, QC review 25%, upload 15% of SLA. Red = under 50% met.</dd>
       <dt>Escalation (inferred)</dt><dd>No escalation log exists; inferred from status, retry notes or later attempts. Else No signal.</dd>
-      <dt>Customer tier</dt><dd>Set by Customer Success; untiered = Tier 2. Internal accounts count in pipeline views, not customer views.</dd>
+      <dt>Partial coverage</dt><dd>Delivered, but the export marks Target Status = Partial, so part of the customer's area is missing. Tell the customer before they notice.</dd>
+      <dt>Internal accounts</dt><dd>Calibration and Internal Demo. They count in pipeline views, not customer views.</dd>
       <dt>Source</dt><dd>IPR_Cleaned_Data.xlsx; rules in the IPR Data Cleaning Rules doc.</dd>
     </dl>
   </details>
@@ -588,12 +601,11 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
   window.IPR_BUDGET = { ingest: 0.2, processing: 0.3, qcwait: 0.1 };
   window.IPR_PRIO = ['P0', 'P1', 'P2', 'P3', 'P4'];
   window.IPR_SLA = { P0: 8, P1: 12, P2: 16, P3: 24, P4: 48 };
-  // Customer tiers: config owned by Customer Success (current list is a placeholder).
-  window.IPR_TIERS = ['Tier 1', 'Tier 2', 'Internal'];
-  window.IPR_TIER = { MineralsCo: 'Tier 1', AgriSense: 'Tier 1', UrbanAtlas: 'Tier 1', Calibration: 'Internal', 'Internal Demo': 'Internal' };
-  window.iprTier = (c) => IPR_TIER[c] || 'Tier 2';
+  // Internal accounts: no customer to update, so they stay out of customer views.
+  window.IPR_INTERNAL = new Set(['Calibration', 'Internal Demo']);
+  window.iprInternal = (c) => IPR_INTERNAL.has(c);
   // Customer views leave out internal customers; pipeline, QC and Engineering views keep them.
-  window.iprExt = (x) => iprTier(x.customer) !== 'Internal';
+  window.iprExt = (x) => !iprInternal(x.customer);
   // No escalation log exists; infer from hand-off status, retry notes or a later attempt.
   window.iprEsc = (x) => ['Needs science review', 'QC Hold', 'Reprocessing'].includes(x.processing_status) ? 'Inferred: status ' + x.processing_status
     : ['Manual retry after QC fail', 'Reprocess attempt'].includes(x.notes) ? 'Inferred: retry note'
@@ -604,13 +616,13 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
     if (d.status !== 'ok') return null;
     const p = dash.params();
     return d.data.filter((r) => (!p.week || r.week === p.week) && (!p.sat || r.satellite === p.sat) &&
-      (!p.band || r.bandset === p.band) && (!p.prio || r.priority === p.prio) && (!p.cust || r.customer === p.cust) && (!p.acct || iprTier(r.customer) !== 'Internal'));
+      (!p.band || r.bandset === p.band) && (!p.prio || r.priority === p.prio) && (!p.cust || r.customer === p.cust) && (!p.acct || !iprInternal(r.customer)));
   };
   window.iprFmt = { pct: d3.format('.0%'), h: (v) => d3.format('.1f')(v) + 'h', n: d3.format(',') };
   // Hours as in the sheet; days added in brackets from 24h.
   window.iprHrs = (v) => v == null ? '' : d3.format('.1f')(v) + (Math.abs(v) >= 24 ? ` (${d3.format('.1f')(v / 24)}d)` : '');
   window.iprMean = (vals) => { const v = vals.filter((x) => typeof x === 'number'); return v.length ? d3.mean(v) : null; };
-  window.iprUrgent = (a, b) => (IPR_PRIO.indexOf(a.priority) - IPR_PRIO.indexOf(b.priority)) || (IPR_TIERS.indexOf(iprTier(a.customer)) - IPR_TIERS.indexOf(iprTier(b.customer))) || ((b.hours_vs_deadline ?? 0) - (a.hours_vs_deadline ?? 0));
+  window.iprUrgent = (a, b) => (IPR_PRIO.indexOf(a.priority) - IPR_PRIO.indexOf(b.priority)) || ((b.hours_vs_deadline ?? 0) - (a.hours_vs_deadline ?? 0));
 
   // Horizontal bars with an optional reference tick per row and a tooltip.
   window.iprBars = (el, data, opts) => {
@@ -790,9 +802,6 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
   const fpp = (a) => a.filter((x) => x.attempt === 1 && ['Pass', 'Fail', 'Reprocess required'].includes(x.qc_result));
   const of = (n, d) => `${n} of ${d}`;
   // Headline sentence: same numbers as scorecard Top 5 #1 and #2.
-  T('hl-ontime', () => { const r = iprRows('images'); if (!r) return null; const k = kpi(r); return share(k.filter((x) => x.on_time === 'Yes'), k); });
-  T('hl-p0', () => { const r = iprRows('images'); if (!r) return null; const p = kpi(r).filter((x) => x.priority === 'P0'); return of(p.filter((x) => x.on_time === 'Yes').length, p.length); });
-  T('hl-late', () => { const r = iprRows('images'); if (!r) return null; return iprFmt.n(late(r).length); });
 
   // Gates run in order; an image sits at the first gate it hasn't met. Delivered = past every gate.
   const GATES = [
@@ -964,9 +973,6 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
 
   T('cs-overdue', () => { const r = iprRows('images'); if (!r) return null; return iprFmt.n(r.filter(iprExt).filter(isLate).length); });
   T('cs-cust', () => { const r = iprRows('images'); if (!r) return null; return iprFmt.n(new Set(r.filter(iprExt).filter(isLate).map((x) => x.customer)).size); });
-  const t1 = (r) => kpi(r).filter((x) => iprTier(x.customer) === 'Tier 1');
-  T('cs-t1', () => { const r = iprRows('images'); return r && iprFmt.n(t1(r).filter(isLate).length); });
-  T('cs-t1-ontime', () => { const r = iprRows('images'); if (!r) return null; const k = t1(r); return share(k.filter((x) => x.on_time === 'Yes'), k); });
   dash.draw('eng-heat-head', (th) => {
     const r = iprRows('images'); if (!r) { th.replaceChildren(); return; }
     const tr = document.createElement('tr');
@@ -991,15 +997,15 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
     const rows = d3.rollups(kpi(r).filter(iprExt), (v) => {
       const del = v.filter((x) => x.delivery_status === 'Delivered').length;
       return { images: v.length, delivered: del, pct: del / v.length, on_time: v.filter((x) => x.on_time === 'Yes').length / v.length, overdue: v.filter(isLate).length };
-    }, (x) => x.customer).map(([c, s]) => ({ customer: c, tier: iprTier(c), ...s }))
-      .sort((a, b) => IPR_TIERS.indexOf(a.tier) - IPR_TIERS.indexOf(b.tier) || a.pct - b.pct);
+    }, (x) => x.customer).map(([c, s]) => ({ customer: c, ...s }))
+      .sort((a, b) => a.pct - b.pct);
     const td = (txt, cls) => { const e = document.createElement('td'); if (cls) e.className = cls; e.textContent = txt; return e; };
     tb.replaceChildren(...rows.map((x) => {
       const tr = document.createElement('tr'); tr.dataset.key = x.customer;
       const bar = document.createElement('td'), wrap = document.createElement('div'), fill = document.createElement('div'), lab = document.createElement('span');
       wrap.className = 'ipr-meter'; fill.className = 'ipr-meter-fill'; fill.style.width = (x.pct * 100) + '%';
       lab.textContent = iprFmt.pct(x.pct); wrap.append(fill); bar.className = 'ipr-meter-cell'; bar.append(wrap, lab);
-      tr.append(td(x.customer), td(x.tier), td(x.images, 'num'), td(x.delivered, 'num'), bar, td(iprFmt.pct(x.on_time), 'num'), td(x.overdue, 'num' + (x.overdue ? ' late' : '')));
+      tr.append(td(x.customer), td(x.images, 'num'), td(x.delivered, 'num'), bar, td(iprFmt.pct(x.on_time), 'num'), td(x.overdue, 'num' + (x.overdue ? ' late' : '')));
       return tr;
     }));
   };
@@ -1076,11 +1082,14 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
   dash.draw('cs-tell-table', (tb) => {
     const r = iprRows('images'); if (!r) { tb.replaceChildren(); return; }
     const m = etaModel();
-    const rows = r.filter(iprExt).filter((x) => x.delivery_status === 'Not processable' || isLate(x))
-      .map((x) => ({ ...x, eta: iprEta(x, m), tier: iprTier(x.customer), customer_update: x.stuck === 'Yes' && x.delivery_status !== 'Not processable' ? 'Processing delayed; team engaged'
+    // Partial coverage: delivered, but the export marks Target Status = Partial (part of the area missing).
+    const partial = (x) => x.delivery_status === 'Delivered' && x.target_status === 'Partial';
+    const rows = r.filter(iprExt).filter((x) => x.delivery_status === 'Not processable' || isLate(x) || partial(x))
+      .map((x) => ({ ...x, eta: iprEta(x, m), customer_update: partial(x) ? `Partial coverage: delivered with about ${Math.floor(x.plan_coverage_pct ?? 0)}% of the area; confirm whether a retake is needed`
+        : x.stuck === 'Yes' && x.delivery_status !== 'Not processable' ? 'Processing delayed; team engaged'
         : x.delivery_status === 'Failed' && x.qc_finding === 'BBR' ? 'Under quality review; we will confirm a new date' : SAY[x.delivery_status] || '' }))
-      .sort((a, b) => IPR_TIERS.indexOf(a.tier) - IPR_TIERS.indexOf(b.tier) || iprUrgent(a, b));
-    iprTable(tb, rows, ['image_id', 'customer', 'tier', 'priority', 'customer_update', 'eta', 'hours_vs_deadline']);
+      .sort((a, b) => partial(a) - partial(b) || iprUrgent(a, b));
+    iprTable(tb, rows, ['image_id', 'customer', 'priority', 'customer_update', 'eta', 'hours_vs_deadline']);
   });
   // Team scorecard: step owned, target met, open items, biggest problem and the ask.
   dash.draw('lead-teams', (tb) => {
@@ -1103,7 +1112,7 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
       ['Engineering (upload)', 'Upload after QC pass (no target set)', '—', openN('Engineering (upload)'),
         `${n((x) => x.delivery_status === 'QC passed, not uploaded')} passed QC but not uploaded`, 'Upload passed images the same shift; agree an upload target'],
       ['Customer Success', 'Keeping customers informed on delays', '—', `${n((x) => iprExt(x) && isLate(x))}`,
-        `${n((x) => isLate(x) && iprTier(x.customer) === 'Tier 1')} Tier 1 images late`, 'Update customers before the deadline passes, Tier 1 first; use the dashboard status, not a manual one'],
+        `${n((x) => isLate(x) && iprExt(x) && (x.priority === 'P0' || x.priority === 'P1'))} P0/P1 customer images late`, 'Update customers before the deadline passes, P0/P1 first; use the dashboard status, not a manual one'],
     ];
     tb.replaceChildren(...rows.map((cells) => { const tr = document.createElement('tr');
       cells.forEach((c, i) => { const td = document.createElement('td'); if (i === 2 || i === 3) td.className = 'num'; if (i === 0) td.style.fontWeight = 'var(--cds-font-weight-medium)'; td.textContent = c; tr.append(td); });
@@ -1112,7 +1121,7 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
   // Weekly trend as a table: on-time % (images) and all stage targets met (attempts); ignores the week filter.
   dash.draw('lead-trend-table', (tb) => {
     const im = dash.data('images'), at = dash.data('attempts'); if (im.status !== 'ok' || at.status !== 'ok') { tb.replaceChildren(); return; }
-    const p = dash.params(), keep = (x) => (!p.sat || x.satellite === p.sat) && (!p.band || x.bandset === p.band) && (!p.prio || x.priority === p.prio) && (!p.cust || x.customer === p.cust) && (!p.acct || iprTier(x.customer) !== 'Internal');
+    const p = dash.params(), keep = (x) => (!p.sat || x.satellite === p.sat) && (!p.band || x.bandset === p.band) && (!p.prio || x.priority === p.prio) && (!p.cust || x.customer === p.cust) && (!p.acct || !iprInternal(x.customer));
     const I = im.data.filter(keep), A = at.data.filter(keep);
     const weeks = d3.rollups(I.filter((x) => x.acquired), (v) => d3.min(v, (x) => x.acquired), (x) => x.week).sort((a, b) => a[1] < b[1] ? -1 : 1).map(([w]) => w);
     const td = (t, cls) => { const e = document.createElement('td'); if (cls) e.className = cls; e.textContent = t; return e; };
@@ -1237,7 +1246,7 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
 
   dash.draw('lead-week-chart', (el) => {
     const im = dash.data('images'); if (im.status !== 'ok') { el.replaceChildren(); return; }
-    const p = dash.params(), I = im.data.filter((x) => (!p.sat || x.satellite === p.sat) && (!p.band || x.bandset === p.band) && (!p.prio || x.priority === p.prio) && (!p.cust || x.customer === p.cust) && (!p.acct || iprTier(x.customer) !== 'Internal'));
+    const p = dash.params(), I = im.data.filter((x) => (!p.sat || x.satellite === p.sat) && (!p.band || x.bandset === p.band) && (!p.prio || x.priority === p.prio) && (!p.cust || x.customer === p.cust) && (!p.acct || !iprInternal(x.customer)));
     const weeks = d3.rollups(I.filter((x) => x.acquired), (v) => d3.min(v, (x) => x.acquired), (x) => x.week).sort((a, b) => a[1] < b[1] ? -1 : 1).map(([w]) => w);
     const k = I.filter((x) => x.in_kpi === 'Yes'), all = k.length ? k.filter((x) => x.on_time === 'Yes').length / k.length : null;
     const rows = weeks.map((w) => { const s = k.filter((x) => x.week === w); if (!s.length) return null; const on = s.filter((x) => x.on_time === 'Yes').length;
@@ -1271,25 +1280,25 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
   const LATE_STATE = (x) => x.stuck === 'Yes' ? 'Processing: stuck' : x.delivery_status === 'Failed' ? 'QC: failed'
     : x.delivery_status === 'QC passed, not uploaded' ? 'Delivery: waiting for upload' : 'QC: pending';
   const LATE_COLORS = { 'Delivery: waiting for upload': 0, 'QC: pending': 1, 'QC: failed': 2, 'Processing: stuck': 3 };
-  // Act now aggregate: open late images per customer (most important tier first), stacked by what blocks them.
+  // Act now aggregate: open late images per customer (most late first), stacked by what blocks them.
   dash.draw('lead-late-chart', (el) => {
     const r = iprRows('images'); el.replaceChildren(); if (!r) return;
     const late = kpi(r).filter(iprExt).filter(isLate);
     if (!late.length) { const p = document.createElement('p'); p.className = 'ipr-note'; p.textContent = 'No open images past deadline in this filter.'; el.append(p); return; }
     const states = Object.keys(LATE_COLORS), color = (s) => dash.colors[LATE_COLORS[s]];
-    const data = d3.groups(late, (x) => x.customer).map(([c, v]) => { const o = { c, tier: iprTier(c), total: v.length, worst: d3.max(v, (x) => x.hours_vs_deadline) };
+    const data = d3.groups(late, (x) => x.customer).map(([c, v]) => { const o = { c, total: v.length, worst: d3.max(v, (x) => x.hours_vs_deadline) };
       states.forEach((s) => { o[s] = v.filter((x) => LATE_STATE(x) === s).length; }); return o; })
-      .sort((a, b) => IPR_TIERS.indexOf(a.tier) - IPR_TIERS.indexOf(b.tier) || b.total - a.total);
+      .sort((a, b) => b.total - a.total);
     const legend = d3.select(el).append('div').attr('class', 'ipr-legend');
     states.filter((s) => late.some((x) => LATE_STATE(x) === s)).forEach((s) => { const it = legend.append('span'); it.append('i').style('background', color(s)); it.append('span').text(s); });
-    const W = Math.max(280, el.clientWidth), H = 250, m = { t: 20, b: 40, l: 8, r: 8 };
+    const W = Math.max(280, el.clientWidth), H = 250, m = { t: 20, b: 26, l: 8, r: 8 };
     const x = d3.scaleBand(data.map((d) => d.c), [m.l, W - m.r]).padding(0.3), y = d3.scaleLinear([0, d3.max(data, (d) => d.total) * 1.15 || 1], [H - m.b, m.t]);
     const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
     const tip = d3.select(el).append('div').attr('class', 'ipr-tip').style('opacity', 0);
     const series = d3.stack().keys(states)(data);
     svg.append('g').selectAll('g').data(series).join('g').attr('fill', (s) => color(s.key)).selectAll('rect').data((s) => s.map((p) => ({ ...p, key: s.key })))
       .join('rect').attr('x', (p) => x(p.data.c)).attr('width', x.bandwidth()).attr('y', (p) => y(p[1])).attr('height', (p) => Math.max(0, y(p[0]) - y(p[1])))
-      .on('mousemove', (ev, p) => { const [mx, my] = d3.pointer(ev, el); tip.style('opacity', 1).text(`${p.data.c} (${p.data.tier}): ${p.data[p.key]} ${p.key.toLowerCase()} of ${p.data.total} late; oldest ${Math.round(p.data.worst / 24)} days late`);
+      .on('mousemove', (ev, p) => { const [mx, my] = d3.pointer(ev, el); tip.style('opacity', 1).text(`${p.data.c}: ${p.data[p.key]} ${p.key.toLowerCase()} of ${p.data.total} late; oldest ${Math.round(p.data.worst / 24)} days late`);
         tip.style('left', Math.max(0, Math.min(mx + 12, el.clientWidth - tip.node().offsetWidth)) + 'px').style('top', (my + 12) + 'px'); })
       .on('mouseleave', () => tip.style('opacity', 0));
     svg.append('g').selectAll('text').data(data).join('text').attr('x', (d) => x(d.c) + x.bandwidth() / 2).attr('y', (d) => y(d.total) - 6).attr('text-anchor', 'middle')
@@ -1298,8 +1307,6 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
     lab.append('tspan').attr('x', (d) => x(d.c) + x.bandwidth() / 2).attr('y', H - m.b + 15).attr('fill', 'var(--color-fg-muted)')
       .text((d) => d.c).each(function () { const room = x.step() - 6; let t = this.textContent;
         while (this.getComputedTextLength() > room && t.length > 2) { t = t.slice(0, -1); this.textContent = t + '…'; } });
-    lab.append('tspan').attr('x', (d) => x(d.c) + x.bandwidth() / 2).attr('y', H - m.b + 29).attr('fill', (d) => d.tier === 'Tier 1' ? 'var(--color-fg)' : 'var(--color-fg-muted)')
-      .attr('font-weight', (d) => d.tier === 'Tier 1' ? 600 : 400).text((d) => d.tier);
   });
 
 })();</script>
