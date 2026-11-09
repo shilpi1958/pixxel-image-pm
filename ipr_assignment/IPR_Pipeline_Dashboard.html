@@ -4,27 +4,35 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>IPR Pipeline Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-:root { color-scheme: light dark;
-  --color-fg:#1f1e1c; --color-fg-muted:#6b6862; --color-bg:#faf9f6; --color-panel:#ffffff; --color-border-line:#e4e1da;
-  --color-ok:#2f7d4f; --color-warn:#b7791f; --color-bad:#c0392b;
-  --cds-chart-status-critical:#c0392b; --cds-chart-status-positive:#2f7d4f; --cds-chart-reference:#8a8680;
-  --cds-surface-popover:#ffffff; --cds-shadow-popover:0 4px 16px rgba(0,0,0,.14); --cds-text-secondary:#6b6862; --cds-border:#e4e1da;
-}
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --color-fg:#ecebe8; --color-fg-muted:#a39f98; --color-bg:#1b1a19; --color-panel:#242321; --color-border-line:#3a3835;
-  --color-ok:#5cb57f; --color-warn:#e0a84a; --color-bad:#e5675a;
-  --cds-chart-status-critical:#e5675a; --cds-chart-status-positive:#5cb57f; --cds-chart-reference:#8a8680;
-  --cds-surface-popover:#2c2b29; --cds-shadow-popover:0 4px 16px rgba(0,0,0,.5); --cds-text-secondary:#a39f98; --cds-border:#3a3835; } }
+:root { color-scheme: light dark; --bg:#f4f6f5; --panel:#ffffff; --fg:#172126; --muted:#5a676d; --line:#d9e0de; --accent:#1f5f7a; --accent-soft:#e3eef2; --bad:#b23a2e; --warn:#9a6b12; --ok:#2c7a4b; --code-bg:#eef2f1; --pop-shadow:0 4px 16px rgba(0,0,0,.14); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#10171a; --panel:#172024; --fg:#e3e9e8; --muted:#93a3a8; --line:#2a373c; --accent:#7cc0d8; --accent-soft:#1d3540; --bad:#ef8a7c; --warn:#e0b45a; --ok:#7fcc98; --code-bg:#1d282c; --pop-shadow:0 4px 16px rgba(0,0,0,.5); color-scheme:dark; } }
+:root[data-theme="dark"] { --bg:#10171a; --panel:#172024; --fg:#e3e9e8; --muted:#93a3a8; --line:#2a373c; --accent:#7cc0d8; --accent-soft:#1d3540; --bad:#ef8a7c; --warn:#e0b45a; --ok:#7fcc98; --code-bg:#1d282c; --pop-shadow:0 4px 16px rgba(0,0,0,.5); color-scheme:dark; }
 :root {
-  --font-anthropic-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif;
-  --font-anthropic-serif: Georgia, "Times New Roman", serif;
+  --color-fg:var(--fg); --color-fg-muted:var(--muted); --color-bg:var(--bg); --color-panel:var(--panel); --color-border-line:var(--line);
+  --color-ok:var(--ok); --color-warn:var(--warn); --color-bad:var(--bad);
+  --cds-chart-status-critical:var(--bad); --cds-chart-status-positive:var(--ok); --cds-chart-reference:var(--muted);
+  --cds-surface-popover:var(--panel); --cds-shadow-popover:var(--pop-shadow); --cds-text-secondary:var(--muted); --cds-border:var(--line);
+  --font-display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-anthropic-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-anthropic-serif: var(--font-display);
   --cds-font-size-title:28px; --cds-font-size-heading:18px; --cds-font-size-body:15px; --cds-font-size-caption:12.5px; --cds-font-weight-medium:600;
   --cds-gap-xs:4px; --cds-gap-sm:8px; --cds-gap-md:16px; --cds-gap-lg:28px;
   --cds-pad-xs:4px; --cds-pad-sm:8px; --cds-pad-md:12px; --cds-pad-lg:20px; --cds-radius:8px; --cds-dur-slow:.3s;
 }
 [hidden] { display:none !important; }
-html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-family:var(--font-anthropic-sans); font-size:15px; line-height:1.45; }
+html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-family:var(--font-anthropic-sans); font-size:15px; line-height:1.5; }
+a { color:var(--accent); text-underline-offset:2px; }
+.band { height:6px; background:linear-gradient(90deg, #4b3aa8 0%, #2f6fd0 14%, #1f9fb0 28%, #3fa64a 42%, #c9c32a 55%, #e08a2a 68%, #c63b2b 80%, #7a1f2b 100%); }
+header.top { border-bottom:1px solid var(--line); background:var(--panel); }
+.top-inner { max-width:1280px; margin:0 auto; padding:18px 16px 16px; display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:8px 24px; box-sizing:border-box; }
+.top-inner h1 { margin:0; font-family:var(--font-display); font-weight:600; font-size:1.6rem; letter-spacing:.01em; }
+.meta { font-family:var(--font-mono); font-size:.78rem; color:var(--muted); display:flex; flex-wrap:wrap; gap:4px 16px; }
+.band-label { font-size:.7rem; letter-spacing:.06em; text-transform:uppercase; }
 #dash-root { max-width:1280px; margin:0 auto; padding:24px 16px 48px; box-sizing:border-box; }
 #dash-root .dash-select { font:inherit; color:var(--color-fg); background:var(--color-panel); border:1px solid var(--color-border-line); border-radius:var(--cds-radius); padding:4px 8px; }
 .export-note { font-size:12px; color:var(--color-fg-muted); text-align:center; padding:0 16px 24px; }
@@ -73,7 +81,7 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
     resetParams() { params = {}; schedule(); },
     setLink(id) { try { history.replaceState(null, '', '#' + id); } catch (e) {} schedule(); },
     refresh() { schedule(); },
-    colors: ['#3b6fd8', '#d9822b', '#2f9e8f', '#c2410c', '#7c5cc4', '#b8860b', '#4b8bbe', '#9a6b4f'],
+    colors: ['var(--accent)', '#d9822b', '#2f9e8f', '#c2410c', '#7c5cc4', '#b8860b', '#4b8bbe', '#9a6b4f'],
   };
   let w = window.innerWidth;
   window.addEventListener('resize', () => { w = window.innerWidth; schedule(); });
@@ -81,12 +89,22 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
 </script>
 </head>
 <body>
+<div class="band" aria-hidden="true"></div>
+<header class="top">
+  <div class="top-inner">
+    <h1 id="top">IPR Pipeline Dashboard</h1>
+    <div class="meta">
+      <a href="IPR_Submission.html">← Submission</a>
+      <span class="band-label">VNIR 470–900 nm</span>
+    </div>
+  </div>
+</header>
 <div id="dash-root">
 
 <style>
   .ipr { display: flex; flex-direction: column; gap: var(--cds-gap-lg); font-family: var(--font-anthropic-sans); }
   .ipr h1 { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0; text-wrap: balance; }
-  .ipr h2 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0; }
+  .ipr h2 { font-family: var(--font-display); font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0; }
   .ipr h3 { font-size: var(--cds-font-size-body); font-weight: var(--cds-font-weight-medium); margin: 0; }
   .ipr-take { margin: var(--cds-gap-xs) 0 0; color: var(--color-fg-muted); max-width: 70ch; }
   .ipr .ipr-take b { color: var(--color-fg); font-weight: var(--cds-font-weight-medium); }
@@ -95,16 +113,16 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
   .ipr-reset { align-self: flex-end; background: none; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); color: var(--color-fg); padding: var(--cds-pad-xs) var(--cds-pad-sm); cursor: pointer; font: inherit; }
   .ipr-reset:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
   .ipr-view { scroll-margin-top: 12px; }
-  .ipr-view-h { font-family: var(--font-anthropic-serif); font-weight: 400 !important; font-size: var(--cds-font-size-title) !important; padding-top: var(--cds-gap-md); border-top: 1px solid var(--color-border-line); }
+  .ipr-view-h { font-family: var(--font-display); font-weight: 600 !important; font-size: var(--cds-font-size-title) !important; padding-top: var(--cds-gap-md); border-top: 1px solid var(--color-border-line); }
   .ipr-personas { display: flex; flex-direction: column; gap: var(--cds-gap-sm); }
   .ipr-persona-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: var(--cds-gap-md); }
   .ipr-persona { display: flex; flex-direction: column; gap: var(--cds-gap-xs); text-align: left; background: var(--color-panel); color: var(--color-fg); font: inherit; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-md); cursor: pointer; min-width: 0; }
-  .ipr-persona[aria-pressed="true"] { border-color: var(--color-fg); box-shadow: inset 0 0 0 1px var(--color-fg); }
+  .ipr-persona[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
   .ipr-persona:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
   .ipr-persona-top { display: flex; justify-content: space-between; align-items: baseline; gap: var(--cds-gap-sm); }
   .ipr-persona-name { font-weight: var(--cds-font-weight-medium); }
   .ipr-persona-tag { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); border: 1px solid var(--color-border-line); border-radius: 999px; padding: 0 6px; white-space: nowrap; }
-  .ipr-persona-q { font-family: var(--font-anthropic-serif); line-height: 1.35; }
+  .ipr-persona-q { line-height: 1.4; }
   .ipr-persona-row { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
   .ipr-persona-row b { color: var(--color-fg); font-weight: var(--cds-font-weight-medium); margin-right: 4px; }
   .ipr-persona-exp { margin-top: auto; padding-top: var(--cds-gap-xs); font-size: var(--cds-font-size-caption); font-weight: var(--cds-font-weight-medium); }
@@ -114,7 +132,7 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
   .ipr-tile, .ipr-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); min-width: 0; }
   .ipr-tile { display: flex; flex-direction: column; gap: var(--cds-gap-xs); }
   .ipr-tile-label { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
-  .ipr-tile-value { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); font-variant-numeric: tabular-nums; min-height: 1.3em; }
+  .ipr-tile-value { font-family: var(--font-display); font-weight: 600; font-size: var(--cds-font-size-title); font-variant-numeric: tabular-nums; min-height: 1.3em; }
   .ipr-tile-note { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
   .ipr-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: var(--cds-gap-md); }
   .ipr-card { display: flex; flex-direction: column; gap: var(--cds-gap-sm); }
@@ -124,13 +142,13 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
   .ipr-tip span { color: var(--cds-text-secondary); }
   .ipr-tablebox { max-height: 24rem; overflow: auto; }
   .ipr table { width: 100%; border-collapse: collapse; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
-  .ipr th { position: sticky; top: 0; background: var(--color-panel); text-align: left; font-weight: var(--cds-font-weight-medium); color: var(--color-fg-muted); padding: var(--cds-pad-xs) var(--cds-pad-sm); border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
+  .ipr th { position: sticky; top: 0; background: var(--code-bg); text-align: left; font-weight: var(--cds-font-weight-medium); color: var(--color-fg-muted); padding: var(--cds-pad-xs) var(--cds-pad-sm); border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
   .ipr td { padding: var(--cds-pad-xs) var(--cds-pad-sm); border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
   .ipr td.num, .ipr th.num { text-align: right; }
   .ipr .ipr-wrap td { white-space: normal; vertical-align: top; min-width: 6rem; }
   .ipr .ipr-act td { padding-top: var(--cds-pad-sm); padding-bottom: var(--cds-pad-sm); font-size: var(--cds-font-size-body, 14px); }
   .ipr .ipr-act th:first-child, .ipr .ipr-act td:first-child { position: sticky; left: 0; background: var(--color-panel); z-index: 1; }
-  .ipr .ipr-act th:first-child { z-index: 2; }
+  .ipr .ipr-act th:first-child { z-index: 2; background: var(--code-bg); }
   .ipr-next { border-color: var(--color-fg); }
   .ipr-meter-cell { display: flex; align-items: center; gap: var(--cds-gap-sm); min-width: 9rem; }
   .ipr-meter { flex: 1; height: 8px; border-radius: 4px; background: var(--color-border-line); overflow: hidden; }
@@ -141,7 +159,7 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
   .ipr .ipr-sum td { font-weight: var(--cds-font-weight-medium); color: var(--color-fg); }
   .ipr-subtabs { display: flex; flex-wrap: wrap; gap: var(--cds-gap-xs); }
   .ipr-subtab { background: none; border: 1px solid var(--color-border-line); border-radius: 999px; color: var(--color-fg-muted); padding: var(--cds-pad-xs) var(--cds-pad-md); cursor: pointer; font: inherit; font-size: var(--cds-font-size-caption); }
-  .ipr-subtab[aria-selected="true"] { background: var(--color-fg); border-color: var(--color-fg); color: var(--color-bg, var(--color-panel)); }
+  .ipr-subtab[aria-selected="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); font-weight: 600; }
   .ipr-subtab:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
   .ipr-group { display: flex; flex-direction: column; gap: var(--cds-gap-md); }
   .ipr-group[hidden] { display: none; }
@@ -168,13 +186,13 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
   button.ipr-box { background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; justify-content: flex-start; }
   button.ipr-box.on { border-color: var(--color-fg); border-width: 2px; }
   button.ipr-box:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
-  .ipr-box-n { font-family: var(--font-anthropic-serif); font-size: var(--cds-font-size-heading); font-variant-numeric: tabular-nums; }
+  .ipr-box-n { font-family: var(--font-display); font-weight: 600; font-size: var(--cds-font-size-heading); font-variant-numeric: tabular-nums; }
   .ipr-box-l, .ipr-box-s { font-size: var(--cds-font-size-caption); }
   .ipr-box-s { color: var(--color-fg-muted); }
   .ipr-box-s.late { color: var(--color-bad); }
   .ipr-box-s.warn { color: var(--color-warn); }
   .ipr-hl { margin: var(--cds-gap-sm) 0 0; font-size: var(--cds-font-size-heading); line-height: 1.4; max-width: 70ch; text-wrap: pretty; }
-  .ipr .ipr-hl b { font-family: var(--font-anthropic-serif); font-weight: 400; color: var(--color-bad); font-variant-numeric: tabular-nums; }
+  .ipr .ipr-hl b { font-family: var(--font-display); font-weight: 600; color: var(--color-bad); font-variant-numeric: tabular-nums; }
   .ipr-snapshot { margin: var(--cds-gap-sm) 0 0; display: flex; flex-wrap: wrap; gap: var(--cds-gap-xs) var(--cds-gap-sm); align-items: baseline; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); border: 1px solid var(--color-border-line); border-left: 3px solid var(--color-warn); border-radius: var(--cds-radius); padding: var(--cds-pad-xs) var(--cds-pad-sm); max-width: 70ch; }
   .ipr .ipr-snapshot b { color: var(--color-fg); font-weight: var(--cds-font-weight-medium); }
   @media (max-width: 640px) { .ipr-arrow { display: none; } }
@@ -195,7 +213,6 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
 
 <div class="ipr">
   <header>
-    <h1 id="top">IPR Pipeline Dashboard</h1>
     <p class="ipr-hl" id="headline">Only <b data-draw="hl-ontime" data-source="images">—</b> of processable images delivered on time. <b data-draw="hl-p0" data-source="images">—</b> P0 images met their 8h SLA. <b data-draw="hl-late" data-source="images">—</b> images are late and undelivered.</p>
     <p class="ipr-snapshot" id="snapshot"><span class="ipr-pill warn">Data as of</span> <span><b data-draw="snap-time" data-source="images">—</b> UTC: the latest timestamp in the export (it has no pull time). Lateness and ETAs count from here.</span></p>
     <p class="ipr-take" data-draw="take-range" data-source="images">—</p>
