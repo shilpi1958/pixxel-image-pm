@@ -46,9 +46,11 @@ What stays late at the end of week 2:
 - No new images arrive during the two weeks.
 - Each person has 6 productive hours a day.
 - Engineer owners are confirmed on Day 1.
+- **Upload** = the image is sent to DataHub. An image can be uploaded without passing QC.
+- **Delivered** = the image passed QC and was uploaded. Only delivered images count as done.
 - **Who uploads images:**
-  - *What we saw:* 7 images passed QC but were never sent to the customer. Passing QC does not send an image on its own, and the data doesn't say who sends it.
-  - *What we assume:* sending an image after it passes QC is a manual step, and Eng B can do it.
+  - *What we saw:* 7 images passed QC but were never uploaded. Passing QC does not upload an image on its own, and the data doesn't say who uploads it.
+  - *What we assume:* uploading an image after it passes QC is a manual step, and Eng B can do it.
   - *To confirm:* with IPR on Day 1. If someone else does it, Eng B's upload hours move to them.
 
 ## Order for clearing the 28 late images
