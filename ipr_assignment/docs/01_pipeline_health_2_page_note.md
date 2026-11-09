@@ -13,12 +13,7 @@ Images are late far more often than they fail, and P0 is worst: no P0 image met 
 | P0 on time | 0 of 8; 3 never arrived |
 | Customer status wrong | 45 of 95 images |
 
-Four causes:
-
-- **No priority lane:** processing and QC wait take the same time at every priority, so P0s queue behind P4s.
-- **QC may not gate upload:** most uploads are logged before QC starts. Not yet confirmed: it could be late logging rather than a skipped check.
-- **Incomplete imagery enters processing:** incomplete images fail QC far more often than complete ones (an association, not proven cause).
-- **The data can't measure QC:** there is no QC-end timestamp.
+Four root causes: no priority lane, QC not clearly gating upload, incomplete imagery processed anyway, and recurring BBR (see Root causes).
 
 **Next:** the fix for each cause is sequenced in the [IPR 2-Week Plan](https://claude.ai/artifact/7TYRU23LDK93ek3b6BkZGc).
 
@@ -29,7 +24,7 @@ Every processable image that wasn't delivered is past its deadline. \
 
 | Bucket | Images | Rule |
 | --- | --- | --- |
-| Not captured | 6 | Never imaged; out of KPIs |
+| Not captured | 6 | Never imaged; out of KPIs. 2 (AgriSense, UrbanAtlas) are shown to customers as Delivered: correct the status, offer a re-task |
 | Cloudy, not processable | 0 | Over 70% cloud |
 | Delivered | 61 | QC pass + upload |
 | QC passed, not uploaded | 7 | 5 ready to upload; 2 have a stuck run to check first |
@@ -68,12 +63,12 @@ Few attempts meet the three measurable targets (ingest, processing, QC wait), an
 
 A missing timestamp counts as not met. P4 looks fine only because its 48h window is generous.
 
-**So:** the pipeline treats a P0 like a P4: QC wait is about 3.5h at every priority, first come, first served. And the timestamps can't say how long QC takes: step 4 is negative in 74% of attempts, meaning the upload was logged before QC started.
+**So:** a P0 gets no head start (QC wait is about 3.5h at every priority), and the timestamps can't time QC review. Both feed root causes 1 and 2.
 
 ## Root causes
 
 1. **Priority isn't in the workflow.** Processing and QC run first come, first served; nothing moves a P0 ahead. P0 median delivery is 10.4h against an 8h SLA.
-2. **QC sequencing is unclear.** Upload precedes QC start in 74% of attempts, and some images sit on DataHub without a pass. Either QC start is logged late or QA audits after upload; IPR / QA must confirm which.
+2. **QC sequencing is unclear.** Upload precedes QC start in 74% of attempts, and some images sit on DataHub without a pass. Either QC start is logged late or QA audits after upload; IPR / QA must confirm which. There is also no QC-end timestamp, so QC review can't be timed.
 3. **Incomplete imagery is processed anyway.** Almost every incomplete attempt ran, and incomplete images fail QC far more often (table below). No gate holds them for re-downlink or re-task.
 4. **BBR recurs.** It is the top failure reason, concentrated in Vegetation, and comes back on retry, so reprocessing alone doesn't fix it (patterns table).
 
@@ -97,31 +92,35 @@ FF02 and the Vegetation bandset stand out. Cloud and off-nadir angle don't.
 
 Processing time barely varies with any of these (4.5–5.7h; correlation with angles, cloud and coverage ≤ 0.11). They cost time through failures and reprocessing, not slower runs.
 
-## Immediate actions: 5 cases, 6 images
+## Images needing attention: 7 late P0/P1
 
-Ranked by priority, hours late and ease of fix. Two need only an upload.
+Ranked by priority, then hours late. 6 can move now; the BBR hold can't.
 
-| # | Image | Customer | Priority | State | Overdue | Action (owner) |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | FF01\_20260601\_1084\_DUBAI | UrbanAtlas | P0 | Passed QC, never uploaded | 697h | Upload today (Eng). Customer has asked for an update |
-| 2 | FF01\_20260614\_1040\_GUJAR | MineralsCo | P0 | Passed QC, never uploaded | 375h | Upload today (Eng) |
-| 3 | FF02\_20260605\_1088\_DUBAI | UrbanAtlas | P0 | QC pending | 592h | QC decision first in the queue (QA/QC). Second late P0 for UrbanAtlas, so one CS update covers both |
-| 4 | FF02\_20260613\_1042\_RAJAS | AgriSense | P1 | Passed QC, but processing never recorded an end | 401h | Confirm the output exists, then upload (Eng) |
-| 5 | FF01\_20260623\_1026\_NILED, FF03\_20260624\_1086\_DUBAI | AgriSense, UrbanAtlas | P1 | Never captured, but customers are told "Delivered" | n/a | Correct the customer status and offer a re-task (CS) |
+| # | Image | Customer | Priority | State | Overdue |
+| --- | --- | --- | --- | --- | --- |
+| 1 | FF01\_20260601\_1084\_DUBAI | UrbanAtlas | P0 | Passed QC, never uploaded. Customer has asked for an update | 697h |
+| 2 | FF02\_20260605\_1088\_DUBAI | UrbanAtlas | P0 | Waiting for a QC decision | 592h |
+| 3 | FF01\_20260614\_1040\_GUJAR | MineralsCo | P0 | Passed QC, never uploaded | 375h |
+| 4 | FF02\_20260610\_1079\_GUJAR | MineralsCo | P1 | Waiting for a QC decision | 463h |
+| 5 | FF02\_20260613\_1042\_RAJAS | AgriSense | P1 | Passed QC, but the run is stuck (no processing end) | 401h |
+| 6 | FF03\_20260624\_1047\_ODISH | MineralsCo | P1 | Waiting for a QC decision | 130h |
+| 7 | FF01\_20260623\_1063\_BENGA | Internal Demo | P1 | Failed QC on BBR; held until the BBR fix | 167h |
 
-After these, 3 more QC-passed images can be uploaded today, and one more (P3, FF01\_20260611\_1089\_GUJAR) has a stuck run to check first. The 3 uploaded without a QC pass need a QC decision; 2 of them show Delivered to customers.
+Order and owners: see the [IPR 2-Week Plan](https://claude.ai/artifact/7TYRU23LDK93ek3b6BkZGc).
 
 ## Measure it: top 5 daily metrics
 
 Headline: on-time delivery, 58% (P0 0%). Values cover the June export.
 
-| # | Metric | Numerator | Denominator | Current |
-| --- | --- | --- | --- | --- |
-| 1 | On-time delivery % | Processable images delivered (QC pass + upload) by their deadline | Processable images whose deadline has passed | 58% (52/89); P0 0/8 |
-| 2 | Late images | Processable images not delivered and past their deadline | A count, split by state | 28: 7 QC passed but not uploaded, 3 uploaded without QC, 7 in progress, 11 failed |
-| 3 | Delivery time: median / slowest 10%, by priority | Hours from acquisition to first delivery | Delivered images in that priority | 10.9h / 17.8h; P0 median 10.4h against an 8h SLA |
-| 4 | First-pass QC pass % | Images that pass manual QC on attempt 1 | Attempt-1 images with a QC decision (pass, fail, or reprocess required) | 83% (65/78) |
-| 5 | Reprocess success % | Reprocessed images that end up delivered | Processable images with 2 or more attempts | 85% (22/26) |
+| # | Metric | Numerator | Denominator | Current | Target |
+| --- | --- | --- | --- | --- | --- |
+| 1 | On-time delivery | Processable images delivered (QC pass + upload) by their deadline. Open late images count as misses | Processable images | 58% (52/89); P0 0/8 | ≥ 95% |
+| 2 | Late backlog | Processable images not delivered and past their deadline | A count, split by state | 28: 7 QC passed but not uploaded, 3 uploaded without QC, 7 in progress, 11 failed | 0 |
+| 3 | Slowest-10% delivery time vs SLA | 90th-percentile delivery time (acquisition to delivery) | Each image's SLA hours; delivered images only, so read with the late backlog | 1.2× SLA (61 delivered) | ≤ 1.0× |
+| 4 | First-pass QC pass rate | Images that pass QC on attempt 1 | Attempt-1 QC decisions (pass, fail, or reprocess required) | 83% (65/78) | ≥ 90% |
+| 5 | Eventual delivery after reprocessing | Reprocessed images that end up delivered | Processable images with 2 or more attempts | 85% (22/26) | ≥ 90% |
+
+Targets are my proposal, still to be agreed with Engineering and QA/QC.
 
 The choice of denominator barely moves the headline:
 
@@ -168,7 +167,7 @@ All 15 gaps, the cleaning decisions and the checks to enforce at the source: App
 |  | Question | Short answer | Where |
 | --- | --- | --- | --- |
 | A | Processing health | 95 images: 89 processable, 6 not captured. Of the 89: 61 delivered, 7 in progress, 11 failed, 7 passed QC but not uploaded, 3 uploaded without a QC pass | Pipeline health |
-| B | Images needing attention | 5 cases, 6 images: two P0s that only need an upload, a P0 waiting for QC, a stuck P1 that passed QC, and two never-captured images shown as Delivered | Immediate actions |
+| B | Images needing attention | 7 late P0/P1: two P0s that only need an upload, three waiting for QC, a stuck P1 that passed QC, and a BBR hold | Images needing attention |
 | C | Patterns | FF02 (36% on time) and Vegetation (7 of 11 failures, 5 BBR) stand out; incomplete images fail far more; cloud and off-nadir angle show no pattern | Root causes |
 | D | Duplicates and attempts | One row per Image ID + attempt (6 stale duplicates removed); the latest valid attempt is the image's row; SLA locked to attempt 1 | Assumptions; Appendix |
 | E | What counts as delivered | QC Result Pass and uploaded; a pass with a caveat counts, shown apart. SLA assumed to run from acquisition | Assumptions; Top 5, metric 1 |

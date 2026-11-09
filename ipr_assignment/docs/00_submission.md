@@ -20,8 +20,22 @@ Nov 7, 2026 · @Sj
 
 ## Key assumptions
 
-- **One row per image:** the latest valid attempt. 136 export rows → 95 images, 89 of them processable.
+- **One row per image:** the latest valid attempt. The 89 processable images are the base for every metric (counts below).
 - **Delivered** = passed QC and uploaded. Uploaded without a QC pass doesn't count.
 - **SLA** runs from acquisition, locked to the attempt-1 priority.
 - **"Now"** = 30 Jun 2026 16:06 UTC, the latest timestamp in the export (it has no pull time).
 - **Step targets** (share of the SLA window) are my proposal, still to be agreed with Engineering and QA.
+
+### From export rows to images
+
+Images acquired 1–28 Jun 2026.
+
+| Count | Number | How it's made |
+| --- | --- | --- |
+| Export rows | 136 | Rows in the source export |
+| − Duplicates removed | 6 | Stale copies of the same attempt |
+| = Valid rows | 130 | 123 processing attempts + 7 rows for not-captured images |
+| Images | 95 | One per ordered capture |
+| Processable images | 89 | Processed 123 times (one attempt per run); 26 needed more than one run |
+| Average attempts per image | 1.38 | 123 ÷ 89: 63 ran once, 18 twice, 8 three or more times |
+| Not captured | 6 | 7 rows (some tried more than once); no processing run; excluded from delivery metrics |

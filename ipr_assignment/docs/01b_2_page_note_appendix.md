@@ -8,7 +8,7 @@ Every number depends on these decisions. Source: IPR\_Cleaned\_Data.xlsx. Terms 
 
 | Decision | What I did | Why |
 | --- | --- | --- |
-| One row per image | 136 rows → 95 images (latest valid attempt); 6 stale duplicates removed. One Row Status column marks each row (Latest attempt / Not captured / Earlier attempt / Removed), replacing two Yes/No flags | No double counting |
+| One row per image | Latest valid attempt per image; stale duplicates removed. Counts from export rows to images: [Overview](00_submission.md). One Row Status column marks each row (Latest attempt / Not captured / Earlier attempt / Removed), replacing two Yes/No flags | No double counting |
 | Priority and SLA | Locked to attempt 1: P0 8h, P1 12h, P2 16h, P3 24h, P4 48h | 21 images changed priority on a retry |
 | Delivered | QC pass + upload (Delivery Status) | 3 images uploaded without a QC pass don't count |
 | Processable | 89 of 95; the 6 never captured are excluded | Partly cloudy images were still delivered (up to 68% cloud) |
