@@ -23,7 +23,7 @@ Nov 7, 2026 · @Sj
 - **One row per image:** the latest valid attempt. The 89 processable images are the base for every metric (counts below).
 - **Delivered** = passed QC and uploaded. Uploaded without a QC pass doesn't count.
 - **SLA** runs from acquisition, locked to the attempt-1 priority.
-- **"Now"** = 30 Jun 2026 16:06 UTC, the latest timestamp in the export (it has no pull time).
+- **"Now"** = 30 Jun 2026 16:05 UTC, the latest timestamp in the export (it has no pull time).
 - **Step targets** (share of the SLA window) are my proposal, still to be agreed with Engineering and QA.
 
 ### From export rows to images
