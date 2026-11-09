@@ -37,7 +37,7 @@ Every processable image that wasn't delivered is past its deadline. \
 
 ## Where time is lost
 
-Averages look fine only because 48h orders dominate. By tier, processing alone breaks the 8h, 12h and 16h targets.
+Averages look fine only because 48h orders dominate. By SLA priority, processing alone breaks the 8h, 12h and 16h targets.
 
 _[Chart: processing time by priority, over all 123 valid attempts. Interactive in the live doc.]_
 
@@ -152,6 +152,7 @@ All 15 gaps, the cleaning decisions and the checks to enforce at the source: App
 - Priority and SLA locked to attempt 1 (21 images changed priority on a retry).
 - Delivered = QC pass + upload. A pass with a caveat counts, shown apart.
 - The 6 never-captured images are left out of processable-image KPIs.
+- An image with over 70% cloud is not processable. The cut-off is mine, not from the export; the only image above it was never captured, so no KPI changes.
 - The SLA is assumed to start at acquisition; the export has no order time.
 
 **For IPR / QA**
@@ -162,6 +163,8 @@ All 15 gaps, the cleaning decisions and the checks to enforce at the source: App
 - **How long does a manual QC review take, and where is QC recorded?** A rough estimate per bandset helps; whether that system can take QC End decides if week 2's logging is a setting or a build.
 - **Do the proposed step targets fit?** Ingest 20, processing 30, QC wait 10, QC review 25 and upload 15% of SLA.
 - **Why are images reprocessed?** 23 of 34 reprocesses followed a QC pass, and 3 delivered images were reworked. No reason is recorded.
+- **What does "Sent to Aurora" mean?** It is the last status on 19 attempts, and I count it as delivered, like "DataHub upload complete". If Aurora is a later hand-off rather than the delivery itself, delivery times change.
+- **What does Processing Queue mean, and what decides it?** It has 5 values: default, priority, science\_debug, manual\_retry and nightly\_reprocess. The names don't match the runs: 26 first attempts sit in a retry or reprocess queue, so I left the field out of all metrics.
 
 ## Index: the brief's questions
 

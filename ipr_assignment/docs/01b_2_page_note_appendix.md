@@ -105,7 +105,9 @@ How the cleaned data handles some of these today:
 | 6 | The workbook keeps the raw per-attempt deadline as Attempt Deadline (raw); it differs on 24 retry rows |
 | 7 | Stale status text in 41 of 123 attempts |
 | 12 | Of the 8 Pending rows, Failure Reason reads as a pass in 5 and a fail in 3 |
+| 13 | Delivered time = the first QC-passed upload. 14 images were uploaded on two or more attempts; the later uploads are re-deliveries, not new deliveries |
 | 14 | Low SNR is noted on 15 images and Minor haze on 12 |
+| 15 | Notes don't decide anything. Example: "Duplicate row from reprocess attempt" sits on 11 attempt-1 rows, and 10 of those images ran only once |
 
 ### Checks that stop bad data at entry
 
@@ -120,7 +122,7 @@ The workbook can only flag problems after the fact. These checks would stop them
 | Status values from a fixed list | Every status field | Reject free text | |
 | Cloud % between 0 and 100; angles in range | Ingest | Reject and flag | |
 | Customer status derived from pipeline state | CS tool | Never set by hand | 45 of 95 wrong |
-| Target Status from Plan Coverage %: ≥ 95% = Captured, 1–94% = Partial, 0% = Not captured | Acquisition / ingest | Set automatically, never by hand | Some "Not captured" images show 12.4% coverage |
+| Target Status from Plan Coverage %: ≥ 95% = Captured, 1–94% = Partial, 0% = Not captured | Acquisition / ingest | Set automatically, never by hand | Some "Not captured" images show 12.4% coverage; 44 of 61 delivered images are under 95%, so the line needs confirming |
 | Image Complete means data integrity only: "All frames received: Yes / No" | Ingest | Keep coverage out of this field, so it can't contradict Target Status | 8 rows say Complete at 42–79% coverage |
 | Completeness gate before processing | Ingest, before Trigger | All frames → process. AOI frames present → process, flagged. AOI frames missing → hold, then re-downlink or re-task; never rerun | 20 of 23 incomplete attempts were processed |
 | QC Result holds the decision only (Pass, Fail, Pending, Reprocess required); the defect and its severity go in QC Finding (e.g. BBR: severe / moderate) | The system behind Manual QC Status | Required on every Fail and every pass with a caveat | Severity sits in free text; the workbook rebuilds it as BBR Severity |
@@ -138,4 +140,7 @@ The full set has 20 column-pair rules. Each shows how often this export breaks i
 
 - **Does QC have to pass before upload?** QC starts after upload in 74% of attempts. Until IPR / QA confirm, I flag this but don't block it.
 - **Who sets Strip Fulfillment, and when?** It's set after upload in 44 of 53 rows, and 5 never-captured images are marked Fulfilled. I left it out of all metrics.
+- **What happens after an ISOFIT crash?** ISOFIT is the atmospheric-correction step. 3 images crashed there: 1 was retried and delivered, and 2 were never retried and wait on science review. Who decides between a retry and a fix, and by when?
+- **Why upload the same image again?** 14 images were uploaded on two or more attempts, and 3 delivered images have a newer attempt that was never uploaded. No reason is recorded, so a customer request and a recheck look the same.
+- **How much of the area must an image cover to count as captured?** Most delivered images cover 83–94% of the planned area, and "AOI edge clipped" appears on images in that range. For now the dashboard's Customer Success view flags only images the export marks Partial (2 delivered to customers, at 41% and 73%), so CS can tell the customer before they notice.
 - **Moderate or severe BBR?** One row says moderate in its QC status but severe in Failure Reason. I recorded it as Severe in the workbook's BBR Severity column.
