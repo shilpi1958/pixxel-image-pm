@@ -22,6 +22,7 @@ Nov 7, 2026 · @Sj
 
 - **One row per image:** the latest valid attempt. The 89 processable images are the base for every metric (counts below).
 - **Delivered** = passed QC and uploaded. Uploaded without a QC pass doesn't count.
+- **Processable** = captured and at most 70% cloud. The 70% cut-off is my assumption, not from the export; no captured image is above it today.
 - **SLA** runs from acquisition, locked to the attempt-1 priority: P0 8h, P1 12h, P2 16h, P3 24h, P4 48h. These hours come from the export's priority labels.
 - **"Now"** = 30 Jun 2026 16:05 UTC, the latest timestamp in the export (it has no pull time).
 - **Step targets** split each image's SLA window across the pipeline steps:
