@@ -61,7 +61,7 @@ nav.index a:hover { background: var(--accent-soft); }
 nav.index a[aria-current="page"] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
 nav.index a[aria-current="page"] .num { color: var(--accent); }
 .ext { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); display: grid; gap: 6px; font-size: 0.88rem; }
-.ext a { display: block; padding: 0 10px; }
+nav.index .ext a { display: block; padding: 0 10px; }
 
 article { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 32px clamp(18px, 4vw, 48px) 40px; min-width: 0; }
 .doc-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
@@ -108,7 +108,7 @@ article { background: var(--panel); border: 1px solid var(--line); border-radius
   nav.index ol { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
   nav.index a { display: flex; gap: 6px; white-space: nowrap; border: 1px solid var(--line); background: var(--panel); }
   .ext { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 10px; padding-top: 10px; }
-  .ext a { padding: 0; }
+  nav.index .ext a { padding: 0; border: 0; background: none; }
   .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (prefers-reduced-motion: no-preference) { article { animation: rise 0.18s ease-out; } @keyframes rise { from { transform: translateY(4px); } to { transform: none; } } }
