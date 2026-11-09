@@ -131,18 +131,26 @@ The choice of denominator barely moves the headline:
 | 89 processable (used here) | 58% |
 | Excluding images ≥ 60% cloud | 61% |
 
-## Data fixes, in four themes
+## Data fixes: what's missing and how to prevent it
 
 The metrics above are only as good as these fixes. QC can't be timed until the first row lands.
 
 | Theme | Gaps today | Fix |
 | --- | --- | --- |
-| Observability | No QC-end time; no per-step processing times (L1C / ISOFIT / L2A); no order or export timestamp | Log QC start and end, each processing step and order time; stamp each export |
+| Observability | No QC-end time; no per-step processing times (L1C / ISOFIT / L2A); no order or export timestamp; SNR and haze only in QC notes | Log QC start and end, each processing step and order time; stamp each export; log SNR per band and haze % |
 | Workflow integrity | Upload before QC start (74% of attempts); stale status text (41 of 123); 3 reruns after delivery with no reason | Reject out-of-order timestamps; fixed status lists; require a rerun reason |
-| Data integrity | 6 duplicate rows; priority changed on retry (21 images); mixed labels; 8 QC Results left Pending after a verdict | Unique key Image ID + attempt; lock priority after attempt 1; record result and reason together |
+| Data integrity | 6 duplicate rows; priority changed on retry (21 images); mixed labels; 8 QC Results left Pending after a verdict; fields left blank (13 uploads); notes with no author | Unique key Image ID + attempt; lock priority after attempt 1; record result and reason together; require each field at its handoff; log each note's author and team |
 | Customer visibility | Customer status wrong for 45 of 95; no escalation log (25 of 34 blocked images show none) | Derive status from pipeline state; log Escalated At, Escalated To and ticket ID |
 
-All 15 gaps, the cleaning decisions and the checks to enforce at the source: Appendix.
+Three rules stop these gaps from coming back:
+
+| Rule | What it means | Example |
+| --- | --- | --- |
+| Automate every field a system already knows | Systems set the field from pipeline data; nobody types it | Customer status, Target Status, Cloud Status and pipeline status. Customer status is wrong for 45 of 95 images today |
+| Fixed lists, no free text | Pick from a list; free text only as an optional note | Status, QC Finding and severity, rerun reason, escalation target. BBR has five spellings today |
+| Built-in checks at entry | Block, warn or send for review when the data is written | Upload only after a QC pass; timestamps in order; one row per Image ID + attempt. 81 of 95 images break at least one rule today |
+
+All 15 gaps, the cleaning decisions and the 20 entry checks: Appendix.
 
 ## Assumptions and open questions
 
