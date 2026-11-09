@@ -71,7 +71,8 @@ Each meaning now has one value. The originals are in Fixes\_Log.
 
 ### Why the columns say QC, not QA
 
-- **QC** is the review of each image. **QA** is the quality of the process, which the dashboard shows as metrics.
+- **QC (quality control)** checks one image: does this image pass or fail review?
+- **QA (quality assurance)** checks the process across all images: is the pipeline delivering good images on time? It isn't a review step. It is measured with metrics such as on-time delivery and first-pass QC pass rate, shown on the dashboard.
 - The export records only QC, so I renamed the columns to match: QA Assigned → QC Start, Manual QC Status → QC Result.
 - "QA/QC" stays as the team name, as in the brief.
 
