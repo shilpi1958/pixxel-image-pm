@@ -37,7 +37,7 @@ Every processable image that wasn't delivered is past its deadline. \
 
 ## Where time is lost
 
-Averages look fine only because 48h orders dominate. By tier, processing alone breaks the 8h, 12h and 16h targets.
+Averages look fine only because 48h orders dominate. By SLA priority, processing alone breaks the 8h, 12h and 16h targets.
 
 _[Chart: processing time by priority, over all 123 valid attempts. Interactive in the live doc.]_
 
