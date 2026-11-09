@@ -1,32 +1,59 @@
 # Appendix: method and data detail
 
-Not part of the two pages. The cleaning decisions, label mappings, full list of data gaps and the checks to enforce at the source, kept here as the audit trail behind the note.
+This appendix backs the 2-page note. It shows how I cleaned the export, which data gaps I found, and which checks would stop bad data at entry. Use it to audit any number in the note.
+
+## Terms used here
+
+These are definitions I set for this analysis. Every table below uses them.
+
+| Term | Meaning |
+| --- | --- |
+| Attempt | One processing run of an image. A retry is a new attempt. |
+| Uploaded | The image is on DataHub. |
+| Delivered | Uploaded **and** QC Result = Pass. An upload without a QC pass is not delivered. |
+| Processable | The image was captured, so it can be processed. Never-captured images are excluded. |
+| Late | Past the SLA deadline, whether delivered late or still open. |
+| On-time % | Images delivered by the deadline ÷ processable images whose deadline has passed. In the workbook: Delivered and Hours vs Deadline ≤ 0. |
+| Passed with caveat | QC passed the image but noted an issue: Low SNR, Minor haze or Artifact reduced. |
+| Customer status: shown vs derived | Shown is what CS tells the customer. Derived is what the pipeline data says. |
+| Snapshot | The latest timestamp in the export, used as "now" because the export has no timestamp of its own. |
+| Fixes\_Log | Workbook tab that keeps every original value I changed. |
+| Column\_Map | Workbook tab that explains what each column means. |
 
 ## How I cleaned the data
 
-Every number depends on these decisions. Source: IPR\_Cleaned\_Data.xlsx. Terms are in the Glossary of the rules doc.
+Every number in the note depends on these decisions. Source: IPR\_Cleaned\_Data.xlsx.
 
 | Decision | What I did | Why |
 | --- | --- | --- |
-| One row per image | Latest valid attempt per image; stale duplicates removed. Counts from export rows to images: [Overview](00_submission.md). One Row Status column marks each row (Latest attempt / Not captured / Earlier attempt / Removed), replacing two Yes/No flags | No double counting |
-| Priority and SLA | Locked to attempt 1: P0 8h, P1 12h, P2 16h, P3 24h, P4 48h | 21 images changed priority on a retry |
-| Delivered | QC pass + upload (Delivery Status) | 3 images uploaded without a QC pass don't count |
-| Processable | 89 of 95; the 6 never captured are excluded | Partly cloudy images were still delivered (up to 68% cloud) |
-| Conflicts | One column, 20 types; None = clean | 81 of 95 images have at least one |
-| Stage times | All 123 valid attempts; 4 duration columns | Every run costs time |
-| Snapshot | 2026-06-30 16:05 UTC, the latest timestamp | Ages undelivered images |
-| Labels and timestamps | Standardized; originals in Fixes\_Log | Audit trail |
-| Late | Past the SLA deadline (delivered late or still open); one rule across every view | "Not delivered" would count images not yet due |
-| Passed with caveat (Low SNR / Minor haze / Artifact reduced) | Counts as delivered, shown apart: 24 of 61 delivered, 21 of 52 on time | Ambiguous success label; a known issue isn't a clean pass |
-| Customer status | Shown vs derived, ranked by risk: 4 shown Delivered when not, 2 delays hidden | 45 of 95 differ; CS must fix the worst first |
-| Internal customers | Calibration and Internal Demo stay in pipeline metrics; left out of customer views | Same pipeline load, but no customer to update; on-time barely moves (58% → 59%) |
-| Processing Status → Last Pipeline Status (raw) | Renamed, kept raw and treated as unreliable: not used for any metric or gate | Not a processing status: every stage writes its last event here (QC 15, delivery 40 attempts). Lags the timestamps in 41 of 123 attempts |
-| Failure Reason | Kept raw; 15 spellings grouped into QC Finding (BBR, Processing error: ISOFIT crash, Processing error: Water mask, Input error: Missing metadata, No data, Caveat: Low SNR, Caveat: Minor haze, Caveat: Artifact reduced, None) | Free text with five spellings of BBR; every Fail has a reason, so it's usable once grouped |
-| Offset North / East (km) | Read as target offset from plan, per Column\_Map | Not off-nadir ground displacement; view tilt is Off Nadir (°) |
+| One row per image | Kept the latest valid attempt per image and removed stale duplicates. One Row Status column marks each row: Latest attempt, Not captured, Earlier attempt or Removed. Row-to-image counts: [Overview](00_submission.md) | Each image is counted once |
+| Priority and SLA | Locked to attempt 1: P0 8h, P1 12h, P2 16h, P3 24h, P4 48h | A retry can change priority (21 images did), which would move the deadline |
+| Delivered | QC pass + upload, shown in Delivery Status | An upload without a QC pass isn't a finished delivery (3 images) |
+| Processable | 89 of 95 images; the 6 never captured are excluded | An image that was never captured can't be late in processing |
+| Conflicts | One Conflicts column with 20 types; None means clean | Shows every problem in a row in one place (81 of 95 images have at least one) |
+| Stage times | Used all 123 valid attempts, in 4 duration columns | Retries use pipeline time too, so every attempt counts |
+| Snapshot | 2026-06-30 16:05 UTC | The export has no timestamp, so I measure the age of open images from here |
+| Labels and timestamps | One value per meaning, one UTC format; originals in Fixes\_Log | Groups and dates are only correct once spellings and formats match |
+| Late | Past the SLA deadline; one rule in every view | "Not delivered" would also count images that aren't due yet |
+| Passed with caveat | Counts as delivered but is shown separately | A known issue isn't a clean pass, and the team should see it |
+| Customer status | Compared shown with derived and ranked mismatches by risk | 45 of 95 differ, so CS needs to know which to fix first |
+| Internal customers | Calibration and Internal Demo stay in pipeline metrics and are left out of customer views | They load the pipeline the same way but have no customer to update |
+| Last Pipeline Status (raw) | Renamed from Processing Status. Kept but not used for any metric or gate | Every stage writes its last event here, and it lags the timestamps in 41 of 123 attempts |
+| QC Finding | Grouped the 15 spellings in Failure Reason into one list: BBR, Processing error: ISOFIT crash, Processing error: Water mask, Input error: Missing metadata, No data, Caveat: Low SNR, Caveat: Minor haze, Caveat: Artifact reduced, None | Every Fail has a reason, so the field is usable once its spellings are merged |
+| Offset North / East (km) | Read as the target's offset from the plan, as in Column\_Map | It isn't off-nadir displacement; Off Nadir (°) holds the view tilt |
 
-### Text changes
+Breakdown of passes with a caveat:
 
-One value per meaning; originals in Fixes\_Log.
+| Group | With caveat | Total |
+| --- | --- | --- |
+| Delivered | 24 | 61 |
+| On time | 21 | 52 |
+
+Leaving out internal customers barely changes on-time: 58% with them, 59% without.
+
+### Label changes
+
+Each meaning now has one value. The originals are in Fixes\_Log.
 
 | Column | Raw variants | Cleaned values | Rows changed |
 | --- | --- | --- | --- |
@@ -35,64 +62,80 @@ One value per meaning; originals in Fixes\_Log.
 | Priority | Urgent, P0, P1, High, high, P2, Standard, blank | P0 (8h), P1 (12h), P2 (16h), P3 (24h), P4 (48h) | 108 |
 | QC Result | pass, Pass, QC Pass, Manual pass with note, QC Fail, FAIL\_artifact, Severe / Moderate BBR, NA | Pass, Fail, Pending, Reprocess required, Not applicable | 86 |
 | Image Complete | OK, complete, Partial, Strip incomplete | Complete, Incomplete, No image | 86 |
-| Reprocessed | no, False, blank | Column dropped: Attempt > 1 says the same | 74 |
+| Reprocessed | no, False, blank | Dropped: Attempt > 1 already says this | 74 |
 | Target Status | Missed, NOT\_CAPTURED | Captured, Partial, Not captured | 9 |
 | Relative Light | 0.48, 0.72 (numbers in a text field) | Flagged as Unmapped numeric | 6 |
 | Strip Fulfillment | fulfilled | Fulfilled | 4 |
 
-Watch the priority names: raw High (16h) → P2, raw P2 (24h) → P3.
+**Note on priority:** the raw names don't line up with the new ones. Raw High (16h) becomes P2, and raw P2 (24h) becomes P3.
 
-### QC vs QA, and why the columns say QC
+### Why the columns say QC, not QA
 
-- **QC** = review of each image. **QA** = process quality, shown as metrics.
-- The data only records QC, so the columns say QC: QA Assigned → QC Start, Manual QC Status → QC Result.
+- **QC (quality control)** checks one image: does this image pass or fail review?
+- **QA (quality assurance)** checks the process across all images: is the pipeline delivering good images on time? It isn't a review step. It is measured with metrics such as on-time delivery and first-pass QC pass rate, shown on the dashboard.
+- The export records only QC, so I renamed the columns to match: QA Assigned → QC Start, Manual QC Status → QC Result.
 - "QA/QC" stays as the team name, as in the brief.
 
-On-time % = delivered by the deadline ÷ processable images past their deadline (all 89). In the workbook: Delivered and Hours vs Deadline ≤ 0.
+## Data gaps: what's missing and how to fix it
 
-## All 15 data gaps
-
-81 of 95 images have a conflict. Biggest gap: no QC-end time, so review can't be timed. The main note groups these into four themes.
+81 of 95 images have at least one conflict. The biggest gap is the missing QC end time, which means review time can't be measured. The note groups these 15 gaps into four themes.
 
 | # | Gap | Impact | Fix |
 | --- | --- | --- | --- |
-| 1 | No QC-end time | QC review can't be timed | Log QC start and end |
-| 2 | QC starts after upload (74% of attempts) | QC may not gate delivery | Confirm with IPR / QA |
-| 3 | Customer status wrong for 45 of 95 images | Customers misinformed | Derive it from pipeline state |
-| 4 | Missing values (13 uploads, 8 strip times, 6 QC starts, 4 processing ends, 3 cloud %) | Rows drop out of timing | Required at each handoff |
-| 5 | 6 stale duplicate rows | Double counting | Unique key: Image ID + attempt |
-| 6 | Priority changed on retry (21 images) | SLA can look met after a downgrade | Lock priority to attempt 1; the workbook keeps the raw per-attempt deadline as Attempt Deadline (raw) (differs on 24 retry rows) |
-| 7 | Mixed formats, messy labels, stale status text (41 of 123 attempts) | Wrong dates and stages | One UTC format, fixed status lists |
-| 8 | No export timestamp | Ages rest on an assumed snapshot | Stamp each export |
-| 9 | No order-created time | SLA only measurable from acquisition | Log order time |
-| 10 | No per-step processing times; queue names don't show the step | Can't tell which step makes P0 miss 2.4h | Log L1C / ISOFIT / L2A start and end |
-| 11 | No escalation log; 25 of 34 blocked images show no sign of escalation (all 3 stuck runs) | Can't tell if blocked images reached the right team | Log Escalated At, Escalated To and ticket ID |
-| 12 | QC Result not updated: 8 rows still Pending though Failure Reason already holds a verdict (5 read as a pass, 3 as a fail) | Images wait for a decision QC may already have made | Record the result and the reason in one step, where QC records its result |
-| 13 | Rerun after delivery with no reason: 3 images delivered on attempt 1, then re-run (2 with priority raised); the customer now sees At risk | Can't tell a customer request from a QC recheck; Delivered hides open rework | Require a rerun reason when an attempt starts on a delivered image |
-| 14 | No SNR or haze % logged; both exist only as QC notes (Low SNR 15 images, Minor haze 12) | Can't set thresholds or trend sensor quality; a caveat can't be checked | Log SNR per band and haze % per image |
-| 15 | Notes have no author; by wording they come from IPR, QA/QC, CS and ground | A note can't be routed or trusted; no one owns follow-up | Log the note's author and team |
+| 1 | No QC end time | QC review time can't be measured | Log QC start and end |
+| 2 | QC starts after upload in 74% of attempts | QC may not be gating delivery | Open question for IPR / QA (below) |
+| 3 | Customer status is wrong for 45 of 95 images | Customers are misinformed | Derive customer status from pipeline state |
+| 4 | Missing values: 13 uploads, 8 strip times, 6 QC starts, 4 processing ends, 3 cloud % | Those rows drop out of timing | Make each field required at its handoff |
+| 5 | 6 stale duplicate rows | Images counted twice | Unique key: Image ID + attempt |
+| 6 | Priority changed on retry for 21 images | An SLA can look met after a downgrade | Lock priority to attempt 1 |
+| 7 | Mixed date formats, messy labels, stale status text | Wrong dates and stages | One UTC format and fixed status lists |
+| 8 | No export timestamp | Ages depend on an assumed snapshot | Stamp each export |
+| 9 | No order-created time | SLA can only be measured from acquisition | Log order time |
+| 10 | No per-step processing times; queue names don't show the step | Can't tell which step makes P0 miss by 2.4h | Log L1C / ISOFIT / L2A start and end |
+| 11 | No escalation log; 25 of 34 blocked images show no sign of escalation, including all 3 stuck runs | Can't tell whether blocked images reached the right team | Log Escalated At, Escalated To and ticket ID |
+| 12 | QC Result not updated: 8 rows still say Pending though Failure Reason already holds a verdict | Images wait for a decision QC may already have made | Record the result and the reason in one step |
+| 13 | Rerun after delivery with no reason: 3 images delivered on attempt 1 were re-run, 2 with priority raised | Can't tell a customer request from a QC recheck, and Delivered hides open rework (the customer now sees At risk) | Require a rerun reason when an attempt starts on a delivered image |
+| 14 | No SNR or haze % logged; both appear only in QC notes | Can't set thresholds, trend sensor quality or check a caveat | Log SNR per band and haze % per image |
+| 15 | Notes have no author; by wording they come from IPR, QA/QC, CS and ground | Notes can't be routed or trusted, and no one owns follow-up | Log the note's author and team |
 
-### Checks to enforce at the source
+How the cleaned data handles some of these today:
 
-The sheet only flags problems. These checks stop them at the source. (Blocking "uploaded before QC" in the sheet would hide a signal the team still has to explain.)
+| Gap | Today |
+| --- | --- |
+| 6 | The workbook keeps the raw per-attempt deadline as Attempt Deadline (raw); it differs on 24 retry rows |
+| 7 | Stale status text in 41 of 123 attempts |
+| 12 | Of the 8 Pending rows, Failure Reason reads as a pass in 5 and a fail in 3 |
+| 14 | Low SNR is noted on 15 images and Minor haze on 12 |
 
-| Check | Where it runs | Action |
+### Checks that stop bad data at entry
+
+The workbook can only flag problems after the fact. These checks would stop them when the data is written. I don't block "uploaded before QC" in the workbook, because that would hide a signal the team still has to explain.
+
+| Check | Where it runs | Action | Today |
+| --- | --- | --- | --- |
+| Timestamps in order: acquisition ≤ trigger ≤ processing end ≤ QC start | Pipeline write | Reject and alert | |
+| Upload only after QC Result = Pass | DataHub upload step | Block, once the team confirms QC gates delivery | 74% of attempts start QC after upload |
+| One row per Image ID + attempt | Export / database key | Reject the duplicate | 6 duplicates |
+| Priority and SLA locked after attempt 1 | Order system | Allow a change only with an override and a reason | 21 images changed |
+| Status values from a fixed list | Every status field | Reject free text | |
+| Cloud % between 0 and 100; angles in range | Ingest | Reject and flag | |
+| Customer status derived from pipeline state | CS tool | Never set by hand | 45 of 95 wrong |
+| Target Status from Plan Coverage %: ≥ 95% = Captured, 1–94% = Partial, 0% = Not captured | Acquisition / ingest | Set automatically, never by hand | Some "Not captured" images show 12.4% coverage |
+| Image Complete means data integrity only: "All frames received: Yes / No" | Ingest | Keep coverage out of this field, so it can't contradict Target Status | 8 rows say Complete at 42–79% coverage |
+| Completeness gate before processing | Ingest, before Trigger | All frames → process. AOI frames present → process, flagged. AOI frames missing → hold, then re-downlink or re-task; never rerun | 20 of 23 incomplete attempts were processed |
+| QC Result holds the decision only (Pass, Fail, Pending, Reprocess required); the defect and its severity go in QC Finding (e.g. BBR: severe / moderate) | The system behind Manual QC Status | Required on every Fail and every pass with a caveat | Severity sits in free text; the workbook rebuilds it as BBR Severity |
+
+Why the completeness gate matters:
+
+| Images | Failed QC | Total |
 | --- | --- | --- |
-| Timestamps in order: acquisition ≤ trigger ≤ processing end ≤ QC start | Pipeline write | Reject and alert |
-| Upload only after QC Result = Pass | DataHub upload step | Block, once the team confirms QC gates delivery |
-| One row per Image ID + attempt | Export / database key | Reject the duplicate |
-| Priority and SLA locked after attempt 1 | Order system | Changes need an override with a reason |
-| Status values from a fixed list | Every status field | Reject free text |
-| Cloud % between 0 and 100, angles in range | Ingest | Reject and flag |
-| Customer status derived from pipeline state | CS tool | Never set by hand |
-| Target Status derived from Plan Coverage %: ≥ 95% = Captured, 1–94% = Partial, 0% = Not captured | Acquisition / ingest | Set automatically, never by hand. Removes "Not captured" images that show 12.4% coverage |
-| Image Complete limited to data integrity: "All frames received: Yes / No" | Ingest | Says nothing about coverage, so it can't contradict Target Status (8 rows say Complete at 42–79% coverage today) |
-| Completeness gate before processing: all frames received, or the AOI's frames are | Ingest, before Trigger | Complete → process. AOI frames present → process, flagged. AOI frames missing → hold, re-downlink or re-task; never rerun. Today 20 of 23 incomplete attempts were processed, and 7 of 14 incomplete images failed QC (vs 3 of 75 complete) |
-| QC Result is the decision only (Pass, Fail, Pending, Reprocess required); the defect goes in QC Finding with a severity (e.g. BBR: severe / moderate) | Where QC records its result (the system behind Manual QC Status) | Required on every Fail and every pass with a caveat. Today severity sits in free text; the workbook rebuilds it as BBR Severity |
+| Incomplete | 7 | 14 |
+| Complete | 3 | 75 |
 
-The full set is 20 column-pair rules, each with how often this export breaks it and whether to block, warn or review: see "Contradiction checks" in the [IPR Data Cleaning Rules](https://claude.ai/artifact/55PXGiyx3VkYovwm47s61s).
+The full set has 20 column-pair rules. Each shows how often this export breaks it and whether to block, warn or review: see "Contradiction checks" in the [IPR Data Cleaning Rules](https://claude.ai/artifact/55PXGiyx3VkYovwm47s61s).
 
-## Further open questions
+## Open questions for the team
 
-- **Who sets Strip Fulfillment, and when?** It comes after upload in 44 of 53 rows, and 5 never-captured images are marked Fulfilled. Left out of all metrics.
-- **Moderate vs severe BBR:** one row says moderate in its QC status but severe in Failure Reason; I recorded it as Severe. BBR Severity in the workbook keeps which.
+- **Does QC have to pass before upload?** QC starts after upload in 74% of attempts. Until IPR / QA confirm, I flag this but don't block it.
+- **Who sets Strip Fulfillment, and when?** It's set after upload in 44 of 53 rows, and 5 never-captured images are marked Fulfilled. I left it out of all metrics.
+- **Moderate or severe BBR?** One row says moderate in its QC status but severe in Failure Reason. I recorded it as Severe in the workbook's BBR Severity column.
