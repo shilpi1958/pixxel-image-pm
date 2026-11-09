@@ -163,6 +163,7 @@ All 15 gaps, the cleaning decisions and the checks to enforce at the source: App
 - **Do the proposed step targets fit?** Ingest 20, processing 30, QC wait 10, QC review 25 and upload 15% of SLA.
 - **Why are images reprocessed?** 23 of 34 reprocesses followed a QC pass, and 3 delivered images were reworked. No reason is recorded.
 - **What does "Sent to Aurora" mean?** It is the last status on 19 attempts, and I count it as delivered, like "DataHub upload complete". If Aurora is a later hand-off rather than the delivery itself, delivery times change.
+- **What does Processing Queue mean, and what decides it?** It has 5 values: default, priority, science\_debug, manual\_retry and nightly\_reprocess. The names don't match the runs: 26 first attempts sit in a retry or reprocess queue, so I left the field out of all metrics.
 
 ## Index: the brief's questions
 
