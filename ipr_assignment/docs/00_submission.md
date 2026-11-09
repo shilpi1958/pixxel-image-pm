@@ -16,7 +16,7 @@ Nov 7, 2026 · @Sj
 **Supporting material:**
 
 - [IPR Data Cleaning Rules](https://claude.ai/artifact/55PXGiyx3VkYovwm47s61s): every cleaning decision, with counts.
-- **IPR\_Cleaned\_Data.xlsx** (attached): the cleaned data, one row per image attempt. It includes a column guide and a log of every changed cell.
+- [IPR Cleaned Data (Google Sheet)](https://docs.google.com/spreadsheets/d/1H5MagVDtXSokKoSzb_ETOgIPoxjnbulVaNIjAcQHKFY/edit?usp=sharing): the cleaned data, one row per image attempt, with a column guide and a log of every changed cell. Also attached as IPR\_Cleaned\_Data.xlsx.
 
 ## Key assumptions
 
