@@ -152,6 +152,7 @@ All 15 gaps, the cleaning decisions and the checks to enforce at the source: App
 - Priority and SLA locked to attempt 1 (21 images changed priority on a retry).
 - Delivered = QC pass + upload. A pass with a caveat counts, shown apart.
 - The 6 never-captured images are left out of processable-image KPIs.
+- An image with over 70% cloud is not processable. The cut-off is mine, not from the export; the only image above it was never captured, so no KPI changes.
 - The SLA is assumed to start at acquisition; the export has no order time.
 
 **For IPR / QA**
