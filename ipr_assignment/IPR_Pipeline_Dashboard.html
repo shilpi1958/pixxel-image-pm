@@ -93,10 +93,9 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
   .ipr-filters { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); align-items: center; }
   .ipr-filters label { display: flex; flex-direction: column; gap: 2px; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
   .ipr-reset { align-self: flex-end; background: none; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); color: var(--color-fg); padding: var(--cds-pad-xs) var(--cds-pad-sm); cursor: pointer; font: inherit; }
-  .ipr-reset:focus-visible, .ipr-tab:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
-  .ipr-tabs { display: flex; flex-wrap: wrap; gap: var(--cds-gap-xs); border-bottom: 1px solid var(--color-border-line); }
-  .ipr-tab { background: none; border: 0; border-bottom: 2px solid transparent; color: var(--color-fg-muted); padding: var(--cds-pad-sm) var(--cds-pad-md); cursor: pointer; font: inherit; }
-  .ipr-tab[aria-selected="true"] { color: var(--color-fg); border-bottom-color: var(--color-fg); font-weight: var(--cds-font-weight-medium); }
+  .ipr-reset:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
+  .ipr-view { scroll-margin-top: 12px; }
+  .ipr-view-h { font-family: var(--font-anthropic-serif); font-weight: 400 !important; font-size: var(--cds-font-size-title) !important; padding-top: var(--cds-gap-md); border-top: 1px solid var(--color-border-line); }
   .ipr-personas { display: flex; flex-direction: column; gap: var(--cds-gap-sm); }
   .ipr-persona-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: var(--cds-gap-md); }
   .ipr-persona { display: flex; flex-direction: column; gap: var(--cds-gap-xs); text-align: left; background: var(--color-panel); color: var(--color-fg); font: inherit; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-md); cursor: pointer; min-width: 0; }
@@ -130,16 +129,8 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
   .ipr td.num, .ipr th.num { text-align: right; }
   .ipr .ipr-wrap td { white-space: normal; vertical-align: top; min-width: 6rem; }
   .ipr .ipr-act td { padding-top: var(--cds-pad-sm); padding-bottom: var(--cds-pad-sm); font-size: var(--cds-font-size-body, 14px); }
-  .ipr .ipr-act th:first-child, .ipr .ipr-act tr.ipr-expand td:first-child { position: sticky; left: 0; background: var(--color-panel); z-index: 1; }
+  .ipr .ipr-act th:first-child, .ipr .ipr-act td:first-child { position: sticky; left: 0; background: var(--color-panel); z-index: 1; }
   .ipr .ipr-act th:first-child { z-index: 2; }
-  .ipr .ipr-act tr.ipr-expand { cursor: pointer; }
-  .ipr .ipr-act tr.ipr-expand td:first-child::before { content: '▸ '; color: var(--color-fg-muted); }
-  .ipr .ipr-act tr.ipr-expand[aria-expanded="true"] td:first-child::before { content: '▾ '; }
-  .ipr .ipr-act tr.ipr-expand:focus-visible { outline: 2px solid var(--color-fg); outline-offset: -2px; }
-  .ipr .ipr-act tr.ipr-detail td { white-space: normal; background: var(--color-bg, var(--color-panel)); }
-  .ipr .ipr-act tr.ipr-detail dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px var(--cds-gap-md); margin: 0; }
-  .ipr .ipr-act tr.ipr-detail dt { color: var(--color-fg-muted); }
-  .ipr .ipr-act tr.ipr-detail dd { margin: 0; }
   .ipr-next { border-color: var(--color-fg); }
   .ipr-meter-cell { display: flex; align-items: center; gap: var(--cds-gap-sm); min-width: 9rem; }
   .ipr-meter { flex: 1; height: 8px; border-radius: 4px; background: var(--color-border-line); overflow: hidden; }
@@ -191,13 +182,33 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
   @media (max-width: 640px) { .ipr-arrow { display: none; } }
   [data-dash-source-state=empty] { color: transparent; }
   [data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
+  .ipr-score { display: flex; flex-direction: column; gap: var(--cds-gap-md); }
+  .ipr .ipr-scoretab td { vertical-align: top; }
+  .ipr .ipr-scoretab td.ipr-mname { white-space: normal; min-width: 14rem; }
+  .ipr .ipr-scoretab td.ipr-mname small { display: block; color: var(--color-fg-muted); }
+  .ipr .ipr-scoretab td.num small { display: block; color: var(--color-fg-muted); font-weight: 400; }
+  .ipr .ipr-scoretab td.num b { font-weight: var(--cds-font-weight-medium); font-size: var(--cds-font-size-body, 14px); }
+  .ipr .ipr-scoretab tr.ipr-famrow td { background: var(--color-bg, var(--color-panel)); font-weight: var(--cds-font-weight-medium); color: var(--color-fg); padding-top: var(--cds-pad-sm); }
+  .ipr .ipr-scoretab tr.ipr-famrow td span { font-weight: 400; color: var(--color-fg-muted); margin-left: var(--cds-gap-sm); }
+  .ipr-scoretab-box { max-height: none; }
+  .ipr .ipr-scoretab .ipr-top { margin-left: var(--cds-gap-xs); font-size: 11px; color: var(--color-fg); border-color: var(--color-fg); }
+  .ipr .ipr-scoretab td.ipr-mname small.ipr-flag { color: var(--color-warn); }
 </style>
 
 <div class="ipr">
   <header>
     <h1 id="top">IPR Pipeline Dashboard</h1>
-    <p class="ipr-hl" id="headline">Only <b data-draw="hl-ontime" data-source="images">—</b> of processable images were delivered on time. <b data-draw="hl-p0" data-source="images">—</b> P0 images made their 8h SLA, and <b data-draw="hl-late" data-source="images">—</b> images are past deadline and still not delivered.</p>
-    <p class="ipr-snapshot" id="snapshot"><span class="ipr-pill warn">Data snapshot</span> <span><b data-draw="snap-time" data-source="images">—</b> UTC, inferred. The export has no pull time, so "now" is the latest timestamp in the data. Lateness, ETAs and at-risk flags all count from it.</span></p>
+    <p class="ipr-hl" id="headline">Only <b data-draw="hl-ontime" data-source="images">—</b> of processable images delivered on time. <b data-draw="hl-p0" data-source="images">—</b> P0 images met their 8h SLA. <b data-draw="hl-late" data-source="images">—</b> images are late and undelivered.</p>
+    <p class="ipr-snapshot" id="snapshot"><span class="ipr-pill warn">Data as of</span> <span><b data-draw="snap-time" data-source="images">—</b> UTC: the latest timestamp in the export (it has no pull time). Lateness and ETAs count from here.</span></p>
+    <details class="ipr-about">
+      <summary>From export rows to images</summary>
+      <div class="ipr-tablebox ipr-counts">
+        <table>
+          <thead><tr><th>Count</th><th class="num">Number</th><th>How it's made</th></tr></thead>
+          <tbody data-draw="take-table" data-source="images"></tbody>
+        </table>
+      </div>
+    </details>
     <p class="ipr-take" data-draw="take-range" data-source="images">—</p>
   </header>
 
@@ -227,86 +238,71 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
     <button class="ipr-reset" type="button">Reset filters</button>
   </div>
 
-  <section class="ipr-view" id="top5" aria-labelledby="top5-h">
-    <h2 id="top5-h">Top 5 metrics</h2>
-    <div class="ipr-tiles">
-      <div class="ipr-tile"><div class="ipr-tile-label">1. On-time delivery</div><div class="ipr-tile-value" data-draw="m1" data-source="images">—</div><div class="ipr-tile-note" data-draw="m1-note" data-source="images">—</div><div class="ipr-tile-note">Delivered by deadline ÷ all processable images</div></div>
-      <div class="ipr-tile"><div class="ipr-tile-label">2. Late backlog</div><div class="ipr-tile-value" data-draw="m2" data-source="images">—</div><div class="ipr-tile-note">Processable, not delivered, past SLA deadline (count)</div></div>
-      <div class="ipr-tile"><div class="ipr-tile-label">3. Delivery time: median / slowest 10%</div><div class="ipr-tile-value" data-draw="m3" data-source="images">—</div><div class="ipr-tile-note" data-draw="m3-note" data-source="images">—</div><div class="ipr-tile-note">Acquisition → delivery, delivered images</div></div>
-      <div class="ipr-tile"><div class="ipr-tile-label">4. First-pass QC pass</div><div class="ipr-tile-value" data-draw="m4" data-source="attempts">—</div><div class="ipr-tile-note" data-draw="m4-note" data-source="attempts">—</div><div class="ipr-tile-note">QC pass on attempt 1 ÷ attempt-1 images with a QC decision</div></div>
-      <div class="ipr-tile"><div class="ipr-tile-label">5. Reprocess success</div><div class="ipr-tile-value" data-draw="m5" data-source="images">—</div><div class="ipr-tile-note" data-draw="m5-note" data-source="images">—</div><div class="ipr-tile-note">Delivered ÷ processable images with 2+ attempts</div></div>
-    </div>
-  </section>
 
-  <details class="ipr-about">
-    <summary>About this data: how export rows become images and attempts</summary>
-    <div class="ipr-tablebox ipr-counts">
-      <table>
-        <thead><tr><th>Count</th><th class="num">Number</th><th>How it's made</th></tr></thead>
-        <tbody data-draw="take-table" data-source="images"></tbody>
+
+
+  <section class="ipr-card ipr-score" id="scorecard" aria-labelledby="score-h">
+    <h2 id="score-h">Metric scorecard</h2>
+    <div class="ipr-tablebox ipr-scoretab-box">
+      <table class="ipr-scoretab">
+        <thead><tr><th>Metric</th><th class="num">Value</th><th class="num">Target</th><th>Status</th><th>Owner</th><th>Signal</th></tr></thead>
+        <tbody data-draw="score-table" data-source="images"></tbody>
       </table>
     </div>
-  </details>
+    <p class="ipr-note">Base: processable images unless shown. Targets are proposed. ⚠ = source fields disagree.</p>
+  </section>
 
   <section class="ipr-card" id="stages" aria-labelledby="stages-h">
     <h2 id="stages-h">Which gate each image is waiting at</h2>
-    <p class="ipr-note">Gates run in order. Each image is counted once, at the first gate it hasn't met. Click a gate to list its images here; click it again or Close list to hide. Red = past SLA deadline, or no escalation signal (inferred). Amber = out-of-order timestamps: the record shows a later step done before an earlier gate was met (for example QC done before processing closed), so a gate may have been skipped. That is a data-quality flag, not where the image is waiting.</p>
+    <p class="ipr-note">Each image counts once, at the first gate it hasn't passed. Click a gate to list its images. Red = past deadline or no escalation signal. Amber = out-of-order timestamps (data-quality flag, e.g. QC done before processing closed).</p>
     <div class="ipr-flow" data-draw="stage-flow" data-source="images"></div>
     <div class="ipr-gate-list" hidden>
       <div class="ipr-gate-list-h"><h3 data-draw="gate-list-h" data-source="images"></h3><button class="ipr-reset ipr-gate-clear" type="button">Close list</button></div>
       <div class="ipr-tablebox">
         <table class="ipr-act" data-source="images" data-row-key="image_id">
-          <thead><tr><th data-field="image_id">Image ID</th><th data-field="sla_state">State</th><th data-field="priority">SLA Priority</th><th data-field="blocked_because">Blocked because</th><th data-field="route_to">Owner</th><th data-field="next_action">Next action</th><th data-field="hours_vs_deadline" class="num">Hours vs Deadline (h)</th></tr></thead>
+          <thead><tr><th data-field="image_id">Image ID</th><th data-field="customer">Customer</th><th data-field="sla_state">State</th><th data-field="priority">SLA Priority</th><th data-field="blocked_because">Blocked because</th><th data-field="route_to">Owner</th><th data-field="next_action">Next action</th><th data-field="escalation">Escalation (inferred)</th><th data-field="eta">Expected ETA</th><th data-field="hours_vs_deadline" class="num">Hours vs Deadline (h)</th></tr></thead>
           <tbody data-draw="gate-list"></tbody>
         </table>
       </div>
     </div>
   </section>
 
+
+
   <section class="ipr-personas" aria-labelledby="personas-h">
-    <h2 id="personas-h">Who this dashboard is for</h2>
-    <p class="ipr-note">Four users, four questions. Each tab below is built around one of them. Pick a user to open their view.</p>
+    <h2 id="personas-h">Pick your view</h2>
+    <p class="ipr-note">One view per user. The scorecard and gates above are shared.</p>
     <div class="ipr-persona-grid">
       <button class="ipr-persona" type="button" data-tab="lead" aria-pressed="true">
         <span class="ipr-persona-top"><span class="ipr-persona-name">IPR Lead</span><span class="ipr-persona-tag">Operations</span></span>
         <span class="ipr-persona-q">“Where are images getting stuck, and which team needs to act?”</span>
-        <span class="ipr-persona-row"><b>Goal</b> Timely delivery and a healthy pipeline.</span>
-        <span class="ipr-persona-row"><b>Needs</b> Pipeline status, SLA performance, late backlog, customer impact.</span>
+                <span class="ipr-persona-row"><b>Sees</b> Gate status, SLA, late backlog, customer impact</span>
         <span class="ipr-persona-exp">Control tower →</span>
       </button>
       <button class="ipr-persona" type="button" data-tab="qc" aria-pressed="false">
         <span class="ipr-persona-top"><span class="ipr-persona-name">QA/QC</span><span class="ipr-persona-tag">Quality</span></span>
         <span class="ipr-persona-q">“Which images need review or escalation next?”</span>
-        <span class="ipr-persona-row"><b>Goal</b> Imagery meets quality standards before delivery.</span>
-        <span class="ipr-persona-row"><b>Needs</b> Pending QC queue, quality findings, SLA deadlines, escalation signals.</span>
+                <span class="ipr-persona-row"><b>Sees</b> QC queue, findings, deadlines, escalations</span>
         <span class="ipr-persona-exp">Review queue →</span>
       </button>
       <button class="ipr-persona" type="button" data-tab="eng" aria-pressed="false">
         <span class="ipr-persona-top"><span class="ipr-persona-name">Engineering</span><span class="ipr-persona-tag">Technical</span></span>
         <span class="ipr-persona-q">“Why are processing runs failing, and what needs fixing?”</span>
-        <span class="ipr-persona-row"><b>Goal</b> Reliable processing; technical failures resolved.</span>
-        <span class="ipr-persona-row"><b>Needs</b> Failed and stuck runs, failure reasons, satellite and bandset patterns, reprocessing history.</span>
+                <span class="ipr-persona-row"><b>Sees</b> Failed and stuck runs, causes, satellite/bandset patterns</span>
         <span class="ipr-persona-exp">Technical observability →</span>
       </button>
       <button class="ipr-persona" type="button" data-tab="cs" aria-pressed="false">
         <span class="ipr-persona-top"><span class="ipr-persona-name">Customer Success</span><span class="ipr-persona-tag">Customer-facing</span></span>
         <span class="ipr-persona-q">“Which customers are affected, and what should I communicate?”</span>
-        <span class="ipr-persona-row"><b>Goal</b> Customers informed; delivery expectations managed.</span>
-        <span class="ipr-persona-row"><b>Needs</b> Customer-level order status, delayed images, ETAs, customer-safe updates.</span>
+                <span class="ipr-persona-row"><b>Sees</b> Status by customer, delays, ETAs, customer-safe wording</span>
         <span class="ipr-persona-exp">Customer health →</span>
       </button>
     </div>
   </section>
 
-  <div class="ipr-tabs" role="tablist">
-    <button class="ipr-tab" role="tab" data-tab="lead" aria-selected="true">IPR lead</button>
-    <button class="ipr-tab" role="tab" data-tab="qc" aria-selected="false">QA/QC</button>
-    <button class="ipr-tab" role="tab" data-tab="eng" aria-selected="false">Engineering</button>
-    <button class="ipr-tab" role="tab" data-tab="cs" aria-selected="false">Customer Success</button>
-  </div>
-
   <section class="ipr-view" id="lead">
-    <p class="ipr-ask">What needs action now, and which team do I ask to change what?</p>
+    <h2 class="ipr-view-h">IPR Lead view</h2>
+    <p class="ipr-ask">What needs action now, and who owns it?</p>
     <div class="ipr-subtabs" role="tablist" aria-label="IPR lead categories">
       <button class="ipr-subtab" role="tab" data-group="today" aria-selected="true">Act now</button>
       <button class="ipr-subtab" role="tab" data-group="customers" aria-selected="false">Customers</button>
@@ -315,34 +311,32 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
       <button class="ipr-subtab" role="tab" data-group="review" aria-selected="false">Weekly review</button>
     </div>
     <div class="ipr-group" data-group="today">
-      <p class="ipr-note">What needs action today, and who owns it.</p>
       <div class="ipr-tiles">
         <div class="ipr-tile"><div class="ipr-tile-label">Processable images</div><div class="ipr-tile-value" data-draw="v-total" data-source="images">—</div><div class="ipr-tile-note" data-draw="v-total-n" data-source="images">—</div></div>
         <div class="ipr-tile"><div class="ipr-tile-label">Late</div><div class="ipr-tile-value late" data-draw="v-late" data-source="images">—</div><div class="ipr-tile-note" data-draw="v-late-n" data-source="images">—</div></div>
-        <div class="ipr-tile"><div class="ipr-tile-label">At risk</div><div class="ipr-tile-value" data-draw="v-risk" data-source="images">—</div><div class="ipr-tile-note">Not late yet; ETA (p80) is past the deadline</div></div>
+        <div class="ipr-tile"><div class="ipr-tile-label">At risk</div><div class="ipr-tile-value" data-draw="v-risk" data-source="images">—</div><div class="ipr-tile-note">Not late yet; ETA (p80) past deadline</div></div>
         <div class="ipr-tile"><div class="ipr-tile-label">Customers</div><div class="ipr-tile-value" data-draw="v-cust" data-source="images">—</div><div class="ipr-tile-note" data-draw="v-cust-n" data-source="images">—</div></div>
       </div>
       <div class="ipr-card" id="lead-late">
         <h2>Late images by customer, and what blocks them <span class="ipr-unit">per image</span></h2>
-        <p class="ipr-note">Open images past their SLA deadline. Tier 1 customers first, then most late images. Colour = the gate each image is stuck at, in the same words as the gate diagram and the Act now table. "Delivery: waiting for release" is a quick win; "Processing: stuck" and "QC: failed" need escalation. Hover for the oldest delay; each image is in the table below.</p>
+        <p class="ipr-note">Open late images, Tier 1 first. Colour = gate where each is stuck. "Waiting for release" is a quick win; "stuck" and "failed" need escalation. Hover for the oldest delay.</p>
         <div class="ipr-chart" data-draw="lead-late-chart" data-source="images"></div>
       </div>
       <div class="ipr-card" id="lead-act">
         <h2>Act now <span class="ipr-unit">per image</span></h2>
-        <p class="ipr-note">Every undelivered image. Late and at-risk first, then SLA Priority, customer tier and hours past deadline. Owner = team that must act next. Click a row for customer, current gate, escalation and ETA.</p>
+        <p class="ipr-note">All undelivered images: late and at-risk first, then priority, tier, lateness. Owner = team that acts next.</p>
         <div class="ipr-tablebox">
           <table class="ipr-act" data-source="images" data-row-key="image_id">
-            <thead><tr><th data-field="image_id">Image ID</th><th data-field="sla_state">State</th><th data-field="priority">SLA Priority</th><th data-field="blocked_because">Blocked because</th><th data-field="route_to">Owner</th><th data-field="next_action">Next action</th><th data-field="hours_vs_deadline" class="num">Hours vs Deadline (h)</th></tr></thead>
+            <thead><tr><th data-field="image_id">Image ID</th><th data-field="customer">Customer</th><th data-field="sla_state">State</th><th data-field="priority">SLA Priority</th><th data-field="blocked_because">Blocked because</th><th data-field="route_to">Owner</th><th data-field="next_action">Next action</th><th data-field="escalation">Escalation (inferred)</th><th data-field="eta">Expected ETA</th><th data-field="hours_vs_deadline" class="num">Hours vs Deadline (h)</th></tr></thead>
             <tbody data-draw="lead-act-table"></tbody>
           </table>
         </div>
       </div>
     </div>
     <div class="ipr-group" data-group="customers" hidden>
-      <p class="ipr-note">How far along each customer's work is, Tier 1 first.</p>
       <div class="ipr-card" id="lead-cust">
         <h2>Work complete, by customer <span class="ipr-unit">per image</span></h2>
-        <p class="ipr-note">Delivered ÷ processable images ordered. Tier 1 first, then least complete.</p>
+        <p class="ipr-note">% complete = delivered ÷ processable. Tier 1 first, then least complete.</p>
         <div class="ipr-tablebox">
           <table data-source="images" data-row-key="customer">
             <thead><tr><th data-field="customer">Customer</th><th data-field="tier">Tier</th><th data-field="images" class="num">Processable</th><th data-field="delivered" class="num">Delivered</th><th data-field="pct">% complete</th><th data-field="on_time" class="num">On time</th><th data-field="overdue" class="num">Late</th></tr></thead>
@@ -354,10 +348,10 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
     <div class="ipr-group" data-group="speed" hidden>
       <p class="ipr-note">Are images delivered within SLA, and which step eats the time?</p>
       <div class="ipr-card" id="lead-tatchart">
-        <h2>How long delivery takes, by priority (metric 3) <span class="ipr-unit">per image</span></h2>
-        <p class="ipr-note">Delivered images only, from acquisition to delivery. Median = half of images are faster; slowest 10% = p90.</p>
+        <h2>Delivery time by priority (metric #3) <span class="ipr-unit">per image</span></h2>
+        <p class="ipr-note">Delivered images, acquisition → delivery. Median = typical; slowest 10% = p90.</p>
         <h3>Delivered images within SLA, by priority <span class="ipr-unit">% of delivered</span></h3>
-        <p class="ipr-note">The chart counts delivered images only, so it reads higher than the headline. "On time" in the table uses the headline's denominator: on time ÷ all processable images at that priority. Images still open past their deadline count as not on time there.</p>
+        <p class="ipr-note">Chart uses delivered images only, so it reads higher than the headline. Table "On time" uses all processable images, like the headline.</p>
         <div class="ipr-chart" data-draw="lead-sla-chart" data-source="images"></div>
         <div class="ipr-tablebox">
           <table class="ipr-wrap">
@@ -368,7 +362,7 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
       </div>
       <div class="ipr-card" id="lead-budget">
         <h2>Proposed stage targets met <span class="ipr-unit">per attempt</span></h2>
-        <p class="ipr-note">Proposed split of each SLA window, not contractual SLAs: only the end-to-end SLA per priority is agreed with customers. % of all attempts that finished each step within its proposed share. A missing timestamp counts as not met. QC review (25%) can't be measured: no QC end time.</p>
+        <p class="ipr-note">Proposed split of each SLA window (only end-to-end SLA is contractual). % of attempts finishing each step within its share; missing timestamp = not met. QC review (25%) isn't measurable: no QC end time.</p>
         <div class="ipr-tiles">
           <div class="ipr-tile"><div class="ipr-tile-label">Ingest ≤ 20% of SLA (proposed)</div><div class="ipr-tile-value" data-draw="b-ingest" data-source="attempts">—</div><div class="ipr-tile-note" data-draw="b-ingest-n" data-source="attempts">—</div></div>
           <div class="ipr-tile"><div class="ipr-tile-label">Processing ≤ 30% of SLA (proposed)</div><div class="ipr-tile-value" data-draw="b-proc" data-source="attempts">—</div><div class="ipr-tile-note" data-draw="b-proc-n" data-source="attempts">—</div></div>
@@ -384,7 +378,7 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
       </div>
     </div>
     <div class="ipr-group" data-group="quality" hidden>
-      <p class="ipr-note">How much work has to be redone. Detail by cause is on the Engineering tab.</p>
+      <p class="ipr-note">How much work is redone. Causes: Engineering → Root causes.</p>
       <div class="ipr-tiles">
         <div class="ipr-tile"><div class="ipr-tile-label">Reprocessed (count)</div><div class="ipr-tile-value" data-draw="v-reproc" data-source="images">—</div><div class="ipr-tile-note" data-draw="v-reproc-n" data-source="images">—</div></div>
         <div class="ipr-tile"><div class="ipr-tile-label">Reprocessed (% of processable)</div><div class="ipr-tile-value" data-draw="v-reproc-pct" data-source="images">—</div><div class="ipr-tile-note" data-draw="v-reproc-pct-n" data-source="images">—</div></div>
@@ -392,10 +386,9 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
       </div>
     </div>
     <div class="ipr-group" data-group="review" hidden>
-      <p class="ipr-note">For the weekly review: are we improving, and which team to ask for what.</p>
       <div class="ipr-card" id="lead-trend">
         <h2>Are we improving? <span class="ipr-unit">by acquisition week</span></h2>
-        <p class="ipr-note">Each row is a week of acquisitions. Arrows compare with the week before. Small weeks swing a lot; look for a run of arrows, not one.</p>
+        <p class="ipr-note">Arrows compare with the prior week. Small weeks swing; trust a run of arrows, not one.</p>
         <h3>Delivered on time, by acquisition week</h3>
         <div class="ipr-chart" data-draw="lead-week-chart" data-source="images"></div>
         <div class="ipr-tablebox">
@@ -407,7 +400,6 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
       </div>
       <div class="ipr-card" id="lead-teams">
         <h2>Who to ask to improve</h2>
-        <p class="ipr-note">One row per team: the step it owns, how it's doing against target, what it has open, and the change to ask for.</p>
         <div class="ipr-tablebox">
           <table class="ipr-wrap">
             <thead><tr><th>Team</th><th>Owns</th><th class="num">Proposed target met (attempts)</th><th class="num">Open now, images (no escalation signal)</th><th>Biggest problem</th><th>Ask them to</th></tr></thead>
@@ -419,14 +411,20 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
   </section>
 
   <section class="ipr-view" id="qc" hidden>
+    <h2 class="ipr-view-h">QA/QC view</h2>
     <p class="ipr-ask">What should I review next? Start at #1.</p>
+    <div class="ipr-subtabs" role="tablist" aria-label="QA/QC categories">
+      <button class="ipr-subtab" role="tab" data-group="qc-review" aria-selected="true">Review next</button>
+      <button class="ipr-subtab" role="tab" data-group="qc-esc" aria-selected="false">Escalate</button>
+    </div>
+    <div class="ipr-group" data-group="qc-review">
     <div class="ipr-card ipr-next" id="qc-next">
       <h2>Review next</h2>
       <div data-draw="qc-next" data-source="images"></div>
     </div>
     <div class="ipr-card" id="qc-queue">
       <h2>Your queue (QC)</h2>
-      <p class="ipr-note">Order: already uploaded without a QC pass first, then SLA Priority, then customer tier, then deadline.</p>
+      <p class="ipr-note">Order: uploaded without QC pass first, then priority, tier, deadline.</p>
       <div class="ipr-tablebox">
         <table data-source="images" data-row-key="image_id">
           <thead><tr><th data-field="rank" class="num">#</th><th data-field="image_id">Image ID</th><th data-field="priority">SLA Priority</th><th data-field="delivery_status">Delivery Status</th><th data-field="bandset">Bandset</th><th data-field="next_action">Next action</th><th data-field="hours_vs_deadline" class="num">Hours vs Deadline (h)</th></tr></thead>
@@ -438,9 +436,9 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
       <div class="ipr-tile"><div class="ipr-tile-label">Waiting for QC</div><div class="ipr-tile-value" data-draw="qc-wait" data-source="attempts">—</div><div class="ipr-tile-note">Median hours, processing end → QC start</div></div>
       <div class="ipr-tile"><div class="ipr-tile-label">Uploaded before QC Start</div><div class="ipr-tile-value" data-draw="qc-before" data-source="attempts">—</div><div class="ipr-tile-note">Of attempts with an upload and a QC Start time</div></div>
       <div class="ipr-tile"><div class="ipr-tile-label">Delivered with caveat</div><div class="ipr-tile-value" data-draw="qc-caveat" data-source="images">—</div><div class="ipr-tile-note" data-draw="qc-caveat-n" data-source="images">—</div></div>
-      <div class="ipr-tile"><div class="ipr-tile-label">Blocked, no escalation signal</div><div class="ipr-tile-value" data-draw="esc-none" data-source="images">—</div><div class="ipr-tile-note">Undelivered images with no sign of escalation. Inferred: there is no escalation log</div></div>
-      <div class="ipr-tile"><div class="ipr-tile-label">In your queue</div><div class="ipr-tile-value" data-draw="qc-need" data-source="images">—</div><div class="ipr-tile-note">QC pending, or uploaded without QC pass</div></div>
     </div>
+    </div>
+    <div class="ipr-group" data-group="qc-esc" hidden>
     <div class="ipr-card" id="qc-esc">
       <h2>Escalate to other teams</h2>
       <p class="ipr-note">Not QC's to fix: tell the Owner team. In the live tool this opens a ticket.</p>
@@ -451,16 +449,18 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
         </table>
       </div>
     </div>
+    </div>
   </section>
 
   <section class="ipr-view" id="eng" hidden>
+    <h2 class="ipr-view-h">Engineering view</h2>
     <p class="ipr-ask">What's breaking, and why?</p>
     <div class="ipr-subtabs" role="tablist" aria-label="Engineering categories">
       <button class="ipr-subtab" role="tab" data-group="eng-fix" aria-selected="true">Fix now</button>
       <button class="ipr-subtab" role="tab" data-group="eng-cause" aria-selected="false">Root causes</button>
     </div>
     <div class="ipr-group" data-group="eng-fix">
-      <p class="ipr-note">Today's incidents: runs to unstick and failures open now. The patterns behind them are under Root causes.</p>
+      <p class="ipr-note">Open incidents. Patterns are under Root causes.</p>
       <div class="ipr-tiles">
         <div class="ipr-tile"><div class="ipr-tile-label">Failed images</div><div class="ipr-tile-value" data-draw="eng-failed" data-source="images">—</div><div class="ipr-tile-note">Processable images, processing or QC failed</div></div>
         <div class="ipr-tile"><div class="ipr-tile-label">Stuck runs</div><div class="ipr-tile-value" data-draw="eng-stuck" data-source="images">—</div><div class="ipr-tile-note">Triggered, no end time</div></div>
@@ -468,7 +468,7 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
       </div>
       <div class="ipr-card" id="eng-stuck-list">
         <h2>Stuck runs</h2>
-        <p class="ipr-note">Triggered with no Processing End, most urgent first. Age = hours since acquisition at the data's "now" (the export has no trigger time).</p>
+        <p class="ipr-note">No Processing End; most urgent first. Age = hours since acquisition (export has no trigger time).</p>
         <div class="ipr-tablebox">
           <table data-source="images" data-row-key="image_id">
             <thead><tr><th data-field="image_id">Image ID</th><th data-field="satellite">Satellite ID</th><th data-field="bandset">Bandset</th><th data-field="priority">SLA Priority</th><th data-field="attempts" class="num">Attempts</th><th data-field="delivery_status">Delivery Status</th><th data-field="age_h" class="num">Age (h)</th><th data-field="route_to">Owner</th><th data-field="next_action">Next action</th><th data-field="hours_vs_deadline" class="num">Hours vs Deadline (h)</th></tr></thead>
@@ -478,11 +478,11 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
       </div>
     </div>
     <div class="ipr-group" data-group="eng-cause" hidden>
-      <p class="ipr-note">Where failures and rework cluster, by satellite, bandset, QC finding, data completeness and scene conditions. Use it to plan fixes, not to triage.</p>
+      <p class="ipr-note">Where failures and rework cluster. For planning fixes, not triage.</p>
       <div class="ipr-grid">
         <div class="ipr-card" id="eng-fail">
           <h2>Failure rate, bandset × satellite</h2>
-          <p class="ipr-note">Failed ÷ processable images. Darker = higher. Cells under 5 images are greyed and unshaded: too small to trust.</p>
+          <p class="ipr-note">Failed ÷ processable. Darker = higher; cells under 5 images greyed.</p>
           <div class="ipr-tablebox">
             <table data-source="images">
               <thead data-draw="eng-heat-head"></thead>
@@ -492,13 +492,13 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
         </div>
         <div class="ipr-card" id="eng-sat">
           <h2>Ingest wait, by satellite</h2>
-          <p class="ipr-note">Average hours, acquisition → processing start. Tick = proposed target (20% of SLA), not a contractual SLA.</p>
+          <p class="ipr-note">Avg hours, acquisition → processing start. Tick = proposed target (20% of SLA).</p>
           <div class="ipr-chart" data-draw="eng-sat-chart" data-source="attempts"></div>
         </div>
       </div>
       <div class="ipr-card" id="eng-reasons">
         <h2>Why attempts fail <span class="ipr-unit">per attempt</span></h2>
-        <p class="ipr-note">Attempts with QC Result Fail or Reprocess required, by QC Finding. Includes attempts later fixed by a reprocess. Recovered = the image has since been delivered.</p>
+        <p class="ipr-note">Failed or reprocess-required attempts, incl. ones later fixed. Recovered = image since delivered.</p>
         <div class="ipr-tablebox">
           <table class="ipr-wrap">
             <thead><tr><th>QC Finding</th><th class="num">Failed attempts</th><th class="num">Images</th><th class="num">Recovered</th><th class="num">Still failed</th><th>Most often on</th></tr></thead>
@@ -508,7 +508,7 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
       </div>
       <div class="ipr-card" id="eng-complete">
         <h2>Incomplete data reaching processing <span class="ipr-unit">per processable image</span></h2>
-        <p class="ipr-note">Image Complete = every frame of the strip arrived at ingest. Nothing checks it before processing today, so incomplete images run and fail. Target: 0 once a completeness gate runs at ingest (process if the AOI's frames are present, else hold for re-downlink or re-task).</p>
+        <p class="ipr-note">Nothing checks frame completeness before processing, so incomplete images run and fail. Target 0: an ingest gate holds them for re-downlink or re-task.</p>
         <div class="ipr-tiles">
           <div class="ipr-tile"><div class="ipr-tile-label">Incomplete images processed</div><div class="ipr-tile-value" data-draw="eng-inc-n" data-source="images">—</div><div class="ipr-tile-note">Target 0</div></div>
           <div class="ipr-tile"><div class="ipr-tile-label">Reprocesses spent on them</div><div class="ipr-tile-value" data-draw="eng-inc-re" data-source="images">—</div><div class="ipr-tile-note">A rerun can't add missing frames</div></div>
@@ -518,7 +518,7 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
       </div>
       <div class="ipr-card" id="eng-scene">
         <h2>What goes with failure and rework? <span class="ipr-unit">per processable image</span></h2>
-        <p class="ipr-note">Failed, reprocessed and late rates by scene condition, against the overall rate. Late = past the SLA deadline (delivered late or still open). Red = at least 10 points above overall. Groups under 10 images are greyed: too small to trust. Correlation only; factors overlap (e.g. satellite and light).</p>
+        <p class="ipr-note">Rates by scene condition vs overall. Red = 10+ points above overall; groups under 10 greyed. Correlation only; factors overlap.</p>
         <h3>Highest reprocess rates (groups of 10+ images)</h3>
         <div class="ipr-chart" data-draw="eng-scene-chart" data-source="images"></div>
         <div class="ipr-tablebox">
@@ -532,7 +532,13 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
   </section>
 
   <section class="ipr-view" id="cs" hidden>
+    <h2 class="ipr-view-h">Customer Success view</h2>
     <p class="ipr-ask">What do I tell each customer?</p>
+    <div class="ipr-subtabs" role="tablist" aria-label="Customer Success categories">
+      <button class="ipr-subtab" role="tab" data-group="cs-cust" aria-selected="true">Customers</button>
+      <button class="ipr-subtab" role="tab" data-group="cs-tell" aria-selected="false">What to tell them</button>
+    </div>
+    <div class="ipr-group" data-group="cs-cust">
     <div class="ipr-tiles">
       <div class="ipr-tile"><div class="ipr-tile-label">Late images</div><div class="ipr-tile-value" data-draw="cs-overdue" data-source="images">—</div><div class="ipr-tile-note">Processable, not delivered, past SLA deadline</div></div>
       <div class="ipr-tile"><div class="ipr-tile-label">Customers affected</div><div class="ipr-tile-value" data-draw="cs-cust" data-source="images">—</div><div class="ipr-tile-note">With at least one late image</div></div>
@@ -542,7 +548,7 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
     <div class="ipr-grid">
       <div class="ipr-card" id="cs-bycust">
         <h2>Work complete, by customer</h2>
-        <p class="ipr-note">% complete = delivered ÷ processable images ordered. Tier 1 first, then least complete. Tiers are set by Customer Success.</p>
+        <p class="ipr-note">% complete = delivered ÷ processable. Tier 1 first, then least complete.</p>
         <div class="ipr-tablebox">
           <table data-source="images" data-row-key="customer">
             <thead><tr><th data-field="customer">Customer</th><th data-field="tier">Tier</th><th data-field="images" class="num">Processable</th><th data-field="delivered" class="num">Delivered</th><th data-field="pct">% complete</th><th data-field="on_time" class="num">On time</th><th data-field="overdue" class="num">Late</th></tr></thead>
@@ -551,9 +557,11 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
         </div>
       </div>
     </div>
-        <div class="ipr-card" id="cs-tell">
+    </div>
+    <div class="ipr-group" data-group="cs-tell" hidden>
+    <div class="ipr-card" id="cs-tell">
       <h2>Delayed images: what to tell the customer</h2>
-      <p class="ipr-note">Late or not captured, Tier 1 first. Customer update is safe to share; round the ETA up when telling the customer.</p>
+      <p class="ipr-note">Late or not captured, Tier 1 first. Updates are customer-safe; round ETAs up.</p>
       <div class="ipr-tablebox">
         <table data-source="images" data-row-key="image_id">
           <thead><tr><th data-field="image_id">Image ID</th><th data-field="customer">Customer</th><th data-field="tier">Tier</th><th data-field="priority">SLA Priority</th><th data-field="customer_update">Customer update</th><th data-field="eta">Expected ETA</th><th data-field="hours_vs_deadline" class="num">Hours vs Deadline (h)</th></tr></thead>
@@ -561,25 +569,25 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
         </table>
       </div>
     </div>
+    </div>
   </section>
 
   <details>
     <summary>Definitions</summary>
     <dl>
-      <dt>Image / attempt</dt><dd>An image is one ordered capture. An attempt is one processing run; each retry adds one. Image metrics use processable images; step metrics use all attempts.</dd>
-      <dt>Processable</dt><dd>Captured and under 70% cloud. The rest are not captured and excluded from delivery metrics.</dd>
+      <dt>Image / attempt</dt><dd>Image = one ordered capture. Attempt = one processing run. Image metrics use processable images; step metrics use attempts.</dd>
+      <dt>Processable</dt><dd>Captured and under 70% cloud. Others are excluded from delivery metrics.</dd>
       <dt>Delivered</dt><dd>Passed QC and uploaded. Uploaded without a QC pass does not count.</dd>
-      <dt>Caveat: Low SNR / Minor haze / Artifact reduced</dt><dd>Passed QC with that known issue. Counts as delivered, shown separately from clean passes.</dd>
+      <dt>Caveat: Low SNR / Minor haze / Artifact reduced</dt><dd>Passed QC with a known issue. Counts as delivered.</dd>
       <dt>On time</dt><dd>Delivered by the SLA deadline: acquisition + attempt-1 SLA hours.</dd>
-      <dt>Late</dt><dd>Processable, not delivered, past the SLA deadline. Not-yet-due images are not late.</dd>
+      <dt>Late</dt><dd>Not delivered and past the SLA deadline.</dd>
       <dt>At risk</dt><dd>Not late yet, but the upper ETA (p80) falls after the deadline.</dd>
       <dt>Hours vs Deadline (h)</dt><dd>Positive = late. Days in brackets from 24h.</dd>
-      <dt>Expected ETA</dt><dd>"Now" + remaining steps, from past attempts at the same SLA Priority (median–p80). No ETA if stuck or not captured. Internal only.</dd>
-      <dt>ETA confidence</dt><dd>Estimated = 10 or more past attempts at the same SLA Priority behind the slowest-known step (n). Low confidence = fewer than 10, or under 3 at that priority so all priorities are used, or only QC review and release are left, which have no timings and use their stage targets.</dd>
-      <dt>Stage targets (proposed)</dt><dd>Proposed share of the SLA window, not contractual: ingest 20%, processing 30%, QC wait 10%, QC review 25%, release 15%. Red = under 50% met.</dd>
-      <dt>Escalation (inferred)</dt><dd>Not escalation history: there is no escalation log. A sign that a blocked image was raised with its owner, inferred from status, retry notes or later attempts; else No signal.</dd>
+      <dt>Expected ETA</dt><dd>Now + remaining steps, from past attempts at the same priority (median–p80). None if stuck or not captured.</dd>
+      <dt>ETA confidence</dt><dd>Estimated = 10+ past attempts back the slowest remaining step. Otherwise Low confidence (e.g. only QC review and release left, which use stage targets).</dd>
+      <dt>Stage targets (proposed)</dt><dd>Ingest 20%, processing 30%, QC wait 10%, QC review 25%, release 15% of SLA. Red = under 50% met.</dd>
+      <dt>Escalation (inferred)</dt><dd>No escalation log exists; inferred from status, retry notes or later attempts. Else No signal.</dd>
       <dt>Customer tier</dt><dd>Set by Customer Success; untiered = Tier 2. Internal accounts count in pipeline views, not customer views.</dd>
-      <dt>Data as of</dt><dd>The latest timestamp in the export (it has no pull time). Lateness and ETAs count from it.</dd>
       <dt>Source</dt><dd>IPR_Cleaned_Data.xlsx; rules in the IPR Data Cleaning Rules doc.</dd>
     </dl>
   </details>
@@ -690,26 +698,62 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
   document.querySelectorAll('.ipr-gate-clear').forEach((b) => b.addEventListener('click', () => dash.setParams({ gate: null })));
   document.querySelectorAll('.ipr-acct').forEach((cb) => cb.addEventListener('change', () => dash.setParams({ acct: cb.checked ? null : 'ext' })));
   document.querySelectorAll('.ipr-reset').forEach((b) => b.addEventListener('click', () => dash.resetParams()));
-  const showTab = (id) => {
-    document.querySelectorAll('.ipr-view').forEach((s) => { s.hidden = s.id !== id; });
-    document.querySelectorAll('.ipr-tab').forEach((t) => t.setAttribute('aria-selected', String(t.dataset.tab === id)));
-    document.querySelectorAll('.ipr-persona').forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.tab === id)));
-    dash.setLink(id);
+  // Navigation: role cards pick the view; section tabs inside each view; links like #lead/speed.
+  const VIEWS = ['lead', 'qc', 'eng', 'cs'];
+  const currentTab = () => (document.querySelector('.ipr-persona[aria-pressed="true"]') || {}).dataset?.tab || 'lead';
+  const currentGroup = (id) => {
+    const b = document.querySelector('#' + id + ' .ipr-subtab[aria-selected="true"]');
+    return b ? b.dataset.group : null;
   };
-  document.querySelectorAll('.ipr-tab').forEach((t) => t.addEventListener('click', () => showTab(t.dataset.tab)));
-  document.querySelectorAll('.ipr-persona').forEach((c) => c.addEventListener('click', () => {
-    showTab(c.dataset.tab);
-    const tabs = document.querySelector('.ipr-tabs'); if (tabs) tabs.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }));
+  const writeLink = () => {
+    const id = currentTab(), g = currentGroup(id);
+    dash.setLink(g ? id + '/' + g : id);
+  };
+  // Scroll after the redraw that follows a view change; the redraw would cancel an earlier scroll.
+  const jumpTo = (el) => { if (el) setTimeout(() => el.scrollIntoView({ block: 'start' }), 80); };
+  const showTab = (id, scroll) => {
+    document.querySelectorAll('.ipr-view').forEach((s) => { s.hidden = s.id !== id; });
+    document.querySelectorAll('.ipr-persona').forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.tab === id)));
+    const view = document.getElementById(id);
+    // Cards sit just above the views; scroll only when the view would start below the fold (e.g. stacked cards on a phone).
+    if (scroll && view.getBoundingClientRect().top > innerHeight * 0.6) jumpTo(view);
+    window.dispatchEvent(new Event('resize'));
+    writeLink();
+  };
   const showGroup = (btn) => {
     const g = btn.dataset.group, v = btn.closest('.ipr-view') || document;
     v.querySelectorAll('.ipr-group').forEach((s) => { s.hidden = s.dataset.group !== g; });
-    v.querySelectorAll('.ipr-subtab').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.group === g)));
+    v.querySelectorAll('.ipr-subtab').forEach((b) => {
+      const on = b.dataset.group === g;
+      b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1;
+    });
     window.dispatchEvent(new Event('resize'));
+    writeLink();
   };
+  document.querySelectorAll('.ipr-persona').forEach((c) => c.addEventListener('click', () => showTab(c.dataset.tab, true)));
   document.querySelectorAll('.ipr-subtab').forEach((b) => b.addEventListener('click', () => showGroup(b)));
-  const start = location.hash.slice(1);
-  if (['lead', 'qc', 'eng', 'cs'].includes(start)) showTab(start);
+  // Arrow keys move between section tabs.
+  document.querySelectorAll('[role="tablist"]').forEach((list) => {
+    list.querySelectorAll('[role="tab"]').forEach((t) => { t.tabIndex = t.getAttribute('aria-selected') === 'true' ? 0 : -1; });
+    list.addEventListener('keydown', (e) => {
+      const tabs = [...list.querySelectorAll('[role="tab"]')], i = tabs.indexOf(document.activeElement);
+      if (i < 0) return;
+      const k = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+      if (k == null) return;
+      e.preventDefault(); const t = tabs[(k + tabs.length) % tabs.length]; t.focus(); t.click();
+    });
+  });
+  // Links: #lead, #lead/speed, #qc/qc-esc ...
+  const fromHash = (scroll) => {
+    const [id, g] = location.hash.slice(1).split('/');
+    if (!VIEWS.includes(id)) return;
+    showTab(id, false);
+    const b = g && document.querySelector('#' + id + ' .ipr-subtab[data-group="' + CSS.escape(g) + '"]');
+    if (b) showGroup(b);
+    if (scroll) setTimeout(() => document.getElementById(id).scrollIntoView({ block: 'start' }), 400);
+  };
+  fromHash(true);
+  window.addEventListener('hashchange', () => fromHash(true));
   dash.onData(() => {
     const p = dash.params();
     document.querySelectorAll('.ipr-f').forEach((sel) => { if (sel !== document.activeElement) sel.value = p[sel.dataset.param] ?? ''; });
@@ -730,7 +774,7 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
     const r = iprRows('images'); if (!r) { el.textContent = '—'; return; }
     const t = r.map((x) => x.acquired).filter(Boolean).sort(), f = d3.utcFormat('%-d %b %Y');
     // The export has no pull time; Deadline + Hours vs Deadline of an undelivered image gives it.
-    el.textContent = t.length ? `Images acquired ${f(new Date(t[0]))} – ${f(new Date(t[t.length - 1]))}. Numbers follow the filters below.` : '';
+    el.textContent = t.length ? `Images acquired ${f(new Date(t[0]))} – ${f(new Date(t[t.length - 1]))}. All numbers follow the filters.` : '';
   });
   // Data snapshot: the export has no pull time; Deadline + Hours vs Deadline of an undelivered image gives it (ignores filters).
   dash.draw('snap-time', (el) => {
@@ -777,21 +821,10 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
   const tat = (r) => kpi(r).filter((x) => x.delivery_status === 'Delivered' && typeof x.end_to_end_h === 'number').map((x) => x.end_to_end_h).sort(d3.ascending);
   const fpp = (a) => a.filter((x) => x.attempt === 1 && ['Pass', 'Fail', 'Reprocess required'].includes(x.qc_result));
   const of = (n, d) => `${n} of ${d}`;
-  T('m1', () => { const r = iprRows('images'); if (!r) return null; const k = kpi(r); return share(k.filter((x) => x.on_time === 'Yes'), k); });
-  T('m1-note', () => { const r = iprRows('images'); if (!r) return null; const k = kpi(r), p = k.filter((x) => x.priority === 'P0');
-    const on = k.filter((x) => x.on_time === 'Yes'), cav = on.filter((x) => String(x.qc_finding).startsWith('Caveat:')).length;
-    return of(on.length, k.length) + ` (${on.length - cav} clean, ${cav} with caveat)` + (p.length ? ` · P0 ${of(p.filter((x) => x.on_time === 'Yes').length, p.length)}` : ''); });
-  T('m2', () => { const r = iprRows('images'); if (!r) return null; return iprFmt.n(late(r).length); });
-  // Headline sentence: same numbers as tiles 1 and 2.
+  // Headline sentence: same numbers as scorecard Top 5 #1 and #2.
   T('hl-ontime', () => { const r = iprRows('images'); if (!r) return null; const k = kpi(r); return share(k.filter((x) => x.on_time === 'Yes'), k); });
   T('hl-p0', () => { const r = iprRows('images'); if (!r) return null; const p = kpi(r).filter((x) => x.priority === 'P0'); return of(p.filter((x) => x.on_time === 'Yes').length, p.length); });
   T('hl-late', () => { const r = iprRows('images'); if (!r) return null; return iprFmt.n(late(r).length); });
-  T('m3', () => { const r = iprRows('images'); if (!r) return null; const v = tat(r); return v.length ? `${iprFmt.h(d3.quantile(v, 0.5))} / ${iprFmt.h(d3.quantile(v, 0.9))}` : null; });
-  T('m3-note', () => { const r = iprRows('images'); if (!r) return null; return `${tat(r).length} delivered images`; });
-  T('m4', () => { const a = iprRows('attempts'); if (!a) return null; const d = fpp(a); return share(d.filter((x) => x.qc_result === 'Pass'), d); });
-  T('m4-note', () => { const a = iprRows('attempts'); if (!a) return null; const d = fpp(a); return of(d.filter((x) => x.qc_result === 'Pass').length, d.length); });
-  T('m5', () => { const r = iprRows('images'); if (!r) return null; const k = kpi(r).filter((x) => x.attempts > 1); return share(k.filter((x) => x.delivery_status === 'Delivered'), k); });
-  T('m5-note', () => { const r = iprRows('images'); if (!r) return null; const k = kpi(r).filter((x) => x.attempts > 1); return of(k.filter((x) => x.delivery_status === 'Delivered').length, k.length); });
 
   // Gates run in order; an image sits at the first gate it hasn't met. Delivered = past every gate.
   const GATES = [
@@ -878,7 +911,6 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
 
   T('qc-wait', () => { const a = iprRows('attempts'); if (!a) return null; const v = a.map((x) => x.qc_wait_h).filter((t) => typeof t === 'number'); return v.length ? iprFmt.h(d3.median(v)) : null; });
   T('qc-before', () => { const a = iprRows('attempts'); if (!a) return null; const b = a.filter((x) => x.uploaded_before_qc !== 'N/A'); return share(b.filter((x) => x.uploaded_before_qc === 'Yes'), b); });
-  T('qc-need', () => { const r = iprRows('images'); if (!r) return null; return iprFmt.n(kpi(r).filter((x) => x.delivery_status === 'In progress' || x.delivery_status === 'Uploaded without QC pass').length); });
   // Escalation routing for undelivered images: first matching rule wins.
   const ROUTES = [
     { f: (x) => x.delivery_status === 'Not processable', team: 'Tasking', act: 'Retake or close' },
@@ -896,8 +928,6 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
   const qcQueue = (r) => routed(r).filter((x) => x.route_to === 'QC')
     .sort((a, b) => ((b.delivery_status === 'Uploaded without QC pass') - (a.delivery_status === 'Uploaded without QC pass')) || iprUrgent(a, b))
     .map((x, i) => ({ ...x, rank: i + 1 }));
-  T('esc-none', () => { const r = iprRows('images'); if (!r) return null; const u = r.filter((x) => x.delivery_status !== 'Delivered');
-    return `${u.filter((x) => iprEsc(x) === 'No signal').length} of ${u.length}`; });
   dash.draw('qc-queue-table', (tb) => {
     const r = iprRows('images'); if (!r) { tb.replaceChildren(); return; }
     iprTable(tb, qcQueue(r), ['rank', 'image_id', 'priority', 'delivery_status', 'bandset', 'next_action', 'hours_vs_deadline']);
@@ -1051,22 +1081,8 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
     if (typeof v === 'number' && v > 0) return 'Late';
     const hi = iprEtaHi(x, m); return typeof v === 'number' && hi != null && hi > -v ? 'At risk' : 'On track'; };
   const STATE_ORDER = ['Late', 'At risk', 'On track', 'Delivered late', 'Delivered on time'];
-  const ACT_COLS = ['image_id', 'sla_state', 'priority', 'blocked_because', 'route_to', 'next_action', 'hours_vs_deadline'];
-  const ACT_MORE = [['Customer', 'customer'], ['Current gate', 'gate_name'], ['Escalation (inferred)', 'escalation'], ['Expected ETA', 'eta']];
-  // Act now rows, each followed by a hidden detail row the main row opens.
-  const actTable = (tb, rows) => {
-    iprTable(tb, rows, ACT_COLS);
-    [...tb.children].forEach((tr, i) => { const x = rows[i];
-      const det = document.createElement('tr'); det.className = 'ipr-detail'; det.hidden = true;
-      const cell = document.createElement('td'); cell.colSpan = ACT_COLS.length;
-      const dl = document.createElement('dl');
-      ACT_MORE.forEach(([h, k]) => { const dt = document.createElement('dt'), dd = document.createElement('dd'); dt.textContent = h; dd.textContent = x[k] || '—'; dl.append(dt, dd); });
-      cell.append(dl); det.append(cell);
-      tr.classList.add('ipr-expand'); tr.tabIndex = 0; tr.setAttribute('aria-expanded', 'false');
-      const flip = () => { det.hidden = !det.hidden; tr.setAttribute('aria-expanded', String(!det.hidden)); };
-      tr.onclick = flip; tr.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); } };
-      tr.after(det); });
-  };
+  const ACT_COLS = ['image_id', 'customer', 'sla_state', 'priority', 'blocked_because', 'route_to', 'next_action', 'escalation', 'eta', 'hours_vs_deadline'];
+  const actTable = (tb, rows) => iprTable(tb, rows, ACT_COLS);
   // Undelivered images with owner, next action and ETA; sel limits to one gate.
   const actRows = (r, sel) => {
     const m = etaModel(), team = new Map(routed(r).map((x) => [x.image_id, x]));
@@ -1083,7 +1099,7 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
   T('v-late', () => { const r = iprRows('images'); return r && iprFmt.n(r.filter(isLate).length); });
   T('v-late-n', () => { const r = iprRows('images'); if (!r) return null; const l = r.filter(isLate), open = kpi(r).filter((x) => x.delivery_status !== 'Delivered');
     const worst = d3.max(l, (x) => x.hours_vs_deadline);
-    return `Open, not delivered, past SLA deadline: ${l.length} of ${open.length} open` + (worst != null ? `; worst ${iprHrs(worst)}h over` : ''); });
+    return `${l.length} of ${open.length} open images` + (worst != null ? `; worst ${d3.format('.1f')(worst / 24)}d over` : ''); });
   T('v-risk', () => { const r = iprRows('images'); if (!r) return null; const m = etaModel(); return iprFmt.n(kpi(r).filter((x) => x.delivery_status !== 'Delivered' && iprState(x, m) === 'At risk').length); });
 
   // Customer-safe wording per Delivery Status.
@@ -1318,6 +1334,79 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
       .attr('font-weight', (d) => d.tier === 'Tier 1' ? 600 : 400).text((d) => d.tier);
   });
 
+})();</script>
+
+
+<script>(() => {
+  // Metric scorecard: families, targets, owners. Targets are proposals (see note on the page).
+  const kpi = (r) => r.filter((x) => x.in_kpi === 'Yes');
+  const num = (v) => typeof v === 'number';
+  const P = iprFmt.pct, N = iprFmt.n, X = (v) => d3.format('.1f')(v) + '×';
+  const isLate = (x) => x.delivery_status !== 'Delivered' && (x.hours_vs_deadline ?? 0) > 0;
+  const decided = (a) => a.filter((x) => ['Pass', 'Fail', 'Reprocess required'].includes(x.qc_result));
+  const delivered = (k) => k.filter((x) => x.delivery_status === 'Delivered' && num(x.end_to_end_h));
+  // ratio: [part, whole] arrays -> value + basis; count: number.
+  const ratio = (part, all, u = 'images') => all.length ? { v: part.length / all.length, n: `${part.length} of ${all.length} ${u}` } : null;
+
+  const FAMS = [
+    ['Delivery', 'Are images on time? What is overdue?'],
+    ['Quality & efficiency', 'Do images pass QC first time? Is rework recovered?'],
+  ];
+  // The five core metrics, same definitions as the 2-page note.
+  // dir: 'hi' = higher is better, 'lo' = lower is better. fmt formats value and target.
+  const M = [
+    { fam: 'Delivery', name: 'On-time delivery', top: 1, def: 'Delivered by deadline ÷ processable images. Open late images count as misses.', owner: 'IPR Lead', sig: 'Lagging', dir: 'hi', t: 0.95, fmt: P,
+      f: (k) => { const o = ratio(k.filter((x) => x.on_time === 'Yes'), k); if (!o) return null;
+        const p0 = k.filter((x) => x.priority === 'P0'); return { ...o, n: o.n + (p0.length ? `; P0 ${p0.filter((x) => x.on_time === 'Yes').length}/${p0.length}` : '') }; },
+      flag: (k) => [k.filter((x) => x.delivery_status === 'Delivered' && x.qc_result !== 'Pass').length, 'delivered without QC pass'] },
+    { fam: 'Delivery', name: 'Late backlog', top: 2, def: 'Undelivered images past deadline.', owner: 'IPR Operations', sig: 'Leading', dir: 'lo', t: 0, fmt: N,
+      f: (k) => ({ v: k.filter(isLate).length, n: `of ${k.length} processable images` }) },
+    { fam: 'Delivery', name: 'Slowest-10% delivery time vs SLA', top: 3, def: 'P90 of delivery time ÷ SLA, delivered images only. Read with late backlog.', owner: 'IPR Lead', sig: 'Lagging', dir: 'lo', t: 1, fmt: X,
+      f: (k) => { const v = delivered(k).map((x) => x.end_to_end_h / x.sla_hours).sort(d3.ascending); return v.length ? { v: d3.quantile(v, 0.9), n: `${v.length} delivered images` } : null; } },
+
+    { fam: 'Quality & efficiency', name: 'First-pass QC pass rate', top: 4, def: 'QC passes on attempt 1 ÷ attempt-1 QC decisions.', owner: 'QA/QC', sig: 'Leading', dir: 'hi', t: 0.9, fmt: P,
+      f: (k, a) => { const d = decided(a.filter((x) => x.attempt === 1)); const o = ratio(d.filter((x) => x.qc_result === 'Pass'), d, 'QC decisions');
+        return o ? { ...o, n: `${o.n}; coverage ${d.length}/${k.length} images` } : null; } },
+    { fam: 'Quality & efficiency', name: 'Eventual delivery after reprocessing', top: 5, def: 'Images with 2+ attempts that end up delivered.', owner: 'Engineering', sig: 'Lagging', dir: 'hi', t: 0.9, fmt: P,
+      f: (k) => { const m = k.filter((x) => x.attempts > 1); return ratio(m.filter((x) => x.delivery_status === 'Delivered'), m, 'reprocessed images'); } },
+  ];
+
+  // ok = target met; warn (Close) = higher-is-better within 5 points (ratios) or 10%, lower-is-better within 25% of target; bad = missed. Zero targets have no Close.
+  const status = (m, v) => {
+    const met = m.dir === 'hi' ? v >= m.t : v <= m.t;
+    if (met) return 'ok';
+    const close = m.fmt === N || !m.t ? false : m.dir === 'lo' ? v <= m.t * 1.25 : m.fmt === P ? m.t - v <= 0.05 : v >= m.t * 0.9;
+    return close ? 'warn' : 'bad';
+  };
+  const LABEL = { ok: 'On target', warn: 'Close', bad: 'Off target' };
+  const compute = () => {
+    const r = iprRows('images'), a = iprRows('attempts'); if (!r || !a) return null;
+    const k = kpi(r), ids = new Set(k.map((x) => x.image_id)), ak = a.filter((x) => ids.has(x.image_id));
+    return M.map((m) => { const o = m.f(k, ak, r), fl = m.flag ? m.flag(k, ak, r) : null; return { ...m, o, fl: fl && fl[0] > 0 ? fl : null, st: o && num(o.v) ? status(m, o.v) : null }; });
+  };
+
+  const T = (name, fn) => dash.draw(name, (el) => { const v = fn(); el.textContent = v == null ? '—' : v; });
+  dash.draw('score-table', (tb) => {
+    const rows = compute(); tb.replaceChildren(); if (!rows) return;
+    const td = (cls, ...kids) => { const c = document.createElement('td'); if (cls) c.className = cls; c.append(...kids); return c; };
+    const el = (tag, txt, cls) => { const e = document.createElement(tag); e.textContent = txt; if (cls) e.className = cls; return e; };
+    FAMS.forEach(([fam, q]) => {
+      const fr = document.createElement('tr'); fr.className = 'ipr-famrow';
+      const c = td('', fam, el('span', q)); c.colSpan = 6; fr.append(c); tb.append(fr);
+      rows.filter((x) => x.fam === fam).forEach((m) => {
+        const tr = document.createElement('tr');
+        const val = m.o && num(m.o.v) ? [el('b', m.fmt(m.o.v)), el('small', m.o.n)] : ['—'];
+        tr.append(
+          td('ipr-mname', m.name, ...(m.top ? [el('span', `Top 5 · #${m.top}`, 'ipr-pill ipr-top')] : []), el('small', m.def), ...(m.fl ? [el('small', `⚠ ${m.fl[0]} ${m.fl[0] === 1 ? 'record' : 'records'}: ${m.fl[1]}`, 'ipr-flag')] : [])),
+          td('num', ...val),
+          td('num', m.t === 0 ? m.fmt(0) : (m.dir === 'hi' ? '≥ ' : '≤ ') + m.fmt(m.t)),
+          td('', m.st ? el('span', LABEL[m.st], 'ipr-pill ' + m.st) : '—'),
+          td('', m.owner),
+          td('', m.sig));
+        tb.append(tr);
+      });
+    });
+  });
 })();</script>
 
 
