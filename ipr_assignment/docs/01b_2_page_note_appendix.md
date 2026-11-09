@@ -105,7 +105,9 @@ How the cleaned data handles some of these today:
 | 6 | The workbook keeps the raw per-attempt deadline as Attempt Deadline (raw); it differs on 24 retry rows |
 | 7 | Stale status text in 41 of 123 attempts |
 | 12 | Of the 8 Pending rows, Failure Reason reads as a pass in 5 and a fail in 3 |
+| 13 | Delivered time = the first QC-passed upload. 14 images were uploaded on two or more attempts; the later uploads are re-deliveries, not new deliveries |
 | 14 | Low SNR is noted on 15 images and Minor haze on 12 |
+| 15 | Notes don't decide anything. Example: "Duplicate row from reprocess attempt" sits on 11 attempt-1 rows, and 10 of those images ran only once |
 
 ### Checks that stop bad data at entry
 
@@ -138,4 +140,6 @@ The full set has 20 column-pair rules. Each shows how often this export breaks i
 
 - **Does QC have to pass before upload?** QC starts after upload in 74% of attempts. Until IPR / QA confirm, I flag this but don't block it.
 - **Who sets Strip Fulfillment, and when?** It's set after upload in 44 of 53 rows, and 5 never-captured images are marked Fulfilled. I left it out of all metrics.
+- **What happens after an ISOFIT crash?** ISOFIT is the atmospheric-correction step. 3 images crashed there: 1 was retried and delivered, and 2 were never retried and wait on science review. Who decides between a retry and a fix, and by when?
+- **Why upload the same image again?** 14 images were uploaded on two or more attempts, and 3 delivered images have a newer attempt that was never uploaded. No reason is recorded, so a customer request and a recheck look the same.
 - **Moderate or severe BBR?** One row says moderate in its QC status but severe in Failure Reason. I recorded it as Severe in the workbook's BBR Severity column.

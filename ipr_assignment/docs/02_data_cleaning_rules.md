@@ -10,7 +10,7 @@ One row per Image ID + attempt. 6 stale duplicates removed. Counts from export r
 
 1. Keep the most final status: Delivered/Uploaded > Passed/Done > QC pending > Reprocessing. A terminal outcome (Target missed, No data) beats an in-progress one.
 2. Tie → more timestamps filled, then the latest.
-3. Notes only confirm a pick; they never decide.
+3. Notes only confirm a pick; they never decide. "Duplicate row from reprocess attempt" sits on 11 attempt-1 rows, and 10 of those images ran only once.
 
 | Image ID | Kept (Excel row) | Dropped | Decided by |
 | --- | --- | --- | --- |
@@ -37,6 +37,7 @@ One row per image. 27 images had 2–3 attempts (26 processable + 1 never captur
 | --- | --- | --- |
 | Attempt number vs trigger order disagree | 2 | Keep highest attempt; in Conflicts |
 | Delivered earlier, newer attempt not uploaded | 3 | Counts as delivered; in Conflicts. Rework of the same capture, not a new order |
+| Uploaded on two or more attempts | 14 | Delivered once, at the first QC-passed upload; later uploads are re-deliveries |
 | Priority changed between attempts | 21 | Use attempt 1; in Conflicts |
 | No attempt ever triggered | 3 | Not processable |
 
@@ -276,6 +277,7 @@ Run the checks where the data is written, not only in this sheet. The sheet flag
 | AOI | Customer's target area |
 | Attempt | One processing run; >1 = reprocess |
 | Bandset | Spectral bands delivered (RGB, VNIR Full, Vegetation, Red Edge, Water/Coastal) |
+| Aurora | Assumed: where "Sent to Aurora" delivers the image; counted as delivered (open question) |
 | BBR | Bright-banding artifact; top QC failure |
 | Conflict | Two fields on a row that contradict |
 | DataHub | Upload platform; delivery after QC pass |

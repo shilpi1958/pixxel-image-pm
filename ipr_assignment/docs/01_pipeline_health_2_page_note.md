@@ -162,6 +162,7 @@ All 15 gaps, the cleaning decisions and the checks to enforce at the source: App
 - **How long does a manual QC review take, and where is QC recorded?** A rough estimate per bandset helps; whether that system can take QC End decides if week 2's logging is a setting or a build.
 - **Do the proposed step targets fit?** Ingest 20, processing 30, QC wait 10, QC review 25 and upload 15% of SLA.
 - **Why are images reprocessed?** 23 of 34 reprocesses followed a QC pass, and 3 delivered images were reworked. No reason is recorded.
+- **What does "Sent to Aurora" mean?** It is the last status on 19 attempts, and I count it as delivered, like "DataHub upload complete". If Aurora is a later hand-off rather than the delivery itself, delivery times change.
 
 ## Index: the brief's questions
 
