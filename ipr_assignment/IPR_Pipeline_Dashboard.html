@@ -566,8 +566,8 @@ header.top { border-bottom:1px solid var(--line); background:var(--panel); }
     </div>
     <div class="ipr-group" data-group="cs-tell" hidden>
     <div class="ipr-card" id="cs-tell">
-      <h2>Delayed images: what to tell the customer</h2>
-      <p class="ipr-note">Late or not captured, Tier 1 first. Updates are customer-safe; round ETAs up.</p>
+      <h2>Delayed or partial images: what to tell the customer</h2>
+      <p class="ipr-note">Late or not captured, Tier 1 first; then delivered with partial coverage. Updates are customer-safe; round ETAs up.</p>
       <div class="ipr-tablebox">
         <table data-source="images" data-row-key="image_id">
           <thead><tr><th data-field="image_id">Image ID</th><th data-field="customer">Customer</th><th data-field="tier">Tier</th><th data-field="priority">SLA Priority</th><th data-field="customer_update">Customer update</th><th data-field="eta">Expected ETA</th><th data-field="hours_vs_deadline" class="num">Hours vs Deadline (h)</th></tr></thead>
@@ -593,6 +593,7 @@ header.top { border-bottom:1px solid var(--line); background:var(--panel); }
       <dt>ETA confidence</dt><dd>Estimated = 10+ past attempts back the slowest remaining step. Otherwise Low confidence (e.g. only QC review and upload left, which use stage targets).</dd>
       <dt>Stage targets (proposed)</dt><dd>Ingest 20%, processing 30%, QC wait 10%, QC review 25%, upload 15% of SLA. Red = under 50% met.</dd>
       <dt>Escalation (inferred)</dt><dd>No escalation log exists; inferred from status, retry notes or later attempts. Else No signal.</dd>
+      <dt>Partial coverage</dt><dd>Delivered, but the export marks Target Status = Partial, so part of the customer's area is missing. Tell the customer before they notice.</dd>
       <dt>Customer tier</dt><dd>Set by Customer Success; untiered = Tier 2. Internal accounts count in pipeline views, not customer views.</dd>
       <dt>Source</dt><dd>IPR_Cleaned_Data.xlsx; rules in the IPR Data Cleaning Rules doc.</dd>
     </dl>
@@ -1093,10 +1094,13 @@ header.top { border-bottom:1px solid var(--line); background:var(--panel); }
   dash.draw('cs-tell-table', (tb) => {
     const r = iprRows('images'); if (!r) { tb.replaceChildren(); return; }
     const m = etaModel();
-    const rows = r.filter(iprExt).filter((x) => x.delivery_status === 'Not processable' || isLate(x))
-      .map((x) => ({ ...x, eta: iprEta(x, m), tier: iprTier(x.customer), customer_update: x.stuck === 'Yes' && x.delivery_status !== 'Not processable' ? 'Processing delayed; team engaged'
+    // Partial coverage: delivered, but the export marks Target Status = Partial (part of the area missing).
+    const partial = (x) => x.delivery_status === 'Delivered' && x.target_status === 'Partial';
+    const rows = r.filter(iprExt).filter((x) => x.delivery_status === 'Not processable' || isLate(x) || partial(x))
+      .map((x) => ({ ...x, eta: iprEta(x, m), tier: iprTier(x.customer), customer_update: partial(x) ? `Partial coverage: delivered with about ${Math.floor(x.plan_coverage_pct ?? 0)}% of the area; confirm whether a retake is needed`
+        : x.stuck === 'Yes' && x.delivery_status !== 'Not processable' ? 'Processing delayed; team engaged'
         : x.delivery_status === 'Failed' && x.qc_finding === 'BBR' ? 'Under quality review; we will confirm a new date' : SAY[x.delivery_status] || '' }))
-      .sort((a, b) => IPR_TIERS.indexOf(a.tier) - IPR_TIERS.indexOf(b.tier) || iprUrgent(a, b));
+      .sort((a, b) => partial(a) - partial(b) || IPR_TIERS.indexOf(a.tier) - IPR_TIERS.indexOf(b.tier) || iprUrgent(a, b));
     iprTable(tb, rows, ['image_id', 'customer', 'tier', 'priority', 'customer_update', 'eta', 'hours_vs_deadline']);
   });
   // Team scorecard: step owned, target met, open items, biggest problem and the ask.
