@@ -6,7 +6,7 @@ Rules used to build IPR\_Cleaned\_Data.xlsx. Raw values are never overwritten; o
 
 ## Rule 1: Same-attempt duplicates
 
-One row per Image ID + attempt. 6 stale duplicates removed (136 → 130 attempt rows).
+One row per Image ID + attempt. 6 stale duplicates removed. Counts from export rows to images: [Overview](00_submission.md).
 
 1. Keep the most final status: Delivered/Uploaded > Passed/Done > QC pending > Reprocessing. A terminal outcome (Target missed, No data) beats an in-progress one.
 2. Tie → more timestamps filled, then the latest.
@@ -23,7 +23,7 @@ One row per Image ID + attempt. 6 stale duplicates removed (136 → 130 attempt 
 
 ## Rule 2: Latest valid attempt per image
 
-130 attempt rows → 95 images. 27 images had 2–3 attempts (26 processable + 1 never captured).
+One row per image. 27 images had 2–3 attempts (26 processable + 1 never captured).
 
 1. Latest = highest attempt that was actually triggered.
 2. No valid attempt → Row Status = Not captured.

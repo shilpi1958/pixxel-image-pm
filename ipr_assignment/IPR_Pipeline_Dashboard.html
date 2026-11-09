@@ -138,7 +138,6 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
   .ipr-legend { display: flex; flex-wrap: wrap; gap: var(--cds-gap-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-bottom: var(--cds-gap-xs); }
   .ipr-legend > span { display: inline-flex; align-items: center; gap: 6px; }
   .ipr-legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
-  .ipr-counts { max-width: 46rem; margin-top: var(--cds-gap-sm); }
   .ipr .ipr-sum td { font-weight: var(--cds-font-weight-medium); color: var(--color-fg); }
   .ipr-subtabs { display: flex; flex-wrap: wrap; gap: var(--cds-gap-xs); }
   .ipr-subtab { background: none; border: 1px solid var(--color-border-line); border-radius: 999px; color: var(--color-fg-muted); padding: var(--cds-pad-xs) var(--cds-pad-md); cursor: pointer; font: inherit; font-size: var(--cds-font-size-caption); }
@@ -146,7 +145,6 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
   .ipr-subtab:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
   .ipr-group { display: flex; flex-direction: column; gap: var(--cds-gap-md); }
   .ipr-group[hidden] { display: none; }
-  .ipr .ipr-about summary { cursor: pointer; }
   .ipr-filters .ipr-check { flex-direction: row; align-items: center; gap: 6px; align-self: flex-end; color: var(--color-fg); font-size: var(--cds-font-size-caption); padding-bottom: 4px; }
   .ipr-gate-list { display: flex; flex-direction: column; gap: var(--cds-gap-sm); margin-top: var(--cds-gap-md); }
   .ipr-gate-list[hidden] { display: none; }
@@ -200,15 +198,6 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
     <h1 id="top">IPR Pipeline Dashboard</h1>
     <p class="ipr-hl" id="headline">Only <b data-draw="hl-ontime" data-source="images">—</b> of processable images delivered on time. <b data-draw="hl-p0" data-source="images">—</b> P0 images met their 8h SLA. <b data-draw="hl-late" data-source="images">—</b> images are late and undelivered.</p>
     <p class="ipr-snapshot" id="snapshot"><span class="ipr-pill warn">Data as of</span> <span><b data-draw="snap-time" data-source="images">—</b> UTC: the latest timestamp in the export (it has no pull time). Lateness and ETAs count from here.</span></p>
-    <details class="ipr-about">
-      <summary>From export rows to images</summary>
-      <div class="ipr-tablebox ipr-counts">
-        <table>
-          <thead><tr><th>Count</th><th class="num">Number</th><th>How it's made</th></tr></thead>
-          <tbody data-draw="take-table" data-source="images"></tbody>
-        </table>
-      </div>
-    </details>
     <p class="ipr-take" data-draw="take-range" data-source="images">—</p>
   </header>
 
@@ -781,27 +770,6 @@ html, body { margin:0; background:var(--color-bg); color:var(--color-fg); font-f
     const d = dash.data('images'); if (d.status !== 'ok') { el.textContent = '—'; return; }
     const o = d.data.find((x) => x.delivery_status !== 'Delivered' && x.deadline && typeof x.hours_vs_deadline === 'number');
     el.textContent = o ? d3.utcFormat('%-d %b %Y, %H:%M')(new Date(new Date(o.deadline).getTime() + o.hours_vs_deadline * 3600e3)) : '—';
-  });
-  // Header table: how export rows become attempts and images, plus the headline on-time number.
-  dash.draw('take-table', (tb) => {
-    const r = iprRows('images'), a = iprRows('attempts'); if (!r || !a) { tb.replaceChildren(); return; }
-    const rows = d3.sum(r, (x) => x.export_rows), dup = d3.sum(r, (x) => x.duplicate_rows), k = kpi(r);
-    const nc = r.filter((x) => x.in_kpi !== 'Yes'), ncRows = d3.sum(nc, (x) => x.export_rows - x.duplicate_rows);
-    const on = k.filter((x) => x.on_time === 'Yes').length, p0 = k.filter((x) => x.priority === 'P0');
-    const data = [
-      ['Export rows', rows, 'Rows in the source export'],
-      ['− Duplicates removed', dup, 'Stale copies of the same attempt'],
-      ['= Valid rows', rows - dup, `${iprFmt.n(a.length)} processing attempts + ${ncRows} rows for not-captured images`],
-      ['Images', r.length, 'One per ordered capture'],
-      ['Processable images', k.length, `Processed ${iprFmt.n(a.length)} times (one attempt per run); ${k.filter((x) => x.attempts > 1).length} needed more than one run`],
-      ['Average attempts per image', k.length ? d3.format('.2f')(a.length / k.length) : '—', (() => { const c = d3.rollup(k, (v) => v.length, (x) => Math.min(x.attempts, 3));
-        return `${iprFmt.n(a.length)} ÷ ${k.length}: ${c.get(1) || 0} ran once, ${c.get(2) || 0} twice, ${c.get(3) || 0} three or more times`; })()],
-      ['Not captured', nc.length, `${ncRows} rows${ncRows > nc.length ? ' (some tried more than once)' : ''}; no processing run; excluded from delivery metrics`],
-    ];
-    tb.replaceChildren(...data.map(([l, n, how], i) => { const tr = document.createElement('tr');
-      if (i === 2 || i === 3) tr.className = 'ipr-sum';
-      [l, typeof n === 'number' ? iprFmt.n(n) : n, how].forEach((v, c) => { const td = document.createElement('td'); if (c === 1) td.className = 'num'; td.textContent = v; tr.append(td); });
-      return tr; }));
   });
   dash.draw('week-options', (sel) => {
     const d = dash.data('images');
