@@ -1263,8 +1263,8 @@ header.top { border-bottom:1px solid var(--line); background:var(--panel); }
         return o; } },
     { id: 'late-backlog', name: 'Open late backlog', why: 'Shows work that needs recovery now.', dir: 'lo', t: 0, fmt: N,
       f: (k) => ({ v: k.filter(isLate).length, n: `of ${k.length} processable images` }) },
-    { id: 'reprocess-recovery', name: 'Reprocess recovery rate', why: 'Shows whether fixes resolve quality failures.', dir: 'hi', t: 0.9, fmt: P,
-      f: (k, a) => { const ids = new Set(a.filter((x) => ['Fail', 'Reprocess required'].includes(x.qc_result)).map((x) => x.image_id)); const m = k.filter((x) => ids.has(x.image_id)); return ratio(m.filter((x) => x.delivery_status === 'Delivered'), m, 'images needing recovery'); } },
+    { id: 'qc-recovery', name: 'QC recovery delivery rate', why: 'Shows whether QC-identified quality failures recover to delivery.', dir: 'hi', t: 0.9, fmt: P,
+      f: (k, a) => { const ids = new Set(a.filter((x) => ['Fail', 'Reprocess required'].includes(x.qc_result)).map((x) => x.image_id)); const m = k.filter((x) => ids.has(x.image_id)); return ratio(m.filter((x) => x.delivery_status === 'Delivered'), m, 'images with a QC Fail or Reprocess-required outcome'); } },
   ];
 
   // ok = target met; warn (Close) = higher-is-better within 5 points (ratios) or 10%, lower-is-better within 25% of target; bad = missed. Zero targets have no Close.
