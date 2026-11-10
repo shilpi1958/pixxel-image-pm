@@ -83,6 +83,10 @@ article { background: var(--panel); border: 1px solid var(--line); border-radius
 .md .wide { max-width: none; }
 .tablewrap.decision-table th:first-child,
 .tablewrap.decision-table td:first-child { width: 19%; min-width: 150px; }
+.tablewrap.pattern-table table { table-layout: fixed; }
+.tablewrap.pattern-table th:nth-child(1), .tablewrap.pattern-table td:nth-child(1) { width: 17%; min-width: 130px; }
+.tablewrap.pattern-table th:nth-child(2), .tablewrap.pattern-table td:nth-child(2) { width: 43%; }
+.tablewrap.pattern-table th:nth-child(3), .tablewrap.pattern-table td:nth-child(3) { width: 40%; }
 .tablewrap.appendix-gap-table table,
 .tablewrap.appendix-label-table table,
 .tablewrap.appendix-check-table table { table-layout: fixed; }
@@ -185,6 +189,7 @@ Customer complaints is a future metric; no reliable complaint data is in this ex
     .replace('| End-to-end delivery time (per delivered image) | 100% | 13.1 | 30.9 | 15% of delivered images were after deadline |', '| End-to-end delivery time (per delivered image) | 100% | 13.1 | 15% of delivered images were after deadline |')
     .replace('- P0 median delivery: 10.4h against an 8h SLA.', '- Among the five delivered P0 images, median end-to-end delivery time was 10.4h against an 8h SLA.')
     .replace('**Satellite timing by SLA**\n\n', '**Satellite timing by SLA**\n\nTiming values use all processing attempts. On-time and QC-failure values use the latest eligible image.\n\n')
+    .replace('| Satellite | SLA group | Timing attempts | On time (latest) | QC failures | Stage avg (ingest / processing / QC wait) |', '| Satellite | SLA group | Processing attempts | On time (latest) | QC failures | Stage avg (ingest / processing / QC wait) |')
     .replace('| Metric | Jun 1–7 | Jun 8–14 | Jun 15–21 | Jun 22–30 |', '| Metric | Jun 1–7 | Jun 8–14 | Jun 15–21 | Jun 22–28 |')
     .replace('because an issue remains unresolved.\n- Seven images have a QC pass but no upload.', 'because an issue remains unresolved. It includes unresolved reruns and post-delivery exceptions, not only the active delivery backlog.\n- Seven images have a QC pass but no upload.')
     .replace('- This identifies a risk pattern, not a proven cause.\n', '')
@@ -397,6 +402,7 @@ Full cleaning rules, denominator choices, data gaps and open questions are in th
     docEl.querySelectorAll(".md table").forEach(function (t) {
       var w = document.createElement("div"); w.className = "tablewrap";
       if (t.querySelector("th") && t.querySelector("th").textContent.trim() === "Decision") w.classList.add("decision-table");
+      if (t.querySelector("th") && t.querySelector("th").textContent.trim() === "Dimension") w.classList.add("pattern-table");
       if (key === "appendix") {
         var heads = Array.from(t.querySelectorAll("th")).map(function (th) { return th.textContent.trim(); });
         if (heads.join("|") === "#|Gap|Impact|Fix") w.classList.add("appendix-gap-table");
