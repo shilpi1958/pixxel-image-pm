@@ -257,6 +257,13 @@ Full cleaning rules, denominator choices, data gaps and open questions are in th
   DATA.docs.appendix.md = DATA.docs.appendix.md
     .replace('QC starts after upload in 74% of attempts', 'QC starts after upload in 74% of timestamped attempts')
     .replace('“Sent to Aurora” is treated as delivered pending confirmation that Aurora is the delivery hand-off.', 'For this analysis, “Sent to Aurora” is treated as an equivalent delivery hand-off, pending confirmation that Aurora is the delivery hand-off.');
+  DATA.docs.note.md = DATA.docs.note.md
+    .replace('Twenty-five of 34 blocked images have no recorded escalation.', 'The export has no structured escalation record, so it cannot show whether blocked images were escalated or to whom.');
+  DATA.docs.appendix.md = DATA.docs.appendix.md
+    .replace('No recorded escalation for 25 of 34 blocked images', 'No structured escalation record for blocked images')
+    .replace('• No escalation recorded: 25/34 blocked images', '• No structured escalation record for blocked images');
+  DATA.docs.plan.md = DATA.docs.plan.md
+    .replace('No recorded escalation for 25 of 34 blocked images', 'No structured escalation record for blocked images');
   DATA.docs.plan.md = DATA.docs.plan.md
     .replace('| Upload requires QC Result = Pass | No check | Check designed | Active from Day 9 |', '| Upload requires QC Result = Pass | No check | Ready for Day 6 review | Active from Day 9 |')
     .replace('QC is first come, first served, so P0s wait behind P4s', 'P0/P1 work has no explicit QC-priority rule')
@@ -269,6 +276,21 @@ Full cleaning rules, denominator choices, data gaps and open questions are in th
     .replace('8 images with BBR in their latest status', '8 images with BBR');
   DATA.docs.customer.md = DATA.docs.customer.md
     .replace('UrbanAtlas has requested an update on two late P0 images over Dubai Urban.', 'UrbanAtlas has requested an update on two late P0 images over Dubai Urban. A separate not-captured UrbanAtlas image is incorrectly shown as Delivered; Customer Success should correct that status and discuss re-tasking separately, not in this two-image update.');
+  DATA.docs.note.md = DATA.docs.note.md
+    .replace('| On time (processable images) | 58% (52 of 89) |\n| Missed SLA (processable images) | 42% (37 of 89) |\n| Blocked images | 34 |', '| On time (processable images) | 58% (52 of 89) |\n| Missed SLA (processable images) | 42% (37 of 89) |')
+    .replace('The export shows five issues requiring action: P0 missed SLA, invalid QC-to-upload timestamp order, incomplete images processed, BBR repeating after reprocessing, and blocked images with no recorded escalation (see Root causes).', 'The export shows five issues requiring action: P0 missed SLA, invalid QC-to-upload timestamp order, incomplete images processed, BBR repeating after reprocessing, and no structured escalation record (see Root causes).')
+    .replace('Missing timestamps count as not meeting the target.', 'Step-miss rates use attempts with a recorded timestamp for that step.')
+    .replace('**Blocked images have no recorded escalation**', '**Escalation is not recorded in the export**')
+    .replace('• No escalation recorded: 25/34 blocked images', '• No structured escalation record for blocked images')
+    .replace('| Processing error: ISOFIT crash | 2 / 2 | Vegetation 2 | 1 of 2 |', '| Processing error: ISOFIT crash | 3 / 3 | Vegetation 3 | 1 of 3 |')
+    .replace('| F | Data gaps to fix first | No QC-end time, upload before QC (74%), wrong customer status (45 of 95), no escalation log; 15 in all | Data confidence and next fixes; Appendix |', '| F | Data gaps to fix first | No QC-end time, upload before QC (74%), wrong customer status (45 of 95), no structured escalation record | Data confidence and next fixes; Appendix |')
+    .replace('average processing varies only 4.5–5.7h by satellite; correlations with angle, cloud and coverage are ≤ 0.11.', 'average processing varies only 4.5–5.7h by satellite; no clear pattern appears by angle, cloud or coverage.');
+  DATA.docs.appendix.md = DATA.docs.appendix.md
+    .replace('Two images had an ISOFIT crash; one recovered after retry and one remains failed.', 'Three images had an ISOFIT crash; one recovered after retry and two remain failed.');
+  DATA.docs.plan.md = DATA.docs.plan.md
+    .replace('| 2 recent ISOFIT crash incidents<br>• 1 remains open | Inspect logs and input completeness for the open image<br>• Capture the root cause from both incidents | Eng A | Eng A: 6h estimate | 2–3 |', '| 3 recent ISOFIT crash incidents<br>• 2 remain open | Inspect logs and input completeness for the open images<br>• Capture the root cause from all three incidents | Eng A | Eng A: 6h estimate | 2–3 |');
+  DATA.docs.internal.md = DATA.docs.internal.md
+    .replace('- Review 2 recent ISOFIT crash incidents; one remains open.', '- Review 3 recent ISOFIT crash incidents; two remain open.');
   DATA.docs.note.num = "1";
   DATA.nav = DATA.nav.map(function (n) {
     return n.key === "note" ? Object.assign({}, n, { num: "1" }) : n;
