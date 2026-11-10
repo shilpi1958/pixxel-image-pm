@@ -308,13 +308,7 @@ Full cleaning rules, denominator choices, data gaps and open questions are in th
 ### Fastest recovery
 
 - **5 images** have a QC pass and appear ready for upload.
-- **2 more images** have a QC pass but also show a stuck-run signal; validate the run before upload.
-
-### Known vs. needs confirmation
-
-| Known from the export | Needs confirmation with IPR and QA/QC |
-| --- | --- |
-| P0 SLA misses, the open late backlog, BBR-held images, and upload-ready images | QC timestamp semantics, event definitions, the actual upload workflow, priority routing, and SLA start time |
+- **2 more images** have a QC pass, but processing is not recorded as finished; validate the run before upload.
 
 ## Pipeline health`)
     .replace(/upload precedes QC Start in 74% of timestamped attempts/g, '55 of 74 timestamped attempts show upload before the recorded QC Start')
