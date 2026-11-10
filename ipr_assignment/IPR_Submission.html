@@ -352,6 +352,16 @@ Full cleaning rules, denominator choices, data gaps and open questions are in th
     .replace('| Uploads before QC Start | 74% |  | 0% from Day 9 |', '| Recorded upload-before-QC-start order | 55 of 74 timestamped attempts | Validate semantics in the Day 6 review | Confirm workflow before adding a control |');
   DATA.docs.internal.md = DATA.docs.internal.md
     .replace('| Upload before QC Start | 55/74 attempts (74%) |', '| Recorded upload before QC Start | 55 of 74 timestamped attempts |');
+  DATA.docs.note.md = DATA.docs.note.md.replace(/## Index: the brief's questions[\s\S]*$/, `## Index: the brief's questions
+
+|  | Question | Short answer | Where |
+| --- | --- | --- | --- |
+| A | Processing health | 89 processable: 61 delivered, 28 open and late, 11 failed | Pipeline health |
+| B | Priority triage queue | 7 late P0/P1: 2 upload-ready P0s, 3 awaiting QC, 1 unfinished processing record, 1 BBR hold | Priority triage queue |
+| C | Patterns | FF02 has the lowest on-time rate; Vegetation accounts for 6 of 10 latest QC failures, including 5 of 8 BBR failures | Root causes |
+| D | Duplicates and attempts | 6 stale duplicates removed; use the latest valid attempt and the attempt-1 SLA | Appendix |
+| E | What counts as delivered | QC pass + upload; caveats are tracked separately | Pipeline health; Appendix |
+| F | Data gaps to fix first | QC End missing; recorded upload-before-QC-start 55/74; 45/95 customer statuses wrong; no escalation record | Data confidence and next fixes; Appendix |`);
   DATA.docs.note.num = "1";
   DATA.nav = DATA.nav.map(function (n) {
     return n.key === "note" ? Object.assign({}, n, { num: "1" }) : n;
