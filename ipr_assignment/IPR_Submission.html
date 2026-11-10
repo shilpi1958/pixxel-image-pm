@@ -243,6 +243,30 @@ Full cleaning rules, denominator choices, data gaps and open questions are in th
   DATA.docs.customer.md = DATA.docs.customer.md
     .replace('missed their committed delivery times.', 'have been delayed.')
     .replace('The 1 June image is now available in your account. Send this sentence only after delivery is confirmed.', 'The 1 June image is now available for download.');
+  DATA.docs.note.md = DATA.docs.note.md
+    .replace('The export shows five issues requiring action: P0 work needing immediate attention, invalid QC-to-upload sequencing, incomplete imagery entering processing, recurring BBR, and the open late backlog (see Root causes).', 'The export shows five issues requiring action: P0 missed SLA, invalid QC-to-upload timestamp order, incomplete images processed, BBR repeating after reprocessing, and blocked images with no recorded escalation (see Root causes).')
+    .replace(/upload precedes QC Start in 74% of attempts/g, 'upload precedes QC Start in 74% of timestamped attempts')
+    .replace('Attempts missing target', 'Share missing target')
+    .replace('15% of delivered images were after deadline', '15% of delivered images')
+    .replace('| 5 | Reprocess recovery rate | Images with a failed or reprocess-required attempt that are now delivered | Images needing recovery | 23% (3/13) | ≥ 90% |', '| 5 | QC recovery delivery rate | Images with a QC Fail or Reprocess-required attempt that are now delivered | Images with a QC Fail or Reprocess-required attempt | 23% (3/13) | ≥ 90% |')
+    .replace('| D | Duplicates and attempts | One row per Image ID + attempt (6 stale duplicates removed); the latest valid attempt is the image\'s row; SLA locked to attempt 1 | Assumptions; Appendix |', '| D | Duplicates and attempts | One row per Image ID + attempt (6 stale duplicates removed); the latest valid attempt is the image\'s row; SLA locked to attempt 1 | Appendix |')
+    .replace('| E | What counts as delivered | QC Result Pass and uploaded; a pass with a caveat counts, shown apart. SLA assumed to run from acquisition | Assumptions; Top 5, metric 1 |', '| E | What counts as delivered | QC Result Pass and uploaded; a pass with a caveat counts, shown apart. SLA assumed to run from acquisition | Appendix; Top 5, metric 3 |')
+    .replace('| F | Data gaps to fix first | No QC-end time, upload before QC (74%), wrong customer status (45 of 95), no escalation log; 15 in all | Data fixes; Appendix |', '| F | Data gaps to fix first | No QC-end time, upload before QC (74%), wrong customer status (45 of 95), no escalation log; 15 in all | Data confidence and next fixes; Appendix |');
+  DATA.docs.appendix.md = DATA.docs.appendix.md
+    .replace('QC starts after upload in 74% of attempts', 'QC starts after upload in 74% of timestamped attempts')
+    .replace('“Sent to Aurora” is treated as delivered pending confirmation that Aurora is the delivery hand-off.', 'For this analysis, “Sent to Aurora” is treated as an equivalent delivery hand-off, pending confirmation that Aurora is the delivery hand-off.');
+  DATA.docs.plan.md = DATA.docs.plan.md
+    .replace('| Upload requires QC Result = Pass | No check | Check designed | Active from Day 9 |', '| Upload requires QC Result = Pass | No check | Ready for Day 6 review | Active from Day 9 |')
+    .replace('QC is first come, first served, so P0s wait behind P4s', 'P0/P1 work has no explicit QC-priority rule')
+    .replace('• 1 more was uploaded before any QC decision<br>', '')
+    .replace('| 2 images have Processing error: ISOFIT crash | Inspect logs and input completeness<br>• Retry only after the failure condition is resolved | Eng A | Eng A: 6h estimate | 2–3 |', '| 2 recent ISOFIT crash incidents<br>• 1 remains open | Inspect logs and input completeness for the open image<br>• Capture the root cause from both incidents | Eng A | Eng A: 6h estimate | 2–3 |')
+    .replace('| Remaining processing failures: Water Mask and Missing Metadata | Validate input and configuration<br>• Retry only after the cause is resolved<br>• Record the failure and rerun reason | Eng A | Eng A: 4h estimate | 2–4 |', '| Remaining processing failures: 2 images<br>• 1 Water Mask, 1 Missing Metadata | Validate input and configuration<br>• Retry only after the cause is resolved<br>• Record the failure and rerun reason | Eng A | Eng A: 4h estimate | 2–4 |')
+    .replace('| QC decisions are recorded in free-text notes | • Require QC Result, QC Finding and BBR Severity as structured fields<br>• Keep Notes for context only | QA/QC + Eng B | Estimate after form design | 6–8 |', '| QC decisions are recorded in free-text notes | • Require QC Result, QC Finding and BBR Severity as structured fields<br>• Keep Notes for context only | QA/QC + Eng B | Estimate after form design | 6–8 |\n| Customer status is corrected by hand | Derive customer status from pipeline events and show the derived value in the CS tool | Eng B + Customer Success | Estimate after Day 6 tool review | 8–10 |');
+  DATA.docs.internal.md = DATA.docs.internal.md
+    .replace('- Investigate 2 ISOFIT crashes.', '- Review 2 recent ISOFIT crash incidents; one remains open.\n  - Resolve the 2 remaining processing failures: 1 Water Mask and 1 Missing Metadata.')
+    .replace('8 images with BBR in their latest status', '8 images with BBR');
+  DATA.docs.customer.md = DATA.docs.customer.md
+    .replace('UrbanAtlas has requested an update on two late P0 images over Dubai Urban.', 'UrbanAtlas has requested an update on two late P0 images over Dubai Urban. A separate not-captured UrbanAtlas image is incorrectly shown as Delivered; Customer Success should correct that status and discuss re-tasking separately, not in this two-image update.');
   DATA.docs.note.num = "1";
   DATA.nav = DATA.nav.map(function (n) {
     return n.key === "note" ? Object.assign({}, n, { num: "1" }) : n;
