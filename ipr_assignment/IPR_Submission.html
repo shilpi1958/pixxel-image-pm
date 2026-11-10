@@ -176,10 +176,13 @@ Customer complaints is a future metric; no reliable complaint data is in this ex
 
 ## Data fixes:`);
   DATA.docs.note.md = DATA.docs.note.md
-    .replace('| Step | Proposed target (% of SLA) | Avg actual (h) | Avg proposed target (h) | Finding |', '| Step | Proposed target (% of SLA) | Avg actual (h) | Avg proposed target (h) | Attempts missing target |')
-    .replace('| 1. Acquisition → processing start | 20% | 9.1 | 6.1 | 51% over target |', '| 1. Acquisition → processing start | 20% | 9.1 | 6.1 | 51% of attempts |')
-    .replace('| 2. Processing | 30% | 5.2 | 9.2 | 31% over target |', '| 2. Processing | 30% | 5.2 | 9.2 | 31% of attempts |')
-    .replace('| 3. Waiting for QC | 10% | 3.5 | 3.1 | 59% over target |', '| 3. Waiting for QC | 10% | 3.5 | 3.1 | 59% of attempts |')
+    .replace('| Step | Proposed target (% of SLA) | Avg actual (h) | Avg proposed target (h) | Finding |', '| Step | Proposed target (% of SLA) | Avg actual (h) | Finding |')
+    .replace('| 1. Acquisition → processing start | 20% | 9.1 | 6.1 | 51% over target |', '| 1. Acquisition → processing start | 20% | 9.1 | 51% over target |')
+    .replace('| 2. Processing | 30% | 5.2 | 9.2 | 31% over target |', '| 2. Processing | 30% | 5.2 | 31% over target |')
+    .replace('| 3. Waiting for QC | 10% | 3.5 | 3.1 | 59% over target |', '| 3. Waiting for QC | 10% | 3.5 | 59% over target |')
+    .replace('| 4. QC review (QC start → QC end) | 25% | Not measurable | 8.0 | QC End is not logged |', '| 4. QC review (QC start → QC end) | 25% | Not measurable | QC End is not logged |')
+    .replace('| 5. Upload (QC end → DataHub upload) | 15% | Not measurable | 4.6 | QC End is not logged; upload precedes QC Start in 74% of attempts, so the timestamp sequence is invalid |', '| 5. Upload (QC end → DataHub upload) | 15% | Not measurable | QC End is not logged; upload precedes QC Start in 74% of attempts, so the timestamp sequence is invalid |')
+    .replace('| End-to-end delivery time (per delivered image) | 100% | 13.1 | 30.9 | 15% of delivered images were after deadline |', '| End-to-end delivery time (per delivered image) | 100% | 13.1 | 15% of delivered images were after deadline |')
     .replace('**Satellite timing by SLA**\n\n', '**Satellite timing by SLA**\n\nTiming values use all processing attempts. On-time and QC-failure values use the latest eligible image.\n\n')
     .replace('| Metric | Jun 1–7 | Jun 8–14 | Jun 15–21 | Jun 22–30 |', '| Metric | Jun 1–7 | Jun 8–14 | Jun 15–21 | Jun 22–28 |')
     .replace('because an issue remains unresolved.\n- Seven images have a QC pass but no upload.', 'because an issue remains unresolved. It includes unresolved reruns and post-delivery exceptions, not only the active delivery backlog.\n- Seven images have a QC pass but no upload.')
