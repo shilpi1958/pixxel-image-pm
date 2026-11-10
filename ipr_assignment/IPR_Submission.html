@@ -243,6 +243,10 @@ Full cleaning rules, denominator choices, data gaps and open questions are in th
   DATA.docs.customer.md = DATA.docs.customer.md
     .replace('missed their committed delivery times.', 'have been delayed.')
     .replace('The 1 June image is now available in your account. Send this sentence only after delivery is confirmed.', 'The 1 June image is now available for download.');
+  DATA.docs.note.num = "1";
+  DATA.nav = DATA.nav.map(function (n) {
+    return n.key === "note" ? Object.assign({}, n, { num: "1" }) : n;
+  });
   DATA.docs.overview.md = DATA.docs.overview.md
     .replace('- [IPR Data Cleaning Rules](#rules): every cleaning decision, with counts.\n', '')
     .replace('the cleaned data, one row per image attempt, with a column guide and a log of every changed cell. Also attached as IPR\\_Cleaned\\_Data.xlsx.', 'the cleaned data, one row per image attempt, with a column guide and a log of every changed cell.')
