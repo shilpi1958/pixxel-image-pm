@@ -244,6 +244,8 @@ Full cleaning rules, denominator choices, data gaps and open questions are in th
     .replace('missed their committed delivery times.', 'have been delayed.')
     .replace('The 1 June image is now available in your account. Send this sentence only after delivery is confirmed.', 'The 1 June image is now available for download.');
   DATA.docs.note.md = DATA.docs.note.md
+    .replace('| On time (processable images) | 58% (52 of 89) |', '| On time (processable images) | 58% (52 of 89) |\n| Missed SLA (processable images) | 42% (37 of 89) |\n| Blocked images | 34 |');
+  DATA.docs.note.md = DATA.docs.note.md
     .replace('The export shows five issues requiring action: P0 work needing immediate attention, invalid QC-to-upload sequencing, incomplete imagery entering processing, recurring BBR, and the open late backlog (see Root causes).', 'The export shows five issues requiring action: P0 missed SLA, invalid QC-to-upload timestamp order, incomplete images processed, BBR repeating after reprocessing, and blocked images with no recorded escalation (see Root causes).')
     .replace(/upload precedes QC Start in 74% of attempts/g, 'upload precedes QC Start in 74% of timestamped attempts')
     .replace('Attempts missing target', 'Share missing target')
