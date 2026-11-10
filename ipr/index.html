@@ -349,6 +349,16 @@ Full cleaning rules, denominator choices, data gaps and open questions are in th
   DATA.nav = DATA.nav.map(function (n) {
     return n.key === 'rules' ? { key: 'cleaned-data', label: 'Cleaned data sheet', num: '–', href: 'https://docs.google.com/spreadsheets/d/1H5MagVDtXSokKoSzb_ETOgIPoxjnbulVaNIjAcQHKFY/edit?usp=sharing' } : n;
   });
+  // Supporting cleaning artefacts are intentionally not part of the submission.
+  DATA.docs.rules.md = '';
+  DATA.docs.appendix.md = DATA.docs.appendix.md
+    .replace('Every number in the note depends on these decisions. Source: the cleaned data sheet linked from the Overview.', 'Every number in the note depends on these decisions. Source: the analysis dataset.')
+    .replace('Every number in the note depends on these decisions. Source: IPR\\_Cleaned\\_Data.xlsx.', 'Every number in the note depends on these decisions. Source: the analysis dataset.');
+  DATA.docs.overview.md = DATA.docs.overview.md
+    .replace(/\*\*Supporting material:\*\*[\s\S]*?\n\n### From export rows to images/, '### From export rows to images');
+  DATA.docs.note.md = DATA.docs.note.md
+    .replace('Full cleaning rules, denominator choices, data gaps and open questions are in the [Appendix](#appendix).', 'Denominator choices, data gaps and open questions are in the [Appendix](#appendix).');
+  DATA.nav = DATA.nav.filter(function (n) { return n.key !== 'rules' && n.key !== 'cleaned-data'; });
   var nav = DATA.nav, docs = DATA.docs;
   var navEl = document.getElementById("nav"), docEl = document.getElementById("doc");
 
