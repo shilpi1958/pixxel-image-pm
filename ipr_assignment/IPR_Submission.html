@@ -299,6 +299,12 @@ Full cleaning rules, denominator choices, data gaps and open questions are in th
     .replace('8 images with BBR in their latest status', '8 images with BBR');
   DATA.docs.customer.md = DATA.docs.customer.md
     .replace('UrbanAtlas has requested an update on two late P0 images over Dubai Urban.', 'UrbanAtlas has requested an update on two late P0 images over Dubai Urban. A separate not-captured UrbanAtlas image is incorrectly shown as Delivered; Customer Success should correct that status and discuss re-tasking separately, not in this two-image update.');
+  DATA.docs.customer.md = DATA.docs.customer.md
+    .replace('- Include a specific time for the next customer update.', '- Include a specific time for the next customer update.\n- Before sending, insert the customer\'s order or request reference for each image; those references are not in this export.')
+    .replace('> Subject: Update on your Dubai Urban priority images', '> Subject: Update on your Dubai Urban priority image requests — [Order reference 1] and [Order reference 2]')
+    .replace('I’m sorry that both priority images for Dubai Urban, captured on 1 and 5 June, have been delayed.', 'I’m sorry that your two priority Dubai Urban image requests—[Order reference 1] (captured 1 June) and [Order reference 2] (captured 5 June)—have been delayed.')
+    .replace('The 1 June image is now available for download.', 'The image for [Order reference 1] is now available for download.')
+    .replace('The 5 June image is under quality review and is being handled as a priority.', 'The image for [Order reference 2] is under quality review and is being handled as a priority.');
   DATA.docs.note.md = DATA.docs.note.md
     .replace('| On time (processable images) | 58% (52 of 89) |\n| Missed SLA (processable images) | 42% (37 of 89) |\n| Blocked images | 34 |', '| On time (processable images) | 58% (52 of 89) |\n| Missed SLA (processable images) | 42% (37 of 89) |')
     .replace('The export shows five issues requiring action: P0 missed SLA, invalid QC-to-upload timestamp order, incomplete images processed, BBR repeating after reprocessing, and blocked images with no recorded escalation (see Root causes).', 'The export shows five issues requiring action: P0 missed SLA, invalid QC-to-upload timestamp order, incomplete images processed, BBR repeating after reprocessing, and no structured escalation record (see Root causes).')
