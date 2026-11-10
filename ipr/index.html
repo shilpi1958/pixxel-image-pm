@@ -90,6 +90,24 @@ article { background: var(--panel); border: 1px solid var(--line); border-radius
 .md .wide { max-width: none; }
 .tablewrap.decision-table th:first-child,
 .tablewrap.decision-table td:first-child { width: 19%; min-width: 150px; }
+.tablewrap.appendix-gap-table table,
+.tablewrap.appendix-label-table table,
+.tablewrap.appendix-check-table table { table-layout: fixed; }
+.tablewrap.appendix-gap-table table { min-width: 820px; }
+.tablewrap.appendix-gap-table th:nth-child(1), .tablewrap.appendix-gap-table td:nth-child(1) { width: 7%; }
+.tablewrap.appendix-gap-table th:nth-child(2), .tablewrap.appendix-gap-table td:nth-child(2) { width: 27%; }
+.tablewrap.appendix-gap-table th:nth-child(3), .tablewrap.appendix-gap-table td:nth-child(3) { width: 31%; }
+.tablewrap.appendix-gap-table th:nth-child(4), .tablewrap.appendix-gap-table td:nth-child(4) { width: 35%; }
+.tablewrap.appendix-label-table table { min-width: 860px; }
+.tablewrap.appendix-label-table th:nth-child(1), .tablewrap.appendix-label-table td:nth-child(1) { width: 15%; }
+.tablewrap.appendix-label-table th:nth-child(2), .tablewrap.appendix-label-table td:nth-child(2) { width: 34%; }
+.tablewrap.appendix-label-table th:nth-child(3), .tablewrap.appendix-label-table td:nth-child(3) { width: 39%; }
+.tablewrap.appendix-label-table th:nth-child(4), .tablewrap.appendix-label-table td:nth-child(4) { width: 12%; }
+.tablewrap.appendix-check-table table { min-width: 900px; }
+.tablewrap.appendix-check-table th:nth-child(1), .tablewrap.appendix-check-table td:nth-child(1) { width: 27%; }
+.tablewrap.appendix-check-table th:nth-child(2), .tablewrap.appendix-check-table td:nth-child(2) { width: 15%; }
+.tablewrap.appendix-check-table th:nth-child(3), .tablewrap.appendix-check-table td:nth-child(3) { width: 38%; }
+.tablewrap.appendix-check-table th:nth-child(4), .tablewrap.appendix-check-table td:nth-child(4) { width: 20%; }
 
 .detail-toggle { margin: 1.5em 0; border: 1px solid var(--line); border-radius: 6px; background: var(--code-bg); }
 .detail-toggle summary { cursor: pointer; padding: 11px 14px; color: var(--accent); font-weight: 600; }
@@ -164,7 +182,81 @@ Headline: clean first-pass QC pass is 54%, and 3 P0 images need immediate attent
 Customer complaints is a future metric; no reliable complaint data is in this export.
 
 ## Data fixes:`);
-  DATA.docs.overview.md = DATA.docs.overview.md.replace('- [IPR Data Cleaning Rules](#rules): every cleaning decision, with counts.\n', '');
+  DATA.docs.note.md = DATA.docs.note.md
+    .replace('| Step | Proposed target (% of SLA) | Avg actual (h) | Avg proposed target (h) | Finding |', '| Step | Proposed target (% of SLA) | Avg actual (h) | Avg proposed target (h) | Attempts missing target |')
+    .replace('| 1. Acquisition → processing start | 20% | 9.1 | 6.1 | 51% over target |', '| 1. Acquisition → processing start | 20% | 9.1 | 6.1 | 51% of attempts |')
+    .replace('| 2. Processing | 30% | 5.2 | 9.2 | 31% over target |', '| 2. Processing | 30% | 5.2 | 9.2 | 31% of attempts |')
+    .replace('| 3. Waiting for QC | 10% | 3.5 | 3.1 | 59% over target |', '| 3. Waiting for QC | 10% | 3.5 | 3.1 | 59% of attempts |')
+    .replace('**Satellite timing by SLA**\n\n', '**Satellite timing by SLA**\n\nTiming values use all processing attempts. On-time and QC-failure values use the latest eligible image.\n\n')
+    .replace('| Metric | Jun 1–7 | Jun 8–14 | Jun 15–21 | Jun 22–30 |', '| Metric | Jun 1–7 | Jun 8–14 | Jun 15–21 | Jun 22–28 |')
+    .replace('because an issue remains unresolved.\n- Seven images have a QC pass but no upload.', 'because an issue remains unresolved. It includes unresolved reruns and post-delivery exceptions, not only the active delivery backlog.\n- Seven images have a QC pass but no upload.')
+    .replace('| 6 | FF03\\_20260624\\_1047\\_ODISH | MineralsCo | P1 | Waiting for a QC decision | 130h |\n| 7 | FF01\\_20260623\\_1063\\_BENGA | Internal Demo | P1 | Failed QC on BBR; held until the BBR fix | 167h |', '| 6 | FF01\\_20260623\\_1063\\_BENGA | Internal Demo | P1 | Failed QC on BBR; held until the BBR fix | 167h |\n| 7 | FF03\\_20260624\\_1047\\_ODISH | MineralsCo | P1 | Waiting for a QC decision | 130h |');
+  DATA.docs.appendix.md = DATA.docs.appendix.md
+    .replace('Images delivered by the deadline ÷ processable images whose deadline has passed. In the workbook: Delivered and Hours vs Deadline ≤ 0.', 'Images delivered by the deadline ÷ processable images whose deadline has passed. All 89 processable images were past deadline at the snapshot, so the denominator is 89. In the workbook: Delivered and Hours vs Deadline ≤ 0.')
+    .replace('Every number in the note depends on these decisions. Source: IPR\\_Cleaned\\_Data.xlsx.', 'Every number in the note depends on these decisions. Source: the cleaned data sheet linked from the Overview.')
+    .replace('Three delivered images were rerun with no reason recorded', 'Three images were rerun after delivery with no reason recorded')
+    .replace('Require rerun reason and owner when a delivered image is retried', 'Require rerun reason and owner for every retry')
+    .replace('20 of 23 incomplete attempts were processed', 'Of 23 incomplete attempts overall, 20 entered processing. Of the 19 incomplete processable attempts used in the note\'s analysis, all were triggered')
+    .replace('Three images had an ISOFIT crash; one recovered after retry and two remain failed.', 'Two images had an ISOFIT crash; one recovered after retry and one remains failed.');
+  DATA.docs.plan.md = DATA.docs.plan.md
+    .replace('| New attempts with QC Start, QC End and upload time | 0% |  | 100% from Day 7 |', '| Any attempt started from Day 7 has QC Start, QC End and upload time recorded | 0% |  | 100% |')
+    .replace('**Expected residual backlog at week 2:** 8 BBR holds, 1 incomplete image awaiting re-downlink or re-task, and up to 3 images whose retry still fails.', '**Expected residual backlog at week 2:** 8 BBR holds (including one P1; the remaining seven are P2–P4), 1 incomplete image awaiting re-downlink or re-task, and up to 3 images whose retry still fails.')
+    .replace('| Customer recovery<br>• 45 customer statuses are wrong<br>• Late P0/P1 and BBR holds need updates<br>• 6 images were never captured | • Correct status, starting with the 4 shown as Delivered<br>• Send status and next-update date<br>• Coordinate re-task or closure | Customer Success + Tasking |  | 1–3 |', '| Customer recovery<br>• 45 customer statuses are wrong<br>• Late P0/P1 and BBR holds need updates<br>• 6 images were never captured | • Correct status, starting with the 4 shown as Delivered<br>• Send status and next-update date<br>• IPR Lead requests re-tasking through the established tasking process, or closes the order | Customer Success + IPR Lead |  | 1–3 |')
+    .replace('| 2 images have Processing error: ISOFIT crash | Inspect logs and input completeness<br>• Retry only after the failure condition is resolved | Eng A | Eng A: 6h estimate | 2–3 |', '| 2 images have Processing error: ISOFIT crash | Inspect logs and input completeness<br>• Retry only after the failure condition is resolved | Eng A | Eng A: 6h estimate | 2–3 |\n| Remaining processing failures: Water Mask and Missing Metadata | Validate input and configuration<br>• Retry only after the cause is resolved<br>• Record the failure and rerun reason | Eng A | Eng A: 4h estimate | 2–4 |');
+  DATA.docs.note.md = DATA.docs.note.md.replace(/## Data fixes:[\s\S]*?\n\n## Index:/, `## Data confidence and next fixes
+
+The direction is clear, but QC End is not recorded and upload timestamps precede QC Start in many attempts. QC-review and upload duration therefore cannot yet be measured reliably.
+
+Prioritise three controls in the next two weeks: record event timestamps automatically, block upload until QC passes, and derive customer status from pipeline events rather than manual updates.
+
+**Assumptions used:**
+
+- Delivery means QC pass plus upload.
+- SLA starts at acquisition.
+- Six not-captured images are excluded from processable-image KPIs.
+
+Full cleaning rules, denominator choices, data gaps and open questions are in the [Appendix](#appendix).
+
+## Index:`);
+  DATA.docs.appendix.md = DATA.docs.appendix.md.replace('## Open questions for the team', `### Note-specific assumptions
+
+- **Cloud processability:** over 70% cloud is not processable. The only image above that threshold was not captured, so the rule changes no KPI in this export.
+- **Moderate BBR:** counted as Fail for this analysis; confirm the operational rule.
+- **Aurora:** “Sent to Aurora” is treated as delivered pending confirmation that Aurora is the delivery hand-off.
+- **Proposed SLA split:** ingest 20%, processing 30%, QC wait 10%, QC review 25% and upload 15%. These are planning targets, not agreed operating targets.
+- **Processing Queue:** excluded from metrics because its labels do not match the observed run type; five values appear and 26 first attempts are labelled retry or reprocess.
+- **Reruns:** 23 of 34 reprocess events followed a QC pass and 3 followed delivery. Capture the rerun reason on every retry.
+
+## Open questions for the team`);
+  DATA.docs.note.md = DATA.docs.note.md
+    .replace('- It does not mean the target was missed or that plan coverage was low.\n', '')
+    .replace(/\*\*How patterns were checked\*\*[\s\S]*?\n\n\*\*Satellite timing by SLA\*\*/, '**Satellite timing by SLA**');
+  DATA.docs.appendix.md = DATA.docs.appendix.md
+    .replace('| Target Status remains the raw capture outcome; never derive it from Plan Coverage | Acquisition / ingest | Record the source value; do not overwrite it from coverage | Coverage and Target Status measure different things |\n', '')
+    .replace('- **Coverage threshold:** What coverage rule should guide customer communication? Keep Target Status raw and report Plan Coverage separately until this is defined.', '- **Coverage threshold:** What coverage rule should guide customer communication? Define and document the customer-facing threshold.');
+  DATA.docs.rules.md = DATA.docs.rules.md
+    .replace('| Coverage vs Target Status | 2 Not captured at 12.4% | Conflicts |\n', '')
+    .replace('| Acquisition | Plan Coverage % | Target Status | ≥ 95% Captured, 1–94% Partial, 0% Not captured | 2 | Set automatically |\n', '')
+    .replace('| Completeness gate | Proposed check at Ingest, before Trigger. Complete → process; AOI frames present → process, flagged; AOI frames missing → hold, re-downlink or re-task, never rerun. Today 20 of 23 incomplete attempts were processed; 7 of 14 incomplete images failed QC vs 3 of 75 complete. |\n', '');
+  DATA.docs.appendix.md = DATA.docs.appendix.md
+    .replace('| Image Complete is based on received frames, not Plan Coverage | Ingest, before Trigger | Complete → process. AOI frames present → process, flagged. AOI frames missing → hold for re-downlink or re-task; do not rerun | Of 23 incomplete attempts overall, 20 entered processing. Of the 19 incomplete processable attempts used in the note\'s analysis, all were triggered |\n', '');
+  DATA.docs.appendix.md = DATA.docs.appendix.md
+    .replace('The full column-pair rule set is in the [IPR Data Cleaning Rules](#rules).\n\n', '');
+  DATA.docs.internal.md = DATA.docs.internal.md
+    .replace('Upload 5 QC-passed images not uploaded at snapshot.', 'Upload 5 QC-passed, non-stuck images not uploaded at the snapshot.')
+    .replace('Add or configure the requirements for QC and upload timestamps, QC-pass upload control, structured QC fields, alerts and duplicate prevention.', 'Following the Day 6 tool review, implement the approved requirements for QC and upload timestamps, QC-pass upload control, structured QC fields, alerts and duplicate prevention.')
+    .replace('QA/QC and Eng A investigate the 8 BBR-held images.', 'QA/QC and Eng A investigate the 8 images with BBR in their latest status.')
+    .replace('the Day 6 tool-review scope.', 'the scope for the Day 6 tool review.');
+  DATA.docs.customer.md = DATA.docs.customer.md
+    .replace('missed their committed delivery times.', 'have been delayed.')
+    .replace('The 1 June image is now available in your account. Send this sentence only after delivery is confirmed.', 'The 1 June image is now available for download.');
+  DATA.docs.overview.md = DATA.docs.overview.md
+    .replace('- [IPR Data Cleaning Rules](#rules): every cleaning decision, with counts.\n', '')
+    .replace('the cleaned data, one row per image attempt, with a column guide and a log of every changed cell. Also attached as IPR\\_Cleaned\\_Data.xlsx.', 'the cleaned data, one row per image attempt, with a column guide and a log of every changed cell.')
+    .replace('| Count | Number | How it\'s made |', '| Step | Count | How derived |')
+    .replace('| Processable images | 89 | Processed 123 times (one attempt per run); 26 needed more than one run |', '| Processable images | 89 | 123 processing attempts; 26 needed more than one run |')
+    .replace('| Average attempts per image | 1.38 | 123 ÷ 89: 63 ran once, 18 twice, 8 three or more times |', '| Average attempts per image | 1.38 | 123 ÷ 89: 63 ran once, 18 twice, 8 three times |')
+    .replace('| Not captured | 6 | 7 rows (some tried more than once); no processing run; excluded from delivery metrics |', '| Not captured | 6 | 7 rows, including one second record; excluded from delivery metrics |');
   DATA.nav = DATA.nav.map(function (n) {
     return n.key === 'rules' ? { key: 'cleaned-data', label: 'Cleaned data sheet', num: '–', href: 'https://docs.google.com/spreadsheets/d/1H5MagVDtXSokKoSzb_ETOgIPoxjnbulVaNIjAcQHKFY/edit?usp=sharing' } : n;
   });
@@ -204,6 +296,12 @@ Customer complaints is a future metric; no reliable complaint data is in this ex
     docEl.querySelectorAll(".md table").forEach(function (t) {
       var w = document.createElement("div"); w.className = "tablewrap";
       if (t.querySelector("th") && t.querySelector("th").textContent.trim() === "Decision") w.classList.add("decision-table");
+      if (key === "appendix") {
+        var heads = Array.from(t.querySelectorAll("th")).map(function (th) { return th.textContent.trim(); });
+        if (heads.join("|") === "#|Gap|Impact|Fix") w.classList.add("appendix-gap-table");
+        if (heads.join("|") === "Column|Raw variants|Cleaned values|Rows changed") w.classList.add("appendix-label-table");
+        if (heads.join("|") === "Check|Where it runs|Action|Today") w.classList.add("appendix-check-table");
+      }
       t.parentNode.insertBefore(w, t); w.appendChild(t);
     });
     docEl.querySelectorAll('.md a[href^="http"], .md a[href$=".html"]').forEach(function (a) { a.target = "_blank"; a.rel = "noopener"; });
