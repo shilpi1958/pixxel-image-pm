@@ -199,6 +199,8 @@ Customer complaints is a future metric; no reliable complaint data is in this ex
     .replace('| Processing error: ISOFIT crash | 2 / 2 | Vegetation 2 | 1 of 2 |', '| Processing error: ISOFIT crash | 3 / 3 | Vegetation — 3 | 1 of 3 |')
     .replace('| Processing error: Water mask | 3 / 3 | VNIR Full 3 | 2 of 3 |', '| Processing error: Water mask | 3 / 3 | VNIR Full — 3 | 2 of 3 |')
     .replace('| Input error: Missing metadata | 2 / 2 | VNIR Full 2 | 1 of 2 |', '| Input error: Missing metadata | 2 / 2 | VNIR Full — 2 | 1 of 2 |')
+    .replace('## Images needing attention: 7 late P0/P1', '## Priority triage queue: 7 late P0/P1')
+    .replace('**How IPR chooses what to look at first**', '**This queue sets priority; the [IPR 2-Week Plan](#plan) sets the execution schedule.**\n\n**How IPR chooses what to look at first**')
     .replace('| Metric | Jun 1–7 | Jun 8–14 | Jun 15–21 | Jun 22–30 |', '| Metric | Jun 1–7 | Jun 8–14 | Jun 15–21 | Jun 22–28 |')
     .replace('because an issue remains unresolved.\n- Seven images have a QC pass but no upload.', 'because an issue remains unresolved. It includes unresolved reruns and post-delivery exceptions, not only the active delivery backlog.\n- Seven images have a QC pass but no upload.')
     .replace('- This identifies a risk pattern, not a proven cause.\n', '')
