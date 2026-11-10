@@ -176,7 +176,7 @@ Customer complaints is a future metric; no reliable complaint data is in this ex
 
 ## Data fixes:`);
   DATA.docs.note.md = DATA.docs.note.md
-    .replace('| Step | Proposed target (% of SLA) | Avg actual (h) | Avg proposed target (h) | Finding |', '| Step | Proposed target (% of SLA) | Avg actual (h) | Finding |')
+    .replace('| Step | Proposed target (% of SLA) | Avg actual (h) | Avg proposed target (h) | Finding |\n| --- | --- | --- | --- | --- |', '| Step | Proposed target (% of SLA) | Avg actual (h) | Finding |\n| --- | --- | --- | --- |')
     .replace('| 1. Acquisition → processing start | 20% | 9.1 | 6.1 | 51% over target |', '| 1. Acquisition → processing start | 20% | 9.1 | 51% over target |')
     .replace('| 2. Processing | 30% | 5.2 | 9.2 | 31% over target |', '| 2. Processing | 30% | 5.2 | 31% over target |')
     .replace('| 3. Waiting for QC | 10% | 3.5 | 3.1 | 59% over target |', '| 3. Waiting for QC | 10% | 3.5 | 59% over target |')
@@ -187,6 +187,9 @@ Customer complaints is a future metric; no reliable complaint data is in this ex
     .replace('**Satellite timing by SLA**\n\n', '**Satellite timing by SLA**\n\nTiming values use all processing attempts. On-time and QC-failure values use the latest eligible image.\n\n')
     .replace('| Metric | Jun 1–7 | Jun 8–14 | Jun 15–21 | Jun 22–30 |', '| Metric | Jun 1–7 | Jun 8–14 | Jun 15–21 | Jun 22–28 |')
     .replace('because an issue remains unresolved.\n- Seven images have a QC pass but no upload.', 'because an issue remains unresolved. It includes unresolved reruns and post-delivery exceptions, not only the active delivery backlog.\n- Seven images have a QC pass but no upload.')
+    .replace('- This identifies a risk pattern, not a proven cause.\n', '')
+    .replace('- “Blocked” is a derived label for an image that cannot complete the workflow because an issue remains unresolved. It includes unresolved reruns and post-delivery exceptions, not only the active delivery backlog.', '- **Blocked** is not a source field; in this analysis it means an image with an unresolved workflow exception, including reruns and post-delivery exceptions.')
+    .replace('- The export cannot confirm whether a process exists outside it.\n', '')
     .replace('| 6 | FF03\\_20260624\\_1047\\_ODISH | MineralsCo | P1 | Waiting for a QC decision | 130h |\n| 7 | FF01\\_20260623\\_1063\\_BENGA | Internal Demo | P1 | Failed QC on BBR; held until the BBR fix | 167h |', '| 6 | FF01\\_20260623\\_1063\\_BENGA | Internal Demo | P1 | Failed QC on BBR; held until the BBR fix | 167h |\n| 7 | FF03\\_20260624\\_1047\\_ODISH | MineralsCo | P1 | Waiting for a QC decision | 130h |');
   DATA.docs.appendix.md = DATA.docs.appendix.md
     .replace('Images delivered by the deadline ÷ processable images whose deadline has passed. In the workbook: Delivered and Hours vs Deadline ≤ 0.', 'Images delivered by the deadline ÷ processable images whose deadline has passed. All 89 processable images were past deadline at the snapshot, so the denominator is 89. In the workbook: Delivered and Hours vs Deadline ≤ 0.')
