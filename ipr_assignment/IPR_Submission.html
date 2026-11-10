@@ -347,7 +347,8 @@ Full cleaning rules, denominator choices, data gaps and open questions are in th
     .replace('upload before QC (74%)', 'recorded upload before QC Start (55 of 74 timestamped attempts)');
   DATA.docs.appendix.md = DATA.docs.appendix.md
     .replace('QC starts after upload in 74% of timestamped attempts', '55 of 74 timestamped attempts show upload before the recorded QC Start')
-    .replace('The timestamp sequence is invalid; the export cannot show whether QC occurred before upload', 'Recorded event order needs validation; the export cannot show whether QC occurred before upload');
+    .replace('The timestamp sequence is invalid; the export cannot show whether QC occurred before upload', 'Recorded event order needs validation; the export cannot show whether QC occurred before upload')
+    .replace('| Stage times | Used all 123 valid attempts across four duration fields | Retries also use pipeline time, so timing includes every valid attempt |', '| Timing metrics | Measured ingest wait, processing time, QC wait and end-to-end delivery time across 123 valid attempts | Retries also consume pipeline time, so they are included |');
   DATA.docs.plan.md = DATA.docs.plan.md
     .replace('| Uploads before QC Start | 74% |  | 0% from Day 9 |', '| Recorded upload-before-QC-start order | 55 of 74 timestamped attempts | Validate semantics in the Day 6 review | Confirm workflow before adding a control |');
   DATA.docs.internal.md = DATA.docs.internal.md
