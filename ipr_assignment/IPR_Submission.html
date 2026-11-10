@@ -291,6 +291,50 @@ Full cleaning rules, denominator choices, data gaps and open questions are in th
     .replace('| 2 recent ISOFIT crash incidents<br>• 1 remains open | Inspect logs and input completeness for the open image<br>• Capture the root cause from both incidents | Eng A | Eng A: 6h estimate | 2–3 |', '| 3 recent ISOFIT crash incidents<br>• 2 remain open | Inspect logs and input completeness for the open images<br>• Capture the root cause from all three incidents | Eng A | Eng A: 6h estimate | 2–3 |');
   DATA.docs.internal.md = DATA.docs.internal.md
     .replace('- Review 2 recent ISOFIT crash incidents; one remains open.', '- Review 3 recent ISOFIT crash incidents; two remain open.');
+  DATA.docs.note.md = DATA.docs.note.md
+    .replace(/## Summary[\s\S]*?\n\n## Pipeline health/, `## Summary
+
+### Current operating picture
+
+| Headline | Value |
+| --- | --- |
+| On time | **52 of 89 processable images (58%)** |
+| P0 SLA | **0 of 8 P0 images met the 8-hour SLA** |
+| Open late backlog | **28 undelivered processable images were late at the snapshot** |
+| BBR | **8 images held for BBR review** |
+
+**Metric definitions:** 89 = captured, processable images; 6 not-captured images are excluded. **Delivered** = QC pass + DataHub upload. **Snapshot:** 30 Jun 2026, 16:05 UTC.
+
+### Fastest recovery
+
+- **5 images** have a QC pass and appear ready for upload.
+- **2 more images** have a QC pass but also show a stuck-run signal; validate the run before upload.
+
+### Known vs. needs confirmation
+
+| Known from the export | Needs confirmation with IPR and QA/QC |
+| --- | --- |
+| P0 SLA misses, the open late backlog, BBR-held images, and upload-ready images | QC timestamp semantics, event definitions, the actual upload workflow, priority routing, and SLA start time |
+
+## Pipeline health`)
+    .replace(/upload precedes QC Start in 74% of timestamped attempts/g, '55 of 74 timestamped attempts show upload before the recorded QC Start')
+    .replace('55/74 timestamped attempts show upload before QC Start.', '55 of 74 timestamped attempts show upload before the recorded QC Start.')
+    .replace('**P0 missed its SLA; the queue rule is not in the export**', '**P0 timing is not materially faster in this export**')
+    .replace('- The export does not show the queue rule or prove first-come-first-served handling.', '- Validate priority routing; the export does not show the queue rule or prove first-come-first-served handling.')
+    .replace('**QC-to-upload timestamp order is invalid**', '**Recorded QC/upload event order needs validation**')
+    .replace('QC End is missing, so the records cannot show whether QC was logged late or occurred after upload.', 'Validate timestamp semantics and the actual QC/upload workflow with IPR and QA/QC before calling this a control failure. QC End is missing, so the records cannot show whether QC was logged late or occurred after upload.')
+    .replace('Uploaded without a QC pass—an error. All three require review;', 'Recorded as uploaded without a QC pass. All three require review;')
+    .replace('• Upload before QC Start: 55/74', '• Recorded upload before QC Start: 55 of 74 timestamped attempts');
+  DATA.docs.note.md = DATA.docs.note.md
+    .replace(/Upload precedes QC Start in 74% of attempts/g, '55 of 74 timestamped attempts show upload before the recorded QC Start')
+    .replace('upload before QC (74%)', 'recorded upload before QC Start (55 of 74 timestamped attempts)');
+  DATA.docs.appendix.md = DATA.docs.appendix.md
+    .replace('QC starts after upload in 74% of timestamped attempts', '55 of 74 timestamped attempts show upload before the recorded QC Start')
+    .replace('The timestamp sequence is invalid; the export cannot show whether QC occurred before upload', 'Recorded event order needs validation; the export cannot show whether QC occurred before upload');
+  DATA.docs.plan.md = DATA.docs.plan.md
+    .replace('| Uploads before QC Start | 74% |  | 0% from Day 9 |', '| Recorded upload-before-QC-start order | 55 of 74 timestamped attempts | Validate semantics in the Day 6 review | Confirm workflow before adding a control |');
+  DATA.docs.internal.md = DATA.docs.internal.md
+    .replace('| Upload before QC Start | 55/74 attempts (74%) |', '| Recorded upload before QC Start | 55 of 74 timestamped attempts |');
   DATA.docs.note.num = "1";
   DATA.nav = DATA.nav.map(function (n) {
     return n.key === "note" ? Object.assign({}, n, { num: "1" }) : n;
