@@ -225,13 +225,7 @@ The direction is clear, but QC End is not recorded and upload timestamps precede
 
 Prioritise three controls in the next two weeks: record event timestamps automatically, block upload until QC passes, and derive customer status from pipeline events rather than manual updates.
 
-**Assumptions used:**
-
-- Delivery means QC pass plus upload.
-- SLA starts at acquisition.
-- Six not-captured images are excluded from processable-image KPIs.
-
-Full cleaning rules, denominator choices, data gaps and open questions are in the [Appendix](#appendix).
+**Key definitions and scope:** Delivered = QC pass + DataHub upload. SLA is measured from acquisition. The six not-captured images are outside processable IPR KPIs. Full definitions, denominator choices and open questions are in the [Appendix](#appendix).
 
 ## Index:`);
   DATA.docs.appendix.md = DATA.docs.appendix.md.replace('## Open questions for the team', `### Note-specific assumptions
