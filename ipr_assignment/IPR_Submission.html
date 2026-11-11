@@ -130,6 +130,11 @@ article { background: var(--panel); border: 1px solid var(--line); border-radius
 .detail-toggle > h2 { margin-top: 1.3em; }
 .detail-toggle > h3 { margin-top: 1.1em; }
 .detail-toggle .tablewrap { margin-left: 14px; margin-right: 14px; width: calc(100% - 28px); }
+.table-toggle { margin: 0 0 1.2em; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); }
+.table-toggle summary { cursor: pointer; padding: 11px 14px; color: var(--accent); font-weight: 600; }
+.table-toggle summary::marker { color: var(--accent); }
+.table-toggle[open] summary { border-bottom: 1px solid var(--line); }
+.table-toggle .tablewrap { margin: 0; width: 100%; border: 0; border-radius: 0 0 6px 6px; }
 
 .tablewrap:has(table th:nth-child(6)) table { font-size: 0.82rem; }
 .tablewrap:has(table th:nth-child(6)) th,
@@ -224,7 +229,7 @@ Customer complaints is a future metric; no reliable complaint data is in this ex
     .replace('| Metric | Jun 1–7 | Jun 8–14 | Jun 15–21 | Jun 22–30 |', '| Metric | Jun 1–7 | Jun 8–14 | Jun 15–21 | Jun 22–28 |')
     .replace('because an issue remains unresolved.\n- Seven images have a QC pass but no upload.', 'because an issue remains unresolved. It includes unresolved reruns and post-delivery exceptions, not only the active delivery backlog.\n- Seven images have a QC pass but no upload.')
     .replace('- This identifies a risk pattern, not a proven cause.\n', '')
-    .replace('- “Blocked” is a derived label for an image that cannot complete the workflow because an issue remains unresolved. It includes unresolved reruns and post-delivery exceptions, not only the active delivery backlog.', '- **Blocked** is not a source field; in this analysis it means an image with an unresolved workflow exception, including reruns and post-delivery exceptions.')
+    .replace('- “Blocked” is a derived label for an image that cannot complete the workflow because an issue remains unresolved. It includes unresolved reruns and post-delivery exceptions, not only the active delivery backlog.', '- **Blocked** means an image cannot be delivered in its current state because it has not been captured or requires engineering intervention to progress.')
     .replace('- The export cannot confirm whether a process exists outside it.\n', '')
     .replace('| 6 | FF03\\_20260624\\_1047\\_ODISH | MineralsCo | P1 | Waiting for a QC decision | 130h |\n| 7 | FF01\\_20260623\\_1063\\_BENGA | Internal Demo | P1 | Failed QC on BBR; held until the BBR fix | 167h |', '| 6 | FF01\\_20260623\\_1063\\_BENGA | Internal Demo | P1 | Failed QC on BBR; held until the BBR fix | 167h |\n| 7 | FF03\\_20260624\\_1047\\_ODISH | MineralsCo | P1 | Waiting for a QC decision | 130h |');
   DATA.docs.appendix.md = DATA.docs.appendix.md
@@ -240,11 +245,7 @@ Customer complaints is a future metric; no reliable complaint data is in this ex
     .replace('| 2 images have Processing error: ISOFIT crash | Inspect logs and input completeness<br>• Retry only after the failure condition is resolved | Eng A | Eng A: 6h estimate | 2–3 |', '| 2 images have Processing error: ISOFIT crash | Inspect logs and input completeness<br>• Retry only after the failure condition is resolved | Eng A | Eng A: 6h estimate | 2–3 |\n| Remaining processing failures: Water Mask and Missing Metadata | Validate input and configuration<br>• Retry only after the cause is resolved<br>• Record the failure and rerun reason | Eng A | Eng A: 4h estimate | 2–4 |');
   DATA.docs.note.md = DATA.docs.note.md.replace(/## Data fixes:[\s\S]*?\n\n## Index:/, `## Data confidence and next fixes
 
-The direction is clear, but QC End is not recorded and upload timestamps precede QC Start in many attempts. QC-review and upload duration therefore cannot yet be measured reliably.
-
-Prioritise three controls in the next two weeks: record event timestamps automatically, block upload until QC passes, and derive customer status from pipeline events rather than manual updates.
-
-**Key definitions and scope:** Delivered = QC pass + DataHub upload. SLA is measured from acquisition. The six not-captured images are outside processable IPR KPIs. Full definitions, denominator choices and open questions are in the [Appendix](#appendix).
+For data-confidence notes, denominator choices, and proposed fixes, see the [Appendix](#appendix).
 
 ## Index:`);
   DATA.docs.appendix.md = DATA.docs.appendix.md.replace('## Open questions for the team', `### Note-specific assumptions
@@ -375,7 +376,7 @@ Prioritise three controls in the next two weeks: record event timestamps automat
 
 The immediate recovery queue is clear: upload the 5 QC-passed, non-stuck images; resolve 7 images awaiting QC or processing completion; and hold the 8 BBR failures for root-cause review.
 
-**Definitions:** Delivered = QC pass + DataHub upload. The 6 not-captured images are outside IPR processing KPIs. **Snapshot:** 30 Jun 2026, 16:05 UTC.
+**Definitions:** Delivered = QC pass + DataHub upload. SLA is measured from acquisition. The 6 not-captured images are outside IPR processing KPIs. **Snapshot:** 30 Jun 2026, 16:05 UTC.
 
 ## Pipeline health`);
   DATA.docs.appendix.md = DATA.docs.appendix.md
@@ -478,6 +479,27 @@ Eleven processable images have QC Pending and no recorded first QC decision, so 
   DATA.docs.note.md = DATA.docs.note.md
     .replace('Full cleaning rules, denominator choices, data gaps and open questions are in the [Appendix](#appendix).', 'Denominator choices, data gaps and open questions are in the [Appendix](#appendix).');
   DATA.docs.note.md = DATA.docs.note.md.replace('- **BBR appears on 13 attempts across 8 images; none is delivered in its latest status.**', '- **ISOFIT scope:** this table counts all 3 recorded ISOFIT incidents across 3 images, including one stuck Pending run. The Engineering dashboard’s “Why attempts fail” table counts only Fail or Reprocess-required attempts, so it shows 2 ISOFIT attempts.\n- **BBR appears on 13 attempts across 8 images; none is delivered in its latest status.**');
+  DATA.docs.note.md = DATA.docs.note.md
+    .replace('\n\nOrder and owners: see the [IPR 2-Week Plan](#plan).', '')
+    .replace(
+      '\n\n| Dimension | Data (latest processable images) | Read |',
+      '\n\n**Patterns by satellite, bandset and acquisition conditions**\n\n| Dimension | Data (latest processable images) | Read |'
+    )
+    .replace(
+      /\| Dimension \| Data \(latest processable images\) \| Read \|\n\| --- \| --- \| --- \|\n([\s\S]*?)\n\n\*\*Failure type and retry outcome\*\*/,
+      function (_, rows) {
+        return '| Dimension | Data (latest processable images) |\n| --- | --- |\n' +
+          rows.split('\n').map(function (row) { return row.replace(/^(\|[^|]*\|[^|]*)\|[^|]*\|$/, '$1|'); }).join('\n') +
+          '\n\n**Failure type and retry outcome**';
+      }
+    )
+    .replace(
+      '\n\n**Failure type and retry outcome**',
+      '\n\n- **FF02:** review queue and ingest records because it has the lowest on-time rate (9/25, 36%), including 4 of 8 P0 images.\n- **Vegetation:** investigate BBR in its input and QC history because it accounts for 6 of 10 latest QC failures, including 5 of 8 BBR failures.\n- **Partial cloud:** monitor the higher reprocessing rate, but do not treat cloud or relative light as a cause without more data.\n\n**Failure type and retry outcome**'
+    );
+  DATA.docs.note.md = DATA.docs.note.md
+    .replace('All 28 undelivered processable images are past their deadline. Seven have a QC pass but no upload; three were uploaded without a QC pass. Confirm each image’s current state before assigning an action.\n\n', '')
+    .replace('- **Delivered images include cloud cover up to 68%.**\n', '');
   DATA.nav = DATA.nav.filter(function (n) { return n.key !== 'rules'; });
   DATA.nav.push({ key: 'cleaned-data', label: 'Cleaned data ↗', num: '6', href: 'https://docs.google.com/spreadsheets/d/1H5MagVDtXSokKoSzb_ETOgIPoxjnbulVaNIjAcQHKFY/edit?gid=3743119#gid=3743119' });
   var nav = DATA.nav, docs = DATA.docs;
@@ -526,7 +548,10 @@ Eleven processable images have QC Pending and no recorded first QC decision, so 
       t.parentNode.insertBefore(w, t); w.appendChild(t);
     });
     docEl.querySelectorAll('.md a[href^="http"], .md a[href$=".html"]').forEach(function (a) { a.target = "_blank"; a.rel = "noopener"; });
-    if (key === "note") collapseNoteDetails(docEl.querySelector(".md"));
+    if (key === "note") {
+      collapsePatternTables(docEl.querySelector(".md"));
+      collapseNoteDetails(docEl.querySelector(".md"));
+    }
     navEl.querySelectorAll("a").forEach(function (a) {
       if (a.dataset.key === key) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
     });
@@ -554,6 +579,47 @@ Eleven processable images have QC Pending and no recorded first QC decision, so 
         node = next;
       }
     });
+  }
+
+  function collapsePatternTables(root) {
+    var patternsHeading = Array.from(root.querySelectorAll("h2, h3")).find(function (heading) {
+      return heading.textContent.trim() === "Patterns behind them";
+    });
+    if (!patternsHeading) return;
+
+    var labels = ["Show satellite timing table", "Show acquisition-week table", "Show table", "Show failure and retry table"];
+    var tables = [];
+    var node = patternsHeading.nextElementSibling;
+    while (node && node.tagName !== "H2") {
+      if (node.classList && node.classList.contains("tablewrap")) tables.push(node);
+      node = node.nextElementSibling;
+    }
+    tables.forEach(function (tableWrap, index) {
+      collapseTable(tableWrap, labels[index] || "Show table");
+    });
+
+    var triageHeading = Array.from(root.querySelectorAll("h2")).find(function (heading) {
+      return heading.textContent.trim() === "Priority triage queue: 7 late P0/P1";
+    });
+    if (!triageHeading) return;
+    var triageNode = triageHeading.nextElementSibling;
+    while (triageNode && triageNode.tagName !== "H2") {
+      if (triageNode.classList && triageNode.classList.contains("tablewrap")) {
+        collapseTable(triageNode, "Show priority triage table");
+        break;
+      }
+      triageNode = triageNode.nextElementSibling;
+    }
+  }
+
+  function collapseTable(tableWrap, label) {
+    var details = document.createElement("details");
+    details.className = "table-toggle";
+    var summary = document.createElement("summary");
+    summary.textContent = label;
+    details.appendChild(summary);
+    tableWrap.parentNode.insertBefore(details, tableWrap);
+    details.appendChild(tableWrap);
   }
 
   window.addEventListener("hashchange", function () { show(); window.scrollTo(0, 0); });
