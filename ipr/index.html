@@ -361,7 +361,7 @@ Full cleaning rules, denominator choices, data gaps and open questions are in th
     .replace('| Uploads before QC Start | 74% |  | 0% from Day 9 |', '| Recorded upload-before-QC-start order | 55 of 74 timestamped attempts | Validate semantics in the Day 6 review | Confirm workflow before adding a control |');
   DATA.docs.internal.md = DATA.docs.internal.md
     .replace('| Upload before QC Start | 55/74 attempts (74%) |', '| Recorded upload before QC Start | 55 of 74 timestamped attempts |');
-  DATA.docs.note.md = DATA.docs.note.md.replace(/## Index: the brief's questions[\s\S]*$/, `## Index: the brief's questions
+  DATA.docs.note.md = DATA.docs.note.md.replace(/## Index: the brief's questions[\s\S]*$/, `## The brief's questions
 
 |  | Question | Short answer | Where |
 | --- | --- | --- | --- |
@@ -479,8 +479,7 @@ Eleven processable images have QC Pending and no recorded first QC decision, so 
   function collapseNoteDetails(root) {
     var labels = {
       "Data fixes: what's missing and how to prevent it": "Show data-fix detail",
-      "Assumptions and questions to resolve": "Show assumptions and open questions",
-      "Index: the brief's questions": "Show brief-question index"
+      "Assumptions and questions to resolve": "Show assumptions and open questions"
     };
     Array.from(root.querySelectorAll("h2, h3")).forEach(function (heading) {
       var label = labels[heading.textContent.trim()];
