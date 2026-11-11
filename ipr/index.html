@@ -118,7 +118,7 @@ article { background: var(--panel); border: 1px solid var(--line); border-radius
 .qc-flow-node.failure { border-left-color: var(--bad); }
 .qc-flow-node.pending { border-left-color: var(--accent); }
 .qc-flow-note { max-width: 72ch; margin-top: -0.35em !important; color: var(--muted); font-size: 0.88rem; }
-.open-backlog-flow { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin: 0 0 0.9em; max-width: none; }
+.open-backlog-flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 0 0 0.9em; max-width: none; }
 .failure-breakdown { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 0 0 1.2em; max-width: none; }
 .failure-breakdown .qc-flow-node::before { display: none; }
 
@@ -439,7 +439,7 @@ Eleven processable images have QC Pending and no recorded first QC decision, so 
 
 ### Where the 89 processable images are now
 
-<div class="qc-flow" role="img" aria-label="Flow of 89 processable images: 78 have a completed first QC decision and 11 are pending. Of the completed decisions, 65 passed and 13 failed or required reprocessing. Current outcomes are 58 delivered after first-pass QC, 7 QC-passed but not uploaded, 3 delivered after recovery, 10 failed, 7 in progress awaiting a QC decision, 3 uploaded while QC is pending, and 1 stuck ISOFIT case before a QC decision.">
+<div class="qc-flow" role="img" aria-label="Flow of 89 processable images: 78 have a completed first QC decision and 11 are pending. Of the completed decisions, 65 passed and 13 failed or required reprocessing. Current outcomes are 58 delivered after first-pass QC, 7 QC-passed but not uploaded, 3 delivered after recovery, 11 failed, 7 in progress awaiting a QC decision, and 3 uploaded while QC is pending.">
   <div class="qc-flow-stage">
     <p class="qc-flow-label">Processable population</p>
     <div class="qc-flow-node"><strong>89</strong><span>Processable images</span></div>
@@ -454,10 +454,9 @@ Eleven processable images have QC Pending and no recorded first QC decision, so 
     <div class="qc-flow-node success"><strong>58</strong><span>First-pass QC → Delivered</span></div>
     <div class="qc-flow-node warning"><strong>7</strong><span>First-pass QC → Not uploaded</span></div>
     <div class="qc-flow-node success"><strong>3</strong><span>Fail/reprocess → Recovered and delivered</span></div>
-    <div class="qc-flow-node failure"><strong>10</strong><span>Fail/reprocess → Failed</span></div>
+    <div class="qc-flow-node failure"><strong>11</strong><span>Failed: 8 BBR, 2 ISOFIT, 1 missing metadata</span></div>
     <div class="qc-flow-node pending"><strong>7</strong><span>Pending QC → In progress</span></div>
     <div class="qc-flow-node warning"><strong>3</strong><span>Pending QC → Uploaded without recorded decision</span></div>
-    <div class="qc-flow-node failure"><strong>1</strong><span>Pending QC → Stuck ISOFIT case</span></div>
   </div>
 </div>
 
@@ -465,20 +464,20 @@ Eleven processable images have QC Pending and no recorded first QC decision, so 
 
 ### The 28 undelivered images
 
-<div class="open-backlog-flow" role="img" aria-label="All 28 undelivered processable images: 7 passed QC but are not uploaded, 7 are in progress awaiting a QC decision, 3 were uploaded without a recorded QC decision, 1 is a stuck ISOFIT case before QC, and 10 failed.">
+<div class="open-backlog-flow" role="img" aria-label="All 28 undelivered processable images: 7 passed QC but are not uploaded, 7 are in progress awaiting a QC decision, 3 were uploaded without a recorded QC decision, and 11 failed.">
   <div class="qc-flow-node warning"><strong>7</strong><span>QC passed, not uploaded</span></div>
   <div class="qc-flow-node pending"><strong>7</strong><span>In progress; QC decision pending</span></div>
   <div class="qc-flow-node warning"><strong>3</strong><span>Uploaded without recorded QC decision</span></div>
-  <div class="qc-flow-node failure"><strong>1</strong><span>Stuck ISOFIT case before QC</span></div>
-  <div class="qc-flow-node failure"><strong>10</strong><span>Failed</span></div>
+  <div class="qc-flow-node failure"><strong>11</strong><span>Failed</span></div>
 </div>
 
-<p class="qc-flow-label">Why the 10 images failed</p>
-<div class="failure-breakdown" role="img" aria-label="The 10 failed images break down to 8 BBR, 1 ISOFIT crash, and 1 missing-metadata failure.">
+<p class="qc-flow-label">Current cause of the 11 failures</p>
+<div class="failure-breakdown" role="img" aria-label="The 11 currently failed images break down to 8 BBR, 2 ISOFIT crashes, and 1 missing-metadata failure.">
   <div class="qc-flow-node failure"><strong>8</strong><span>BBR</span></div>
-  <div class="qc-flow-node failure"><strong>1</strong><span>ISOFIT crash</span></div>
+  <div class="qc-flow-node failure"><strong>2</strong><span>ISOFIT crash</span></div>
   <div class="qc-flow-node failure"><strong>1</strong><span>Missing metadata</span></div>
-</div>`);
+</div>
+<p class="qc-flow-note"><strong>Historical Water Mask attempts:</strong> 3 across 3 images. Two later delivered. One image is still failed, but its latest recorded cause is Missing metadata, so Water Mask is not counted in the current-cause breakdown above.</p>`);
   DATA.docs.note.md = DATA.docs.note.md
     .replace('Full cleaning rules, denominator choices, data gaps and open questions are in the [Appendix](#appendix).', 'Denominator choices, data gaps and open questions are in the [Appendix](#appendix).');
   DATA.nav = DATA.nav.filter(function (n) { return n.key !== 'rules' && n.key !== 'cleaned-data'; });
