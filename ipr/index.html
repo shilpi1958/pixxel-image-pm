@@ -83,6 +83,10 @@ article { background: var(--panel); border: 1px solid var(--line); border-radius
 .md .wide { max-width: none; }
 .tablewrap.decision-table th:first-child,
 .tablewrap.decision-table td:first-child { width: 19%; min-width: 150px; }
+.tablewrap.pattern-table table { table-layout: fixed; }
+.tablewrap.pattern-table th:nth-child(1), .tablewrap.pattern-table td:nth-child(1) { width: 17%; min-width: 130px; }
+.tablewrap.pattern-table th:nth-child(2), .tablewrap.pattern-table td:nth-child(2) { width: 43%; }
+.tablewrap.pattern-table th:nth-child(3), .tablewrap.pattern-table td:nth-child(3) { width: 40%; }
 .tablewrap.appendix-gap-table table,
 .tablewrap.appendix-label-table table,
 .tablewrap.appendix-check-table table { table-layout: fixed; }
@@ -162,27 +166,46 @@ article { background: var(--panel); border: 1px solid var(--line); border-radius
     .replace('The export shows five issues requiring action: P0 misses, invalid QC-to-upload sequencing, incomplete imagery entering processing, recurring BBR, and missing recorded escalation for blocked images (see Root causes).', 'The export shows five issues requiring action: P0 work needing immediate attention, invalid QC-to-upload sequencing, incomplete imagery entering processing, recurring BBR, and the open late backlog (see Root causes).')
     .replace(/## Measure it: top 5 daily metrics[\s\S]*?\n\n## Data fixes:/, `## Measure it: top 5 daily metrics
 
-Headline: clean first-pass QC pass is 54%, and 3 P0 images need immediate attention. Values cover the June export.
+The five measures below are the daily recovery scorecard. June baseline: 54% of first-pass QC decisions were clean passes, and 3 P0 images need immediate attention.
 
 | # | Metric | Numerator | Denominator | Current | Target |
 | --- | --- | --- | --- | --- | --- |
 | 1 | Clean first-pass QC pass | First-attempt QC decisions that pass with no finding | First-attempt QC decisions: pass, fail or reprocess required | 54% (42/78); caveats excluded | ≥ 90% |
 | 2 | P0 requiring immediate attention | P0 images undelivered and either not captured or already past SLA | A count of P0 images | 3 of 8 | 0 |
 | 3 | On-time delivery | Processable images delivered by their SLA deadline | Processable images | 58% (52/89) | ≥ 95% |
-| 4 | Open late backlog | Processable images not delivered and past SLA | A count | 28 | 0 |
+| 4 | Open late backlog | Processable images not delivered and past SLA | No denominator — count of open, late processable images | 28 | 0 |
 | 5 | Reprocess recovery rate | Images with a failed or reprocess-required attempt that are now delivered | Images needing recovery | 23% (3/13) | ≥ 90% |
 
 Customer complaints is a future metric; no reliable complaint data is in this export.
 
 ## Data fixes:`);
   DATA.docs.note.md = DATA.docs.note.md
-    .replace('| Step | Proposed target (% of SLA) | Avg actual (h) | Avg proposed target (h) | Finding |', '| Step | Proposed target (% of SLA) | Avg actual (h) | Avg proposed target (h) | Attempts missing target |')
-    .replace('| 1. Acquisition → processing start | 20% | 9.1 | 6.1 | 51% over target |', '| 1. Acquisition → processing start | 20% | 9.1 | 6.1 | 51% of attempts |')
-    .replace('| 2. Processing | 30% | 5.2 | 9.2 | 31% over target |', '| 2. Processing | 30% | 5.2 | 9.2 | 31% of attempts |')
-    .replace('| 3. Waiting for QC | 10% | 3.5 | 3.1 | 59% over target |', '| 3. Waiting for QC | 10% | 3.5 | 3.1 | 59% of attempts |')
+    .replace('| Step | Proposed target (% of SLA) | Avg actual (h) | Avg proposed target (h) | Finding |\n| --- | --- | --- | --- | --- |', '| Step | Proposed target (% of SLA) | Avg actual (h) | Finding |\n| --- | --- | --- | --- |')
+    .replace('| 1. Acquisition → processing start | 20% | 9.1 | 6.1 | 51% over target |', '| 1. Acquisition → processing start | 20% | 9.1 | 51% over target |')
+    .replace('| 2. Processing | 30% | 5.2 | 9.2 | 31% over target |', '| 2. Processing | 30% | 5.2 | 31% over target |')
+    .replace('| 3. Waiting for QC | 10% | 3.5 | 3.1 | 59% over target |', '| 3. Waiting for QC | 10% | 3.5 | 59% over target |')
+    .replace('| 4. QC review (QC start → QC end) | 25% | Not measurable | 8.0 | QC End is not logged |', '| 4. QC review (QC start → QC end) | 25% | Not measurable | QC End is not logged |')
+    .replace('| 5. Upload (QC end → DataHub upload) | 15% | Not measurable | 4.6 | QC End is not logged; upload precedes QC Start in 74% of attempts, so the timestamp sequence is invalid |', '| 5. Upload (QC end → DataHub upload) | 15% | Not measurable | QC End is not logged; upload precedes QC Start in 74% of attempts, so the timestamp sequence is invalid |')
+    .replace('| End-to-end delivery time (per delivered image) | 100% | 13.1 | 30.9 | 15% of delivered images were after deadline |', '| End-to-end delivery time (per delivered image) | 100% | 13.1 | 15% of delivered images were after deadline |')
+    .replace('- P0 median delivery: 10.4h against an 8h SLA.', '- Among the five delivered P0 images, median end-to-end delivery time was 10.4h against an 8h SLA.')
     .replace('**Satellite timing by SLA**\n\n', '**Satellite timing by SLA**\n\nTiming values use all processing attempts. On-time and QC-failure values use the latest eligible image.\n\n')
+    .replace('| Satellite | SLA group | Timing attempts | On time (latest) | QC failures | Stage avg (ingest / processing / QC wait) |', '| Satellite | SLA group | Processing attempts | On time (latest) | QC failures | Stage avg (ingest / processing / QC wait) |')
+    .replace('| Satellite | FF02: 9/25 on time (36%), vs FF01 23/33 (70%) and FF03 20/31 (65%); 4 of 8 P0s | **FF02 has the lowest on-time rate** in both SLA groups; review its queue and ingest records |', '| Satellite | • FF02: 9/25 on time (36%)<br>• FF01: 23/33 (70%)<br>• FF03: 20/31 (65%)<br>• FF02 carried 4 of 8 P0 images | **FF02 has the lowest on-time rate** in both SLA groups; review its queue and ingest records |')
+    .replace('| Bandset | Vegetation: 15/33 on time (45%); 6 of 10 QC failures, including 5 of 8 BBR failures | **Start the BBR investigation** with Vegetation |', '| Bandset | • Vegetation: 15/33 on time (45%)<br>• Vegetation: 6 of 10 latest QC failures<br>• Vegetation: 5 of 8 BBR failures | **Start the BBR investigation** with Vegetation |')
+    .replace('| Relative light | Low: 7/17 on time (41%); 4 QC failures; 8 reprocessed (47%). Very Low: 2/6 on time | **No conclusion:** Low n=17; Very Low n=6 |', '| Relative light | • Low: 7 of 17 on time (41%)<br>• Low: 4 of 10 latest QC failures<br>• Low: 8 of 17 reprocessed (47%)<br>• Very Low: 2 of 6 on time | **No conclusion:** Low n=17; Very Low n=6 |')
+    .replace('| Cloud | Clear: 32/55 on time (58%); Partial: 19/33 (58%). Partial reprocessed 39% vs Clear 22% | **No on-time difference;** Partial images reprocessed more often |', '| Cloud | • Clear: 32 of 55 on time (58%)<br>• Partial: 19 of 33 on time (58%)<br>• Reprocessed: 13 of 33 Partial (39%) vs 12 of 55 Clear (22%) | **No on-time difference;** Partial images reprocessed more often |')
+    .replace('| Failure type | Images / attempts | Bandsets (attempts) | Latest delivery |', '| Failure type | Images / attempts | Bandset — affected attempts | Latest delivery |')
+    .replace('| BBR | 8 / 13 | Vegetation 6; VNIR Full 3; Water/Coastal 3; RGB 1 | 0 of 8 |', '| BBR | 8 / 13 | Vegetation — 6<br>VNIR Full — 3<br>Water/Coastal — 3<br>RGB — 1 | 0 of 8 |')
+    .replace('| Processing error: ISOFIT crash | 2 / 2 | Vegetation 2 | 1 of 2 |', '| Processing error: ISOFIT crash | 3 / 3 | Vegetation — 3 | 1 of 3 |')
+    .replace('| Processing error: Water mask | 3 / 3 | VNIR Full 3 | 2 of 3 |', '| Processing error: Water mask | 3 / 3 | VNIR Full — 3 | 2 of 3 |')
+    .replace('| Input error: Missing metadata | 2 / 2 | VNIR Full 2 | 1 of 2 |', '| Input error: Missing metadata | 2 / 2 | VNIR Full — 2 | 1 of 2 |')
+    .replace('## Images needing attention: 7 late P0/P1', '## Priority triage queue: 7 late P0/P1')
+    .replace('**How IPR chooses what to look at first**', '**This queue sets priority; the [IPR 2-Week Plan](#plan) sets the execution schedule.**\n\n**How IPR chooses what to look at first**')
     .replace('| Metric | Jun 1–7 | Jun 8–14 | Jun 15–21 | Jun 22–30 |', '| Metric | Jun 1–7 | Jun 8–14 | Jun 15–21 | Jun 22–28 |')
     .replace('because an issue remains unresolved.\n- Seven images have a QC pass but no upload.', 'because an issue remains unresolved. It includes unresolved reruns and post-delivery exceptions, not only the active delivery backlog.\n- Seven images have a QC pass but no upload.')
+    .replace('- This identifies a risk pattern, not a proven cause.\n', '')
+    .replace('- “Blocked” is a derived label for an image that cannot complete the workflow because an issue remains unresolved. It includes unresolved reruns and post-delivery exceptions, not only the active delivery backlog.', '- **Blocked** is not a source field; in this analysis it means an image with an unresolved workflow exception, including reruns and post-delivery exceptions.')
+    .replace('- The export cannot confirm whether a process exists outside it.\n', '')
     .replace('| 6 | FF03\\_20260624\\_1047\\_ODISH | MineralsCo | P1 | Waiting for a QC decision | 130h |\n| 7 | FF01\\_20260623\\_1063\\_BENGA | Internal Demo | P1 | Failed QC on BBR; held until the BBR fix | 167h |', '| 6 | FF01\\_20260623\\_1063\\_BENGA | Internal Demo | P1 | Failed QC on BBR; held until the BBR fix | 167h |\n| 7 | FF03\\_20260624\\_1047\\_ODISH | MineralsCo | P1 | Waiting for a QC decision | 130h |');
   DATA.docs.appendix.md = DATA.docs.appendix.md
     .replace('Images delivered by the deadline ÷ processable images whose deadline has passed. In the workbook: Delivered and Hours vs Deadline ≤ 0.', 'Images delivered by the deadline ÷ processable images whose deadline has passed. All 89 processable images were past deadline at the snapshot, so the denominator is 89. In the workbook: Delivered and Hours vs Deadline ≤ 0.')
@@ -237,7 +260,8 @@ Full cleaning rules, denominator choices, data gaps and open questions are in th
     .replace('The full column-pair rule set is in the [IPR Data Cleaning Rules](#rules).\n\n', '');
   DATA.docs.internal.md = DATA.docs.internal.md
     .replace('Upload 5 QC-passed images not uploaded at snapshot.', 'Upload 5 QC-passed, non-stuck images not uploaded at the snapshot.')
-    .replace('Add or configure the requirements for QC and upload timestamps, QC-pass upload control, structured QC fields, alerts and duplicate prevention.', 'Following the Day 6 tool review, implement the approved requirements for QC and upload timestamps, QC-pass upload control, structured QC fields, alerts and duplicate prevention.')
+    .replace('Review the operations tracking tool before committing changes.', 'On Day 6, the IPR Lead, Eng B and QA/QC will review the operations-tracking tool: its timestamps, QC and upload fields, alerts and duplicate controls. They will decide which fixes are configuration changes and which need engineering work.')
+    .replace('Add or configure the requirements for QC and upload timestamps, QC-pass upload control, structured QC fields, alerts and duplicate prevention.', 'Then implement the agreed changes for QC and upload timestamps, QC-pass upload control, structured QC fields, alerts and duplicate prevention.')
     .replace('QA/QC and Eng A investigate the 8 BBR-held images.', 'QA/QC and Eng A investigate the 8 images with BBR in their latest status.')
     .replace('the Day 6 tool-review scope.', 'the scope for the Day 6 tool review.');
   DATA.docs.customer.md = DATA.docs.customer.md
@@ -276,6 +300,12 @@ Full cleaning rules, denominator choices, data gaps and open questions are in th
     .replace('8 images with BBR in their latest status', '8 images with BBR');
   DATA.docs.customer.md = DATA.docs.customer.md
     .replace('UrbanAtlas has requested an update on two late P0 images over Dubai Urban.', 'UrbanAtlas has requested an update on two late P0 images over Dubai Urban. A separate not-captured UrbanAtlas image is incorrectly shown as Delivered; Customer Success should correct that status and discuss re-tasking separately, not in this two-image update.');
+  DATA.docs.customer.md = DATA.docs.customer.md
+    .replace('- Include a specific time for the next customer update.', '- Include a specific time for the next customer update.\n- Before sending, insert the customer\'s order or request reference for each image; those references are not in this export.')
+    .replace('> Subject: Update on your Dubai Urban priority images', '> Subject: Update on your Dubai Urban priority image requests — [Order reference 1] and [Order reference 2]')
+    .replace('I’m sorry that both priority images for Dubai Urban, captured on 1 and 5 June, have been delayed.', 'I’m sorry that your two priority Dubai Urban image requests—[Order reference 1] (captured 1 June) and [Order reference 2] (captured 5 June)—have been delayed.')
+    .replace('The 1 June image is now available for download.', 'The image for [Order reference 1] is now available for download.')
+    .replace('The 5 June image is under quality review and is being handled as a priority.', 'The image for [Order reference 2] is under quality review and is being handled as a priority.');
   DATA.docs.note.md = DATA.docs.note.md
     .replace('| On time (processable images) | 58% (52 of 89) |\n| Missed SLA (processable images) | 42% (37 of 89) |\n| Blocked images | 34 |', '| On time (processable images) | 58% (52 of 89) |\n| Missed SLA (processable images) | 42% (37 of 89) |')
     .replace('The export shows five issues requiring action: P0 missed SLA, invalid QC-to-upload timestamp order, incomplete images processed, BBR repeating after reprocessing, and blocked images with no recorded escalation (see Root causes).', 'The export shows five issues requiring action: P0 missed SLA, invalid QC-to-upload timestamp order, incomplete images processed, BBR repeating after reprocessing, and no structured escalation record (see Root causes).')
@@ -284,7 +314,7 @@ Full cleaning rules, denominator choices, data gaps and open questions are in th
     .replace('• No escalation recorded: 25/34 blocked images', '• No structured escalation record for blocked images')
     .replace('| Processing error: ISOFIT crash | 2 / 2 | Vegetation 2 | 1 of 2 |', '| Processing error: ISOFIT crash | 3 / 3 | Vegetation 3 | 1 of 3 |')
     .replace('| F | Data gaps to fix first | No QC-end time, upload before QC (74%), wrong customer status (45 of 95), no escalation log; 15 in all | Data confidence and next fixes; Appendix |', '| F | Data gaps to fix first | No QC-end time, upload before QC (74%), wrong customer status (45 of 95), no structured escalation record | Data confidence and next fixes; Appendix |')
-    .replace('average processing varies only 4.5–5.7h by satellite; correlations with angle, cloud and coverage are ≤ 0.11.', 'average processing varies only 4.5–5.7h by satellite; no clear pattern appears by angle, cloud or coverage.');
+    .replace('average processing varies only 4.5–5.7h by satellite; correlations with angle, cloud and coverage are ≤ 0.11.', 'processing time ranges from 4.5 to 5.7 hours on average across satellites. The available data does not show a consistent link between processing time and view angle, cloud cover or plan coverage.');
   DATA.docs.appendix.md = DATA.docs.appendix.md
     .replace('Two images had an ISOFIT crash; one recovered after retry and one remains failed.', 'Three images had an ISOFIT crash; one recovered after retry and two remain failed.');
   DATA.docs.plan.md = DATA.docs.plan.md
@@ -308,13 +338,7 @@ Full cleaning rules, denominator choices, data gaps and open questions are in th
 ### Fastest recovery
 
 - **5 images** have a QC pass and appear ready for upload.
-- **2 more images** have a QC pass but also show a stuck-run signal; validate the run before upload.
-
-### Known vs. needs confirmation
-
-| Known from the export | Needs confirmation with IPR and QA/QC |
-| --- | --- |
-| P0 SLA misses, the open late backlog, BBR-held images, and upload-ready images | QC timestamp semantics, event definitions, the actual upload workflow, priority routing, and SLA start time |
+- **2 more images** have a QC pass, but processing is not recorded as finished; validate the run before upload.
 
 ## Pipeline health`)
     .replace(/upload precedes QC Start in 74% of timestamped attempts/g, '55 of 74 timestamped attempts show upload before the recorded QC Start')
@@ -330,11 +354,23 @@ Full cleaning rules, denominator choices, data gaps and open questions are in th
     .replace('upload before QC (74%)', 'recorded upload before QC Start (55 of 74 timestamped attempts)');
   DATA.docs.appendix.md = DATA.docs.appendix.md
     .replace('QC starts after upload in 74% of timestamped attempts', '55 of 74 timestamped attempts show upload before the recorded QC Start')
-    .replace('The timestamp sequence is invalid; the export cannot show whether QC occurred before upload', 'Recorded event order needs validation; the export cannot show whether QC occurred before upload');
+    .replace('The timestamp sequence is invalid; the export cannot show whether QC occurred before upload', 'Recorded event order needs validation; the export cannot show whether QC occurred before upload')
+    .replace('| Stage times | Used all 123 valid attempts across four duration fields | Retries also use pipeline time, so timing includes every valid attempt |', '| Timing metrics | Measured ingest wait, processing time, QC wait and end-to-end delivery time across 123 valid attempts | Retries also consume pipeline time, so they are included |')
+    .replace('| No export timestamp | Open-image age uses an assumed snapshot | Stamp every export |', '');
   DATA.docs.plan.md = DATA.docs.plan.md
     .replace('| Uploads before QC Start | 74% |  | 0% from Day 9 |', '| Recorded upload-before-QC-start order | 55 of 74 timestamped attempts | Validate semantics in the Day 6 review | Confirm workflow before adding a control |');
   DATA.docs.internal.md = DATA.docs.internal.md
     .replace('| Upload before QC Start | 55/74 attempts (74%) |', '| Recorded upload before QC Start | 55 of 74 timestamped attempts |');
+  DATA.docs.note.md = DATA.docs.note.md.replace(/## Index: the brief's questions[\s\S]*$/, `## Index: the brief's questions
+
+|  | Question | Short answer | Where |
+| --- | --- | --- | --- |
+| A | Processing health | 89 processable: 61 delivered, 28 open and late, 11 failed | Pipeline health |
+| B | Priority triage queue | 7 late P0/P1: 2 upload-ready P0s, 3 awaiting QC, 1 unfinished processing record, 1 BBR hold | Priority triage queue |
+| C | Patterns | FF02 has the lowest on-time rate; Vegetation accounts for 6 of 10 latest QC failures, including 5 of 8 BBR failures | Root causes |
+| D | Duplicates and attempts | 6 stale duplicates removed; use the latest valid attempt and the attempt-1 SLA | Appendix |
+| E | What counts as delivered | QC pass + upload; caveats are tracked separately | Pipeline health; Appendix |
+| F | Data gaps to fix first | QC End missing; recorded upload-before-QC-start 55/74; 45/95 customer statuses wrong; no escalation record | Data confidence and next fixes; Appendix |`);
   DATA.docs.note.num = "1";
   DATA.nav = DATA.nav.map(function (n) {
     return n.key === "note" ? Object.assign({}, n, { num: "1" }) : n;
@@ -343,9 +379,10 @@ Full cleaning rules, denominator choices, data gaps and open questions are in th
     .replace('- [IPR Data Cleaning Rules](#rules): every cleaning decision, with counts.\n', '')
     .replace('the cleaned data, one row per image attempt, with a column guide and a log of every changed cell. Also attached as IPR\\_Cleaned\\_Data.xlsx.', 'the cleaned data, one row per image attempt, with a column guide and a log of every changed cell.')
     .replace('| Count | Number | How it\'s made |', '| Step | Count | How derived |')
+    .replace('| = Valid rows | 130 | 123 processing attempts + 7 rows for not-captured images |', '| = Valid rows | 130 | 123 processing attempts + 1 captured record without a trigger + 6 not-captured rows |')
     .replace('| Processable images | 89 | Processed 123 times (one attempt per run); 26 needed more than one run |', '| Processable images | 89 | 123 processing attempts; 26 needed more than one run |')
     .replace('| Average attempts per image | 1.38 | 123 ÷ 89: 63 ran once, 18 twice, 8 three or more times |', '| Average attempts per image | 1.38 | 123 ÷ 89: 63 ran once, 18 twice, 8 three times |')
-    .replace('| Not captured | 6 | 7 rows (some tried more than once); no processing run; excluded from delivery metrics |', '| Not captured | 6 | 7 rows, including one second record; excluded from delivery metrics |');
+    .replace('| Not captured | 6 | 7 rows (some tried more than once); no processing run; excluded from delivery metrics |', '| Not captured | 6 | 6 rows; no processing run; excluded from delivery metrics |');
   DATA.nav = DATA.nav.map(function (n) {
     return n.key === 'rules' ? { key: 'cleaned-data', label: 'Cleaned data sheet', num: '–', href: 'https://docs.google.com/spreadsheets/d/1H5MagVDtXSokKoSzb_ETOgIPoxjnbulVaNIjAcQHKFY/edit?usp=sharing' } : n;
   });
@@ -355,7 +392,21 @@ Full cleaning rules, denominator choices, data gaps and open questions are in th
     .replace('Every number in the note depends on these decisions. Source: the cleaned data sheet linked from the Overview.', 'Every number in the note depends on these decisions. Source: the analysis dataset.')
     .replace('Every number in the note depends on these decisions. Source: IPR\\_Cleaned\\_Data.xlsx.', 'Every number in the note depends on these decisions. Source: the analysis dataset.');
   DATA.docs.overview.md = DATA.docs.overview.md
-    .replace(/\*\*Supporting material:\*\*[\s\S]*?\n\n### From export rows to images/, '### From export rows to images');
+    .replace(/\*\*Supporting material:\*\*[\s\S]*?\n\n### From export rows to images/, '### From export rows to images')
+    .replace('| Not captured | 6 | 6 rows; no processing run; excluded from delivery metrics |', `| Not captured | 6 | 6 rows; no processing run; excluded from delivery metrics |
+
+### First-attempt QC decisions
+
+This is distinct from current delivery status: it uses the first recorded QC decision for each processable image.
+
+| First-attempt QC decision | Images | What it means |
+| --- | --- | --- |
+| QC Pass | 65 | Images passing QC on their first attempt |
+| QC Fail | 10 | Images with a QC failure on their first attempt |
+| Reprocess required | 3 | Images requiring reprocessing on their first QC decision; all three later passed and were delivered |
+| **Completed first QC decisions** | **78** | **65 Pass + 10 Fail + 3 Reprocess required** |
+
+Eleven processable images have QC Pending and no recorded first QC decision, so they are excluded from the 78-image QC decision rate. The six not-captured images are outside the 89-image processable population.`);
   DATA.docs.note.md = DATA.docs.note.md
     .replace('Full cleaning rules, denominator choices, data gaps and open questions are in the [Appendix](#appendix).', 'Denominator choices, data gaps and open questions are in the [Appendix](#appendix).');
   DATA.nav = DATA.nav.filter(function (n) { return n.key !== 'rules' && n.key !== 'cleaned-data'; });
@@ -395,6 +446,7 @@ Full cleaning rules, denominator choices, data gaps and open questions are in th
     docEl.querySelectorAll(".md table").forEach(function (t) {
       var w = document.createElement("div"); w.className = "tablewrap";
       if (t.querySelector("th") && t.querySelector("th").textContent.trim() === "Decision") w.classList.add("decision-table");
+      if (t.querySelector("th") && t.querySelector("th").textContent.trim() === "Dimension") w.classList.add("pattern-table");
       if (key === "appendix") {
         var heads = Array.from(t.querySelectorAll("th")).map(function (th) { return th.textContent.trim(); });
         if (heads.join("|") === "#|Gap|Impact|Fix") w.classList.add("appendix-gap-table");
