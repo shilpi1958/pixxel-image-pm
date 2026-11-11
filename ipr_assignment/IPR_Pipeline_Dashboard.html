@@ -457,7 +457,7 @@ header.top { border-bottom:1px solid var(--line); background:var(--panel); }
         <p class="ipr-note">BBR is the leading failure. Failed or reprocess-required attempts include ones later fixed; recovered = image since delivered. “Still failed” is the image’s current state, which can have a different latest cause from the historical attempt shown here.</p>
         <div class="ipr-tablebox">
           <table class="ipr-wrap">
-            <thead><tr><th>QC Finding</th><th class="num">Failed attempts</th><th class="num">Images</th><th class="num">Recovered</th><th class="num">Still failed</th><th>Most often on</th></tr></thead>
+            <thead><tr><th>QC Finding</th><th class="num">Failed attempts</th><th class="num">Images</th><th class="num">Recovered</th><th class="num">Still failed<br>(latest cause)</th><th>Most often on</th></tr></thead>
             <tbody data-draw="eng-reasons" data-source="attempts images"></tbody>
           </table>
         </div>
@@ -890,9 +890,11 @@ header.top { border-bottom:1px solid var(--line); background:var(--panel); }
     const td = (t, cls) => { const e = document.createElement('td'); if (cls) e.className = cls; e.textContent = t; return e; };
     tb.replaceChildren(...d3.groups(f, (x) => x.qc_finding || 'Not recorded').sort((p, q) => q[1].length - p[1].length).map(([k, v]) => {
       const ids = [...new Set(v.map((x) => x.image_id))], st = ids.map((i) => (img.get(i) || {}).delivery_status);
-      const still = st.filter((s) => s === 'Failed').length;
+      const stillRows = ids.map((i) => img.get(i)).filter((x) => x?.delivery_status === 'Failed');
+      const still = stillRows.length;
+      const latestCause = [...new Set(stillRows.map((x) => (x.qc_finding || 'Not recorded').replace(/^Processing error: /, '').replace(/^Input error: /, '')))].join(', ');
       const tr = document.createElement('tr');
-      tr.append(td(k), td(v.length, 'num'), td(ids.length, 'num'), td(st.filter((s) => s === 'Delivered').length, 'num'), td(still, 'num' + (still ? ' late' : '')),
+      tr.append(td(k), td(v.length, 'num'), td(ids.length, 'num'), td(st.filter((s) => s === 'Delivered').length, 'num'), td(still ? `${still} (${latestCause})` : '0', 'num' + (still ? ' late' : '')),
         td(`${top(v, 'satellite')} · ${top(v, 'bandset')}`));
       return tr; }));
   });
