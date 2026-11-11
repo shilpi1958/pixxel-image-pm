@@ -539,6 +539,11 @@ header.top { border-bottom:1px solid var(--line); background:var(--panel); }
     <div class="ipr-card" id="cs-tell">
       <h2>Updates to send</h2>
       <p class="ipr-note">Late or not captured, by priority; then delivered with partial coverage. Updates are customer-safe; round ETAs up.</p>
+      <p class="ipr-note">Internal ETA method: 15% of SLA for upload, 40% for final QC plus upload, and 80% for a failed image that needs processing again. Stuck and not-captured images have no ETA.</p>
+      <ul class="ipr-note">
+        <li><strong>In final quality check:</strong> QA/QC has not recorded a final Pass or Fail. The image is not approved for delivery.</li>
+        <li><strong>Under quality review; we will confirm a new date:</strong> a quality issue is being assessed, so no revised delivery date is committed yet.</li>
+      </ul>
       <div class="ipr-tablebox">
         <table data-source="images" data-row-key="image_id">
           <thead><tr><th data-field="image_id">Image ID</th><th data-field="customer">Customer</th><th data-field="priority">Priority</th><th data-field="customer_update">Update to send</th><th data-field="eta">Expected ETA</th><th data-field="sla_status">SLA status</th></tr></thead>
@@ -975,41 +980,30 @@ header.top { border-bottom:1px solid var(--line); background:var(--panel); }
   };
   dash.draw('cs-cust-table', (tb) => custTable(tb, true));
   dash.draw('lead-cust-table', (tb) => custTable(tb));
-  // ETA for undelivered images: data time + steps still left. Processing and QC wait from history
-  // (median–p80, same SLA Priority); QC review and release can't be timed yet, so they use their targets.
-  const ETA_STEPS = { '4': ['release'], '3': ['qcreview', 'release'], Failed: ['processing_h', 'qc_wait_h', 'qcreview', 'release'] };
-  const ETA_TARGET = { qcreview: 0.25, release: 0.15 };
+  // ETA for undelivered images: a simple share of the image SLA for its remaining steps.
+  const ETA_SHARE = { '4': 0.15, '3': 0.40, Failed: 0.80 };
   const etaModel = () => {
-    const im = dash.data('images'), at = dash.data('attempts');
-    if (im.status !== 'ok' || at.status !== 'ok') return null;
-    const pool = (k, p) => { const all = at.data.filter((x) => typeof x[k] === 'number');
-      const s = all.filter((x) => x.priority === p), v = (s.length >= 3 ? s : all).map((x) => x[k]).sort(d3.ascending);
-      v.fallback = s.length < 3; return v; };
+    const im = dash.data('images');
+    if (im.status !== 'ok') return null;
     const late = im.data.find((x) => x.delivery_status !== 'Delivered' && x.deadline && typeof x.hours_vs_deadline === 'number');
     const now = late ? new Date(new Date(late.deadline).getTime() + late.hours_vs_deadline * 3600e3) : null;
-    return { pool, now };
+    return { now };
   };
   const fmtT = d3.utcFormat('%-d %b %H:%M');
   window.iprEta = (x, m) => {
     if (x.delivery_status === 'Delivered') return '';
     if (x.delivery_status === 'Not processable') return 'No ETA yet: retake depends on next pass';
     if (x.stuck === 'Yes') return 'No ETA yet: processing stuck';
-    const steps = ETA_STEPS[x.delivery_status === 'Failed' ? 'Failed' : iprGate(x)];
-    if (!m || !steps) return '';
-    let lo = 0, hi = 0;
-    for (const k of steps) {
-      if (ETA_TARGET[k]) { const t = (IPR_SLA[x.priority] ?? 24) * ETA_TARGET[k]; lo += t; hi += t; continue; }
-      const v = m.pool(k, x.priority); if (!v.length) return 'No ETA: no history'; lo += d3.quantile(v, 0.5); hi += d3.quantile(v, 0.8);
-    }
-    const r = `${Math.round(lo)}–${Math.max(Math.round(hi), Math.round(lo) + 1)}h`;
-    return m.now ? `${r} (by ${fmtT(new Date(m.now.getTime() + hi * 3600e3))} UTC)` : r;
+    const share = ETA_SHARE[x.delivery_status === 'Failed' ? 'Failed' : iprGate(x)];
+    if (!m || share == null) return '';
+    const h = Math.ceil((IPR_SLA[x.priority] ?? 24) * share);
+    return m.now ? `${h}h (by ${fmtT(new Date(m.now.getTime() + h * 3600e3))} UTC)` : `${h}h`;
   };
   // Upper ETA in hours from data time, or null when there is none.
   window.iprEtaHi = (x, m) => {
     if (!m || x.delivery_status === 'Delivered' || x.delivery_status === 'Not processable' || x.stuck === 'Yes') return null;
-    const steps = ETA_STEPS[x.delivery_status === 'Failed' ? 'Failed' : iprGate(x)]; if (!steps) return null;
-    let hi = 0; for (const k of steps) { if (ETA_TARGET[k]) { hi += (IPR_SLA[x.priority] ?? 24) * ETA_TARGET[k]; continue; }
-      const v = m.pool(k, x.priority); if (!v.length) return null; hi += d3.quantile(v, 0.8); } return hi;
+    const share = ETA_SHARE[x.delivery_status === 'Failed' ? 'Failed' : iprGate(x)];
+    return share == null ? null : Math.ceil((IPR_SLA[x.priority] ?? 24) * share);
   };
   // Late = past deadline; At risk = not late but ETA (p80) lands after the deadline; else On track.
   window.iprState = (x, m) => { const v = x.hours_vs_deadline;
@@ -1205,12 +1199,11 @@ header.top { border-bottom:1px solid var(--line); background:var(--panel); }
       .sort((a, b) => b.value - a.value).slice(0, 8);
     iprPctCols(el, rows, { ref: base, refLabel: `Overall ${iprFmt.pct(base)}`, max: Math.max(d3.max(rows, (d) => d.value) * 1.15, base * 1.3) });
   });
-  // Act now chart: how late each open image is, and how long until it can ship (ETA median–p80).
+  // Act now chart: how late each open image is, and its SLA-share ETA.
   window.iprEtaLo = (x, m) => {
     if (!m || x.delivery_status === 'Delivered' || x.delivery_status === 'Not processable' || x.stuck === 'Yes') return null;
-    const steps = ETA_STEPS[x.delivery_status === 'Failed' ? 'Failed' : iprGate(x)]; if (!steps) return null;
-    let lo = 0; for (const k of steps) { if (ETA_TARGET[k]) { lo += (IPR_SLA[x.priority] ?? 24) * ETA_TARGET[k]; continue; }
-      const v = m.pool(k, x.priority); if (!v.length) return null; lo += d3.quantile(v, 0.5); } return lo;
+    const share = ETA_SHARE[x.delivery_status === 'Failed' ? 'Failed' : iprGate(x)];
+    return share == null ? null : Math.ceil((IPR_SLA[x.priority] ?? 24) * share);
   };
   // Same words as the gates and the Act now "Blocked because" column.
   const LATE_STATE = (x) => x.stuck === 'Yes' ? 'Processing stuck' : x.delivery_status === 'Failed' ? 'QC failed'
