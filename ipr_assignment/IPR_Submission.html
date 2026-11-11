@@ -500,6 +500,13 @@ Eleven processable images have QC Pending and no recorded first QC decision, so 
   DATA.docs.note.md = DATA.docs.note.md
     .replace('All 28 undelivered processable images are past their deadline. Seven have a QC pass but no upload; three were uploaded without a QC pass. Confirm each image’s current state before assigning an action.\n\n', '')
     .replace('- **Delivered images include cloud cover up to 68%.**\n', '');
+  DATA.docs.appendix.md = DATA.docs.appendix.md
+    .replace('Original values are retained in Fixes\\_Log.', 'This table shows the main label normalisations used in this analysis.')
+    .replace('| 8 \n', '')
+    .replace(/\| 11 \| No structured escalation record for blocked images \|[^\n]*\n/, '')
+    .replace(/\| (9|10|12|13|14|15) \|/g, function (_, number) {
+      return '| ' + ({ 9: 8, 10: 9, 12: 10, 13: 11, 14: 12, 15: 13 })[number] + ' |';
+    });
   DATA.nav = DATA.nav.filter(function (n) { return n.key !== 'rules'; });
   DATA.nav.push({ key: 'cleaned-data', label: 'Cleaned data ↗', num: '6', href: 'https://docs.google.com/spreadsheets/d/1H5MagVDtXSokKoSzb_ETOgIPoxjnbulVaNIjAcQHKFY/edit?gid=3743119#gid=3743119' });
   var nav = DATA.nav, docs = DATA.docs;
