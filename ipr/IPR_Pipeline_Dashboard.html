@@ -498,7 +498,7 @@ header.top { border-bottom:1px solid var(--line); background:var(--panel); }
           </div>
         </div>
         <h3>Failure and rework signals</h3>
-        <p class="ipr-note">Rates by scene condition versus overall. Red = 10+ points above overall; groups under 10 are greyed. Factors overlap.</p>
+        <p class="ipr-note">Rates by scene condition versus overall. Red = 10+ points above overall; groups under 10 are greyed. Each factor adds to 89 processable images; unknown and unmapped values are shown separately. Factors overlap.</p>
         <div class="ipr-chart" data-draw="eng-scene-chart" data-source="images"></div>
         <div class="ipr-tablebox">
           <table class="ipr-wrap">
@@ -1104,15 +1104,15 @@ header.top { border-bottom:1px solid var(--line); background:var(--panel); }
   });
   // Scene conditions vs reprocess and late rates (processable images). Small groups are greyed.
   const SCENE = [
-    ['Cloud cover', (x) => x.cloud_cover_pct == null ? null : x.cloud_cover_pct < 20 ? 'Under 20%' : x.cloud_cover_pct < 40 ? '20–40%' : '40–70%'],
+    ['Cloud cover', (x) => x.cloud_cover_pct == null ? 'Unknown' : x.cloud_cover_pct < 20 ? 'Under 20%' : x.cloud_cover_pct < 40 ? '20–40%' : '40–70%'],
     ['Cloud status', (x) => x.cloud_status],
-    ['Relative light', (x) => x.relative_light === 'Unmapped numeric' ? null : x.relative_light],
+    ['Relative light', (x) => x.relative_light === 'Unmapped numeric' ? 'Unmapped numeric' : x.relative_light || 'Unknown'],
     ['Off-nadir', (x) => x.off_nadir_deg == null ? null : x.off_nadir_deg < 10 ? 'Under 10°' : x.off_nadir_deg < 20 ? '10–20°' : '20°+'],
     ['Solar zenith', (x) => x.solar_zenith_deg == null ? null : x.solar_zenith_deg < 30 ? 'Under 30°' : x.solar_zenith_deg < 45 ? '30–45°' : '45°+'],
     ['Bandset', (x) => x.bandset],
     ['Satellite', (x) => x.satellite],
   ];
-  const ORDER = ['Under 20%', '20–40%', '40–70%', 'Clear', 'Partial', 'Very Low', 'Low', 'Medium', 'High', 'Under 10°', '10–20°', '20°+', 'Under 30°', '30–45°', '45°+'];
+  const ORDER = ['Under 20%', '20–40%', '40–70%', 'Clear', 'Partial', 'Very Low', 'Low', 'Medium', 'High', 'Under 10°', '10–20°', '20°+', 'Under 30°', '30–45°', '45°+', 'Unknown', 'Unmapped numeric'];
   dash.draw('eng-scene', (tb) => {
     const r = iprRows('images'); if (!r) { tb.replaceChildren(); return; }
     const k = kpi(r); if (!k.length) { tb.replaceChildren(); return; }
