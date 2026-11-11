@@ -384,6 +384,7 @@ These five measures are the daily operating scorecard for IPR: customer outcome,
 | 5 | QC recovery delivery rate | Images with a QC Fail or Reprocess-required outcome that are now Delivered | Images with a QC Fail or Reprocess-required outcome | 3/13 (23%) | ≥90% |
 
 Eleven processable images have QC Pending and no recorded first QC decision, so they are excluded from Metric 4’s 78-image denominator. The six not-captured images are excluded from processable-image KPIs because they never entered the IPR processing pipeline.`);
+  DATA.docs.note.md = DATA.docs.note.md.replace(/\n\| SLA priority \| Attempts \| Ingest: actual \/ target \| Processing: actual \/ target \| QC wait: actual \/ target \| All three within target \|\n\| --- \| --- \| --- \| --- \| --- \| --- \|\n(?:\|[^\n]*\|\n){5}/, '\n');
   DATA.docs.note.num = "1";
   DATA.nav = DATA.nav.map(function (n) {
     return n.key === "note" ? Object.assign({}, n, { num: "1" }) : n;
