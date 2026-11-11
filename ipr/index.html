@@ -494,7 +494,8 @@ Eleven processable images have QC Pending and no recorded first QC decision, so 
   DATA.docs.note.md = DATA.docs.note.md
     .replace('Full cleaning rules, denominator choices, data gaps and open questions are in the [Appendix](#appendix).', 'Denominator choices, data gaps and open questions are in the [Appendix](#appendix).');
   DATA.docs.note.md = DATA.docs.note.md.replace('- **BBR appears on 13 attempts across 8 images; none is delivered in its latest status.**', '- **ISOFIT scope:** this table counts all 3 recorded ISOFIT incidents across 3 images, including one stuck Pending run. The Engineering dashboard’s “Why attempts fail” table counts only Fail or Reprocess-required attempts, so it shows 2 ISOFIT attempts.\n- **BBR appears on 13 attempts across 8 images; none is delivered in its latest status.**');
-  DATA.nav = DATA.nav.filter(function (n) { return n.key !== 'rules' && n.key !== 'cleaned-data'; });
+  DATA.nav = DATA.nav.filter(function (n) { return n.key !== 'rules'; });
+  DATA.nav.push({ key: 'cleaned-data', label: 'Cleaned data ↗', num: '6', href: 'https://docs.google.com/spreadsheets/d/1H5MagVDtXSokKoSzb_ETOgIPoxjnbulVaNIjAcQHKFY/edit?gid=3743119#gid=3743119' });
   var nav = DATA.nav, docs = DATA.docs;
   var navEl = document.getElementById("nav"), docEl = document.getElementById("doc");
 
