@@ -371,6 +371,19 @@ Full cleaning rules, denominator choices, data gaps and open questions are in th
 | D | Duplicates and attempts | 6 stale duplicates removed; use the latest valid attempt and the attempt-1 SLA | Appendix |
 | E | What counts as delivered | QC pass + upload; caveats are tracked separately | Pipeline health; Appendix |
 | F | Data gaps to fix first | QC End missing; recorded upload-before-QC-start 55/74; 45/95 customer statuses wrong; no escalation record | Data confidence and next fixes; Appendix |`);
+  DATA.docs.note.md = DATA.docs.note.md.replace(/## Measure it: top 5 daily metrics[\s\S]*?(?=\n\n## Data confidence and next fixes)/, `## Measure it: top 5 daily metrics
+
+These five measures are the daily operating scorecard for IPR: customer outcome, active workload, turnaround-time risk, image quality and recovery effectiveness. P0 is a required split within on-time delivery, rather than a separate metric.
+
+| # | Metric | Numerator | Denominator | Current | Target |
+| --- | --- | --- | --- | --- | --- |
+| 1 | On-time delivery rate | Processable images delivered by their SLA deadline | Processable images | 52/89 (58%); P0: 0/8 | ≥95%; P0: 100% |
+| 2 | Open late backlog | Processable images not Delivered and past their SLA deadline | Processable images; reported as a count, split by state | 28: 7 QC-passed/not-uploaded, 7 in progress, 11 failed, 3 uploaded without a recorded QC pass | 0 |
+| 3 | Slowest-10% delivery time vs. SLA | 90th-percentile acquisition-to-delivery time, normalised by each image’s SLA | Delivered images with an acquisition and upload time | 1.2× SLA (61 delivered images) | ≤1.0× SLA |
+| 4 | First-pass QC pass rate | Images with QC Pass on attempt 1 | Images with a recorded Pass, Fail or Reprocess-required QC decision on attempt 1 | 65/78 (83%); 13/78 (17%) Fail/reprocess | Pass ≥90%; Fail/reprocess ≤10% |
+| 5 | QC recovery delivery rate | Images with a QC Fail or Reprocess-required outcome that are now Delivered | Images with a QC Fail or Reprocess-required outcome | 3/13 (23%) | ≥90% |
+
+Eleven processable images have QC Pending and no recorded first QC decision, so they are excluded from Metric 4’s 78-image denominator. The six not-captured images are excluded from processable-image KPIs because they never entered the IPR processing pipeline.`);
   DATA.docs.note.num = "1";
   DATA.nav = DATA.nav.map(function (n) {
     return n.key === "note" ? Object.assign({}, n, { num: "1" }) : n;

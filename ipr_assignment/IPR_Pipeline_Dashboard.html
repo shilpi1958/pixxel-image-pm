@@ -1250,19 +1250,20 @@ header.top { border-bottom:1px solid var(--line); background:var(--panel); }
   // ratio: [part, whole] arrays -> value + basis; count: number.
   const ratio = (part, all, u = 'images') => all.length ? { v: part.length / all.length, n: `${part.length} of ${all.length} ${u}` } : null;
 
-  // The five core metrics: image quality first, followed by delivery and recovery.
+  // The five core metrics: delivery, backlog, turnaround, quality and recovery.
   // dir: 'hi' = higher is better, 'lo' = lower is better. fmt formats value and target.
   const M = [
-    { id: 'clean-first-pass', name: 'Clean first-pass QC pass', why: 'Shows whether images are usable without rework.', dir: 'hi', t: 0.9, fmt: P,
-      f: (k, a) => { const d = decided(a.filter((x) => x.attempt === 1)); const o = ratio(d.filter((x) => x.qc_result === 'Pass' && x.qc_finding === 'None'), d, 'first-pass QC decisions');
-        return o ? { ...o, n: `${o.n}; caveats excluded` } : null; } },
-    { id: 'p0-attention', name: 'P0 requiring immediate attention', why: 'Keeps the most urgent commitments from being buried in averages.', dir: 'lo', t: 0, fmt: N,
-      f: (k, a, r) => { const p0 = r.filter((x) => x.priority === 'P0'); const needs = p0.filter((x) => x.delivery_status !== 'Delivered' && (x.delivery_status === 'Not processable' || isLate(x))); return { v: needs.length, n: `of ${p0.length} P0 images` }; } },
     { id: 'on-time-delivery', name: 'On-time delivery', why: 'Shows whether we meet the customer promise.', dir: 'hi', t: 0.95, fmt: P,
-      f: (k) => { const o = ratio(k.filter((x) => x.on_time === 'Yes'), k); if (!o) return null;
-        return o; } },
+      f: (k) => { const o = ratio(k.filter((x) => x.on_time === 'Yes'), k); const p0 = k.filter((x) => x.priority === 'P0'); if (!o) return null;
+        return { ...o, n: `${o.n}; P0 ${p0.filter((x) => x.on_time === 'Yes').length} of ${p0.length}` }; } },
     { id: 'late-backlog', name: 'Open late backlog', why: 'Shows work that needs recovery now.', dir: 'lo', t: 0, fmt: N,
       f: (k) => ({ v: k.filter(isLate).length, n: `of ${k.length} processable images` }) },
+    { id: 'tail-delivery-time', name: 'Slowest-10% delivery time vs. SLA', why: 'Shows tail turnaround risk that an average can hide.', dir: 'lo', t: 1, fmt: (v) => d3.format('.1f')(v) + '× SLA',
+      f: (k) => { const d = k.filter((x) => x.delivery_status === 'Delivered' && typeof x.end_to_end_h === 'number' && typeof x.sla_hours === 'number'); const q = d3.quantile(d.map((x) => x.end_to_end_h / x.sla_hours).sort(d3.ascending), 0.9);
+        return q == null ? null : { v: q, n: `${d.length} delivered images` }; } },
+    { id: 'first-pass-qc', name: 'First-pass QC pass rate', why: 'Shows whether images meet quality requirements without rework.', dir: 'hi', t: 0.9, fmt: P,
+      f: (k, a) => { const d = decided(a.filter((x) => x.attempt === 1)); const o = ratio(d.filter((x) => x.qc_result === 'Pass'), d, 'first-pass QC decisions'); const fail = d.filter((x) => ['Fail', 'Reprocess required'].includes(x.qc_result)).length;
+        return o ? { ...o, n: `${o.n}; ${fail} of ${d.length} Fail/reprocess` } : null; } },
     { id: 'qc-recovery', name: 'QC recovery delivery rate', why: 'Shows whether QC-identified quality failures recover to delivery.', dir: 'hi', t: 0.9, fmt: P,
       f: (k, a) => { const ids = new Set(a.filter((x) => ['Fail', 'Reprocess required'].includes(x.qc_result)).map((x) => x.image_id)); const m = k.filter((x) => ids.has(x.image_id)); return ratio(m.filter((x) => x.delivery_status === 'Delivered'), m, 'images with a QC Fail or Reprocess-required outcome'); } },
   ];
