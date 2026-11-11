@@ -392,7 +392,21 @@ Full cleaning rules, denominator choices, data gaps and open questions are in th
     .replace('Every number in the note depends on these decisions. Source: the cleaned data sheet linked from the Overview.', 'Every number in the note depends on these decisions. Source: the analysis dataset.')
     .replace('Every number in the note depends on these decisions. Source: IPR\\_Cleaned\\_Data.xlsx.', 'Every number in the note depends on these decisions. Source: the analysis dataset.');
   DATA.docs.overview.md = DATA.docs.overview.md
-    .replace(/\*\*Supporting material:\*\*[\s\S]*?\n\n### From export rows to images/, '### From export rows to images');
+    .replace(/\*\*Supporting material:\*\*[\s\S]*?\n\n### From export rows to images/, '### From export rows to images')
+    .replace('| Not captured | 6 | 6 rows; no processing run; excluded from delivery metrics |', `| Not captured | 6 | 6 rows; no processing run; excluded from delivery metrics |
+
+### First-attempt QC decisions
+
+This is distinct from current delivery status: it uses the first recorded QC decision for each processable image.
+
+| First-attempt QC decision | Images | What it means |
+| --- | --- | --- |
+| QC Pass | 65 | Images passing QC on their first attempt |
+| QC Fail | 10 | Images with a QC failure on their first attempt |
+| Reprocess required | 3 | Images requiring reprocessing on their first QC decision; all three later passed and were delivered |
+| **Completed first QC decisions** | **78** | **65 Pass + 10 Fail + 3 Reprocess required** |
+
+Eleven processable images have QC Pending and no recorded first QC decision, so they are excluded from the 78-image QC decision rate. The six not-captured images are outside the 89-image processable population.`);
   DATA.docs.note.md = DATA.docs.note.md
     .replace('Full cleaning rules, denominator choices, data gaps and open questions are in the [Appendix](#appendix).', 'Denominator choices, data gaps and open questions are in the [Appendix](#appendix).');
   DATA.nav = DATA.nav.filter(function (n) { return n.key !== 'rules' && n.key !== 'cleaned-data'; });
