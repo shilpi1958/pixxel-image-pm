@@ -454,7 +454,12 @@ header.top { border-bottom:1px solid var(--line); background:var(--panel); }
       </div>
       <div class="ipr-card" id="eng-reasons">
         <h2>Why attempts fail <span class="ipr-unit">per attempt</span></h2>
-        <p class="ipr-note">BBR is the leading failure. Failed or reprocess-required attempts include ones later fixed; recovered = image since delivered. ISOFIT shows 2 here because its third recorded incident is a stuck Pending run, not a Fail or Reprocess-required attempt. “Still failed” is the image’s current state, which can have a different latest cause from the historical attempt shown here.</p>
+        <ul class="ipr-note">
+          <li>BBR is the leading failure.</li>
+          <li>This table counts only Fail or Reprocess-required attempts. Recovered means the image was later delivered.</li>
+          <li>ISOFIT shows 2 here because its third recorded incident is a stuck Pending run.</li>
+          <li>Still failed is the image’s current state. Its latest cause can differ from the historical attempt shown here.</li>
+        </ul>
         <div class="ipr-tablebox">
           <table class="ipr-wrap">
             <thead><tr><th>QC Finding</th><th class="num">Failed attempts</th><th class="num">Images</th><th class="num">Recovered</th><th class="num">Still failed<br>(latest cause)</th><th>Most often on</th></tr></thead>
