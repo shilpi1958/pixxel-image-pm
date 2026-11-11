@@ -309,8 +309,12 @@ Prioritise three controls in the next two weeks: record event timestamps automat
     .replace('| 2 images have Processing error: ISOFIT crash | Inspect logs and input completeness<br>• Retry only after the failure condition is resolved | Eng A | Eng A: 6h estimate | 2–3 |', '| 2 recent ISOFIT crash incidents<br>• 1 remains open | Inspect logs and input completeness for the open image<br>• Capture the root cause from both incidents | Eng A | Eng A: 6h estimate | 2–3 |')
     .replace('| Remaining processing failures: Water Mask and Missing Metadata | Validate input and configuration<br>• Retry only after the cause is resolved<br>• Record the failure and rerun reason | Eng A | Eng A: 4h estimate | 2–4 |', '| Remaining processing failures: 2 images<br>• 1 Water Mask, 1 Missing Metadata | Validate input and configuration<br>• Retry only after the cause is resolved<br>• Record the failure and rerun reason | Eng A | Eng A: 4h estimate | 2–4 |')
     .replace('| QC decisions are recorded in free-text notes | • Require QC Result, QC Finding and BBR Severity as structured fields<br>• Keep Notes for context only | QA/QC + Eng B | Estimate after form design | 6–8 |', '| QC decisions are recorded in free-text notes | • Require QC Result, QC Finding and BBR Severity as structured fields<br>• Keep Notes for context only | QA/QC + Eng B | Estimate after form design | 6–8 |\n| Customer status is corrected by hand | Derive customer status from pipeline events and show the derived value in the CS tool | Eng B + Customer Success | Estimate after Day 6 tool review | 8–10 |');
+  DATA.docs.plan.md = DATA.docs.plan.md
+    .replace('| Images showing customers the wrong status | 45 of 95 | 0 |  |', '| Images showing customers the wrong status | 45 of 95 | Top-priority wrong statuses corrected; source-of-truth mapping agreed | Full correction plan scoped after the tool review; no zero-defect commitment yet |')
+    .replace('| Customer status is corrected by hand | Derive customer status from pipeline events and show the derived value in the CS tool | Eng B + Customer Success | Estimate after Day 6 tool review | 8–10 |', '| Customer status is corrected by hand | Map pipeline events to a customer status; confirm whether the current tool can be configured or needs engineering; correct priority exceptions manually and scope the full change | Eng B + Customer Success | Estimate after Day 6 tool review | 8–10 |')
+    .replace('| Remaining processing failures: 2 images<br>• 1 Water Mask, 1 Missing Metadata | Validate input and configuration<br>• Retry only after the cause is resolved<br>• Record the failure and rerun reason | Eng A | Eng A: 4h estimate | 2–4 |', '| Historical Water Mask incidents: 3 images<br>• 2 recovered; the remaining image now has Missing Metadata as its latest cause | Review the Water Mask root cause and add a prevention check<br>• Recover the current Missing Metadata failure before rerunning<br>• Record the failure and rerun reason | Eng A | Eng A: 4h estimate | 2–4 |');
   DATA.docs.internal.md = DATA.docs.internal.md
-    .replace('- Investigate 2 ISOFIT crashes.', '- Review 2 recent ISOFIT crash incidents; one remains open.\n  - Resolve the 2 remaining processing failures: 1 Water Mask and 1 Missing Metadata.')
+    .replace('- Investigate 2 ISOFIT crashes.', '- Review 2 recent ISOFIT crash incidents; one remains open.\n  - Review the historical Water Mask incidents; resolve the one current Missing Metadata failure before rerunning.')
     .replace('8 images with BBR in their latest status', '8 images with BBR');
   DATA.docs.customer.md = DATA.docs.customer.md
     .replace('UrbanAtlas has requested an update on two late P0 images over Dubai Urban.', 'UrbanAtlas has requested an update on two late P0 images over Dubai Urban. A separate not-captured UrbanAtlas image is incorrectly shown as Delivered; Customer Success should correct that status and discuss re-tasking separately, not in this two-image update.');
@@ -366,6 +370,15 @@ Prioritise three controls in the next two weeks: record event timestamps automat
   DATA.docs.note.md = DATA.docs.note.md
     .replace(/Upload precedes QC Start in 74% of attempts/g, '55 of 74 timestamped attempts show upload before the recorded QC Start')
     .replace('upload before QC (74%)', 'recorded upload before QC Start (55 of 74 timestamped attempts)');
+  DATA.docs.note.md = DATA.docs.note.md.replace(/## Summary[\s\S]*?\n\n## Pipeline health/, `## Summary
+
+**61 of 89 processable images were delivered; 52 were on time and 9 were late.** The other 28 are still open and already past SLA. No P0 image met its 8-hour SLA.
+
+The immediate recovery queue is clear: upload the 5 QC-passed, non-stuck images; resolve 7 images awaiting QC or processing completion; and hold the 8 BBR failures for root-cause review.
+
+**Definitions:** Delivered = QC pass + DataHub upload. The 6 not-captured images are outside IPR processing KPIs. **Snapshot:** 30 Jun 2026, 16:05 UTC.
+
+## Pipeline health`);
   DATA.docs.appendix.md = DATA.docs.appendix.md
     .replace('QC starts after upload in 74% of timestamped attempts', '55 of 74 timestamped attempts show upload before the recorded QC Start')
     .replace('The timestamp sequence is invalid; the export cannot show whether QC occurred before upload', 'Recorded event order needs validation; the export cannot show whether QC occurred before upload')

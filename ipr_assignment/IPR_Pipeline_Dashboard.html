@@ -268,7 +268,7 @@ header.top { border-bottom:1px solid var(--line); background:var(--panel); }
       <div class="ipr-gate-list-h"><h3 data-draw="gate-list-h" data-source="images"></h3><button class="ipr-reset ipr-gate-clear" type="button">Close list</button></div>
       <div class="ipr-tablebox">
         <table class="ipr-act" data-source="images" data-row-key="image_id">
-          <thead><tr><th data-field="image_id">Image ID</th><th data-field="customer">Customer</th><th data-field="priority">Priority</th><th data-field="blocked_because">Blocker</th><th data-field="route_to">Next owner</th><th data-field="next_action">Next action</th><th data-field="eta">Expected ETA</th><th data-field="sla_status">SLA status</th></tr></thead>
+          <thead><tr><th data-field="image_id">Image ID</th><th data-field="customer">Customer</th><th data-field="priority">Priority</th><th data-field="blocked_because">Blocker</th><th data-field="route_to">Next owner</th><th data-field="next_action">Next action</th><th data-field="eta">Internal planning ETA</th><th data-field="sla_status">SLA status</th></tr></thead>
           <tbody data-draw="gate-list"></tbody>
         </table>
       </div>
@@ -326,7 +326,7 @@ header.top { border-bottom:1px solid var(--line); background:var(--panel); }
         <p class="ipr-note">P0 first, then late, then likely to miss SLA. Next owner = team that acts next.</p>
         <div class="ipr-tablebox">
           <table class="ipr-act" data-source="images" data-row-key="image_id">
-          <thead><tr><th data-field="image_id">Image ID</th><th data-field="customer">Customer</th><th data-field="priority">Priority</th><th data-field="blocked_because">Blocker</th><th data-field="route_to">Next owner</th><th data-field="next_action">Next action</th><th data-field="eta">Expected ETA</th><th data-field="sla_status">SLA status</th></tr></thead>
+          <thead><tr><th data-field="image_id">Image ID</th><th data-field="customer">Customer</th><th data-field="priority">Priority</th><th data-field="blocked_because">Blocker</th><th data-field="route_to">Next owner</th><th data-field="next_action">Next action</th><th data-field="eta">Internal planning ETA</th><th data-field="sla_status">SLA status</th></tr></thead>
             <tbody data-draw="lead-act-table"></tbody>
           </table>
         </div>
@@ -401,7 +401,7 @@ header.top { border-bottom:1px solid var(--line); background:var(--panel); }
       <p class="ipr-note">Start at #1. Priority first; within a priority, review uploads without QC pass before other work.</p>
       <div class="ipr-tablebox">
         <table data-source="images" data-row-key="image_id">
-          <thead><tr><th data-field="rank" class="num">#</th><th data-field="image_id">Image ID</th><th data-field="customer">Customer</th><th data-field="priority">Priority</th><th data-field="blocked_because">Blocker</th><th data-field="next_action">Next action</th><th data-field="eta">Expected ETA</th><th data-field="sla_status">SLA status</th></tr></thead>
+          <thead><tr><th data-field="rank" class="num">#</th><th data-field="image_id">Image ID</th><th data-field="customer">Customer</th><th data-field="priority">Priority</th><th data-field="blocked_because">Blocker</th><th data-field="next_action">Next action</th><th data-field="eta">Internal planning ETA</th><th data-field="sla_status">SLA status</th></tr></thead>
           <tbody data-draw="qc-queue-table"></tbody>
         </table>
       </div>
@@ -413,7 +413,7 @@ header.top { border-bottom:1px solid var(--line); background:var(--panel); }
       <p class="ipr-note">Not QC's to fix: tell the Owner team. In the live tool this opens a ticket.</p>
       <div class="ipr-tablebox">
         <table data-source="images" data-row-key="image_id">
-          <thead><tr><th data-field="image_id">Image ID</th><th data-field="customer">Customer</th><th data-field="priority">Priority</th><th data-field="blocked_because">Blocker</th><th data-field="route_to">Next owner</th><th data-field="next_action">Next action</th><th data-field="eta">Expected ETA</th><th data-field="sla_status">SLA status</th></tr></thead>
+          <thead><tr><th data-field="image_id">Image ID</th><th data-field="customer">Customer</th><th data-field="priority">Priority</th><th data-field="blocked_because">Blocker</th><th data-field="route_to">Next owner</th><th data-field="next_action">Next action</th><th data-field="eta">Internal planning ETA</th><th data-field="sla_status">SLA status</th></tr></thead>
           <tbody data-draw="qc-esc-table"></tbody>
         </table>
       </div>
@@ -434,7 +434,7 @@ header.top { border-bottom:1px solid var(--line); background:var(--panel); }
         <p class="ipr-note">Failed images, stuck runs, and uploads awaiting action. Most urgent first.</p>
         <div class="ipr-tablebox">
           <table class="ipr-act" data-source="images" data-row-key="image_id">
-            <thead><tr><th data-field="image_id">Image ID</th><th data-field="customer">Customer</th><th data-field="priority">Priority</th><th data-field="blocked_because">Blocker</th><th data-field="route_to">Next owner</th><th data-field="next_action">Next action</th><th data-field="eta">Expected ETA</th><th data-field="sla_status">SLA status</th></tr></thead>
+            <thead><tr><th data-field="image_id">Image ID</th><th data-field="customer">Customer</th><th data-field="priority">Priority</th><th data-field="blocked_because">Blocker</th><th data-field="route_to">Next owner</th><th data-field="next_action">Next action</th><th data-field="eta">Internal planning ETA</th><th data-field="sla_status">SLA status</th></tr></thead>
             <tbody data-draw="eng-work-table"></tbody>
           </table>
         </div>
@@ -538,15 +538,15 @@ header.top { border-bottom:1px solid var(--line); background:var(--panel); }
     <div class="ipr-group" data-group="cs-tell" hidden>
     <div class="ipr-card" id="cs-tell">
       <h2>Updates to send</h2>
-      <p class="ipr-note">Late or not captured, by priority; then delivered with partial coverage. Updates are customer-safe; round ETAs up.</p>
-      <p class="ipr-note">Internal ETA method: 15% of SLA for upload, 40% for final QC plus upload, and 80% for a failed image that needs processing again. Stuck and not-captured images have no ETA.</p>
+      <p class="ipr-note">Late or not captured, by priority; then delivered with partial coverage. Updates are customer-safe and do not show planning estimates.</p>
       <ul class="ipr-note">
         <li><strong>In final quality check:</strong> QA/QC has not recorded a final Pass or Fail. The image is not approved for delivery.</li>
+        <li><strong>Uploaded without QC pass:</strong> the upload is not a delivery. Confirm customer access and complete QC review before saying the image is available.</li>
         <li><strong>Under quality review; we will confirm a new date:</strong> a quality issue is being assessed, so no revised delivery date is committed yet.</li>
       </ul>
       <div class="ipr-tablebox">
         <table data-source="images" data-row-key="image_id">
-          <thead><tr><th data-field="image_id">Image ID</th><th data-field="customer">Customer</th><th data-field="priority">Priority</th><th data-field="customer_update">Update to send</th><th data-field="eta">Expected ETA</th><th data-field="sla_status">SLA status</th></tr></thead>
+          <thead><tr><th data-field="image_id">Image ID</th><th data-field="customer">Customer</th><th data-field="priority">Priority</th><th data-field="customer_update">Update to send</th><th data-field="sla_status">SLA status</th></tr></thead>
           <tbody data-draw="cs-tell-table"></tbody>
         </table>
       </div>
@@ -562,7 +562,7 @@ header.top { border-bottom:1px solid var(--line); background:var(--panel); }
       <dt>Delivered</dt><dd>Passed QC and uploaded. Uploaded without a QC pass does not count.</dd>
       <dt>On time</dt><dd>Delivered by the SLA deadline: acquisition + attempt-1 SLA hours.</dd>
       <dt>Late</dt><dd>Not delivered and past the SLA deadline.</dd>
-      <dt>Expected ETA</dt><dd>Estimated from remaining steps and past attempts at the same priority. None is shown for stuck or not-captured images.</dd>
+      <dt>Internal planning ETA</dt><dd>An internal estimate from the remaining steps. It is not a customer commitment and is not shown in the Customer Success view.</dd>
       <dt>Partial coverage</dt><dd>Delivered, but the export marks Target Status = Partial, so part of the customer's area is missing. Tell the customer before they notice.</dd>
       <dt>Internal accounts</dt><dd>Calibration and Internal Demo. They count in pipeline views, not customer views.</dd>
       <dt>Source</dt><dd>IPR analysis dataset.</dd>
@@ -1043,7 +1043,7 @@ header.top { border-bottom:1px solid var(--line); background:var(--panel); }
 
   // Customer-safe wording per Delivery Status.
   const SAY = { 'Not processable': 'Capture missed; retake being planned', Failed: 'Being reprocessed to meet quality standards',
-    'In progress': 'In final quality check', 'Uploaded without QC pass': 'In final quality check', 'QC passed, not uploaded': 'Passed quality check; delivery in progress' };
+    'In progress': 'In final quality check', 'Uploaded without QC pass': 'Delivery is being reviewed; we will confirm the next step', 'QC passed, not uploaded': 'Passed quality check; delivery in progress' };
   dash.draw('cs-tell-table', (tb) => {
     const r = iprRows('images'); if (!r) { tb.replaceChildren(); return; }
     const m = etaModel();
@@ -1057,7 +1057,7 @@ header.top { border-bottom:1px solid var(--line); background:var(--panel); }
             : x.stuck === 'Yes' && x.delivery_status !== 'Not processable' ? 'Processing delayed; team engaged'
               : x.delivery_status === 'Failed' && x.qc_finding === 'BBR' ? 'Under quality review; we will confirm a new date' : SAY[x.delivery_status] || '' }; })
       .sort((a, b) => partial(a) - partial(b) || iprUrgent(a, b));
-    iprTable(tb, rows, ['image_id', 'customer', 'priority', 'customer_update', 'eta', 'sla_status']);
+    iprTable(tb, rows, ['image_id', 'customer', 'priority', 'customer_update', 'sla_status']);
   });
   // Weekly team focus: the problem, amount of open work, and the one ask for the week.
   dash.draw('lead-teams', (tb) => {
