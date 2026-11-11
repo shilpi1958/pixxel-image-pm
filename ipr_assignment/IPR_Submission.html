@@ -106,6 +106,19 @@ article { background: var(--panel); border: 1px solid var(--line); border-radius
 .tablewrap.appendix-check-table th:nth-child(3), .tablewrap.appendix-check-table td:nth-child(3) { width: 38%; }
 .tablewrap.appendix-check-table th:nth-child(4), .tablewrap.appendix-check-table td:nth-child(4) { width: 20%; }
 
+.qc-flow { display: grid; grid-template-columns: minmax(150px, 0.8fr) minmax(200px, 1fr) minmax(220px, 1.25fr); gap: 14px; margin: 0 0 1.2em; max-width: none; }
+.qc-flow-stage { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.qc-flow-label { margin: 0; color: var(--muted); font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.qc-flow-node { position: relative; padding: 10px 12px; border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 6px; background: var(--code-bg); }
+.qc-flow-stage:not(:first-child) .qc-flow-node::before { content: "←"; position: absolute; left: -20px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.9rem; }
+.qc-flow-node strong { display: block; font-family: var(--font-display); font-size: 1.35rem; line-height: 1; }
+.qc-flow-node span { display: block; font-size: 0.84rem; line-height: 1.35; }
+.qc-flow-node.success { border-left-color: var(--ok); }
+.qc-flow-node.warning { border-left-color: var(--warn); }
+.qc-flow-node.failure { border-left-color: var(--bad); }
+.qc-flow-node.pending { border-left-color: var(--accent); }
+.qc-flow-note { max-width: 72ch; margin-top: -0.35em !important; color: var(--muted); font-size: 0.88rem; }
+
 .detail-toggle { margin: 1.5em 0; border: 1px solid var(--line); border-radius: 6px; background: var(--code-bg); }
 .detail-toggle summary { cursor: pointer; padding: 11px 14px; color: var(--accent); font-weight: 600; }
 .detail-toggle summary::marker { color: var(--accent); }
@@ -129,6 +142,8 @@ article { background: var(--panel); border: 1px solid var(--line); border-radius
   nav.index { position: static; }
   nav.index ol { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
   nav.index a { display: flex; gap: 6px; white-space: nowrap; border: 1px solid var(--line); background: var(--panel); }
+  .qc-flow { grid-template-columns: 1fr; gap: 14px; }
+  .qc-flow-stage:not(:first-child) .qc-flow-node::before { content: "↑"; left: 50%; top: -15px; transform: translateX(-50%); }
 }
 @media (prefers-reduced-motion: no-preference) { article { animation: rise 0.18s ease-out; } @keyframes rise { from { transform: translateY(4px); } to { transform: none; } } }
 </style>
@@ -415,6 +430,33 @@ This is distinct from current delivery status: it uses the first recorded QC dec
 | **Completed first QC decisions** | **78** | **65 Pass + 10 Fail + 3 Reprocess required** |
 
 Eleven processable images have QC Pending and no recorded first QC decision, so they are excluded from the 78-image QC decision rate. The six not-captured images are outside the 89-image processable population.`);
+  DATA.docs.overview.md = DATA.docs.overview.md.replace('The six not-captured images are outside the 89-image processable population.', `The six not-captured images are outside the 89-image processable population.
+
+### Where the 89 processable images are now
+
+<div class="qc-flow" role="img" aria-label="Flow of 89 processable images: 78 have a completed first QC decision and 11 are pending. Of the completed decisions, 65 passed and 13 failed or required reprocessing. Current outcomes are 58 delivered after first-pass QC, 7 QC-passed but not uploaded, 3 delivered after recovery, 10 failed, 7 in progress awaiting a QC decision, 3 uploaded while QC is pending, and 1 stuck ISOFIT case before a QC decision.">
+  <div class="qc-flow-stage">
+    <p class="qc-flow-label">Processable population</p>
+    <div class="qc-flow-node"><strong>89</strong><span>Processable images</span></div>
+  </div>
+  <div class="qc-flow-stage">
+    <p class="qc-flow-label">First QC state</p>
+    <div class="qc-flow-node success"><strong>78</strong><span>Completed first QC decision</span></div>
+    <div class="qc-flow-node pending"><strong>11</strong><span>QC Pending; no recorded first decision</span></div>
+  </div>
+  <div class="qc-flow-stage">
+    <p class="qc-flow-label">Current outcome</p>
+    <div class="qc-flow-node success"><strong>58</strong><span>First-pass QC → Delivered</span></div>
+    <div class="qc-flow-node warning"><strong>7</strong><span>First-pass QC → Not uploaded</span></div>
+    <div class="qc-flow-node success"><strong>3</strong><span>Fail/reprocess → Recovered and delivered</span></div>
+    <div class="qc-flow-node failure"><strong>10</strong><span>Fail/reprocess → Failed</span></div>
+    <div class="qc-flow-node pending"><strong>7</strong><span>Pending QC → In progress</span></div>
+    <div class="qc-flow-node warning"><strong>3</strong><span>Pending QC → Uploaded without recorded decision</span></div>
+    <div class="qc-flow-node failure"><strong>1</strong><span>Pending QC → Stuck ISOFIT case</span></div>
+  </div>
+</div>
+
+<p class="qc-flow-note">The first-QC branches reconcile to 78: 65 Pass and 13 Fail/reprocess. The current outcomes reconcile to all 89 processable images.</p>`);
   DATA.docs.note.md = DATA.docs.note.md
     .replace('Full cleaning rules, denominator choices, data gaps and open questions are in the [Appendix](#appendix).', 'Denominator choices, data gaps and open questions are in the [Appendix](#appendix).');
   DATA.nav = DATA.nav.filter(function (n) { return n.key !== 'rules' && n.key !== 'cleaned-data'; });
