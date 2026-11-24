@@ -366,6 +366,7 @@ For data-confidence notes, denominator choices, and proposed fixes, see the [App
     .replace('**QC-to-upload timestamp order is invalid**', '**Recorded QC/upload event order needs validation**')
     .replace('QC End is missing, so the records cannot show whether QC was logged late or occurred after upload.', 'Validate timestamp semantics and the actual QC/upload workflow with IPR and QA/QC before calling this a control failure. QC End is missing, so the records cannot show whether QC was logged late or occurred after upload.')
     .replace('Uploaded without a QC pass—an error. All three require review;', 'Recorded as uploaded without a QC pass. All three require review;')
+    .replace('so the timestamp sequence is invalid', 'so the recorded event order needs validation')
     .replace('• Upload before QC Start: 55/74', '• Recorded upload before QC Start: 55 of 74 timestamped attempts');
   DATA.docs.note.md = DATA.docs.note.md
     .replace(/Upload precedes QC Start in 74% of attempts/g, '55 of 74 timestamped attempts show upload before the recorded QC Start')
@@ -410,7 +411,7 @@ These five measures are the daily operating scorecard for IPR: customer outcome,
 | 4 | First-pass QC pass rate | Images with QC Pass on attempt 1 | Images with a recorded Pass, Fail or Reprocess-required QC decision on attempt 1 | 65/78 (83%); 13/78 (17%) Fail/reprocess | Pass ≥90%; Fail/reprocess ≤10% |
 | 5 | QC recovery delivery rate | Images with a QC Fail or Reprocess-required outcome that are now Delivered | Images with a QC Fail or Reprocess-required outcome | 3/13 (23%) | ≥90% |
 
-Eleven processable images have QC Pending and no recorded first QC decision, so they are excluded from Metric 4’s 78-image denominator. The six not-captured images are excluded from processable-image KPIs because they never entered the IPR processing pipeline.`);
+Eleven processable images have QC Pending and no recorded first QC decision, so they are excluded from Metric 4’s 78-image denominator. The six not-captured images are excluded from processable-image KPIs because no usable capture was produced.`);
   DATA.docs.note.md = DATA.docs.note.md.replace(/\n\| SLA priority \| Attempts \| Ingest: actual \/ target \| Processing: actual \/ target \| QC wait: actual \/ target \| All three within target \|\n\| --- \| --- \| --- \| --- \| --- \| --- \|\n(?:\|[^\n]*\|\n){5}/, '\n');
   DATA.docs.note.num = "1";
   DATA.nav = DATA.nav.map(function (n) {
@@ -423,7 +424,7 @@ Eleven processable images have QC Pending and no recorded first QC decision, so 
     .replace('| = Valid rows | 130 | 123 processing attempts + 7 rows for not-captured images |', '| = Valid rows | 130 | 123 processing attempts + 1 captured record without a trigger + 6 not-captured rows |')
     .replace('| Processable images | 89 | Processed 123 times (one attempt per run); 26 needed more than one run |', '| Processable images | 89 | 123 processing attempts; 26 needed more than one run |')
     .replace('| Average attempts per image | 1.38 | 123 ÷ 89: 63 ran once, 18 twice, 8 three or more times |', '| Average attempts per image | 1.38 | 123 ÷ 89: 63 ran once, 18 twice, 8 three times |')
-    .replace('| Not captured | 6 | 7 rows (some tried more than once); no processing run; excluded from delivery metrics |', '| Not captured | 6 | 6 rows; no processing run; excluded from delivery metrics |');
+    .replace('| Not captured | 6 | 7 rows (some tried more than once); no processing run; excluded from delivery metrics |', '| Not captured | 6 | 6 image rows; excluded from delivery metrics |');
   // Supporting cleaning artefacts are intentionally not part of the submission.
   DATA.docs.rules.md = '';
   DATA.docs.appendix.md = DATA.docs.appendix.md
@@ -432,12 +433,12 @@ Eleven processable images have QC Pending and no recorded first QC decision, so 
   DATA.docs.overview.md = DATA.docs.overview.md
     .replace(/\*\*Supporting material:\*\*[\s\S]*?\n\n### From export rows to images/, '### From export rows to images')
     .replace('| 5b | Customer-safe update to Customer Success for a delayed high-priority image (UrbanAtlas P0s) | [IPR Customer-Safe Update](#customer) |', '| 5b | Customer-safe update to Customer Success for a delayed high-priority image (UrbanAtlas P0s) | [IPR Customer-Safe Update](#customer) |\n| 6 | Cleaned data workbook | [Open the cleaned data in Google Sheets](https://docs.google.com/spreadsheets/d/1H5MagVDtXSokKoSzb_ETOgIPoxjnbulVaNIjAcQHKFY/edit?gid=3743119#gid=3743119) |')
-    .replace('| Not captured | 6 | 6 rows; no processing run; excluded from delivery metrics |', '| Not captured | 6 | 6 rows; no processing run; excluded from delivery metrics |');
-  DATA.docs.overview.md = DATA.docs.overview.md.replace('| Not captured | 6 | 6 rows; no processing run; excluded from delivery metrics |', `| Not captured | 6 | 6 rows; no processing run; excluded from delivery metrics |
+    .replace('| Not captured | 6 | 6 image rows; excluded from delivery metrics |', '| Not captured | 6 | 6 image rows; excluded from delivery metrics |');
+  DATA.docs.overview.md = DATA.docs.overview.md.replace('| Not captured | 6 | 6 image rows; excluded from delivery metrics |', `| Not captured | 6 | 6 image rows; excluded from delivery metrics |
 
 ### Where the 89 processable images are now
 
-<div class="qc-flow" role="img" aria-label="Flow of 89 processable images: 78 have a completed first QC decision and 11 are pending. Of the completed decisions, 65 passed and 13 failed or required reprocessing. Current outcomes are 58 delivered after first-pass QC, 7 QC-passed but not uploaded, 3 delivered after recovery, 11 failed, 7 in progress awaiting a QC decision, and 3 uploaded while QC is pending.">
+<div class="qc-flow" role="img" aria-label="Flow of 89 processable images: 78 have a completed first QC decision and 11 are pending. Of the completed decisions, 65 passed and 13 failed or required reprocessing. Current outcomes are 58 delivered after first-pass QC, 7 QC-passed but not uploaded, 3 delivered after recovery, 10 failed after a first QC fail or reprocess decision, 7 in progress awaiting a QC decision, 3 uploaded while QC is pending, and 1 processing failure from an ISOFIT crash with QC still pending.">
   <div class="qc-flow-stage">
     <p class="qc-flow-label">Processable population</p>
     <div class="qc-flow-node"><strong>89</strong><span>Processable images</span></div>
@@ -452,13 +453,14 @@ Eleven processable images have QC Pending and no recorded first QC decision, so 
     <div class="qc-flow-node success"><strong>58</strong><span>First-pass QC → Delivered</span></div>
     <div class="qc-flow-node warning"><strong>7</strong><span>First-pass QC → Not uploaded</span></div>
     <div class="qc-flow-node success"><strong>3</strong><span>Fail/reprocess → Recovered and delivered</span></div>
-    <div class="qc-flow-node failure"><strong>11</strong><span>Failed: 8 BBR, 2 ISOFIT, 1 missing metadata</span></div>
+    <div class="qc-flow-node failure"><strong>10</strong><span>Fail/reprocess → Failed</span></div>
     <div class="qc-flow-node pending"><strong>7</strong><span>Pending QC → In progress</span></div>
     <div class="qc-flow-node warning"><strong>3</strong><span>Pending QC → Uploaded without recorded decision</span></div>
+    <div class="qc-flow-node failure"><strong>1</strong><span>Pending QC → Processing failed (ISOFIT crash)</span></div>
   </div>
 </div>
 
-<p class="qc-flow-note">The first-QC branches reconcile to 78: 65 Pass and 13 Fail/reprocess. The current outcomes reconcile to all 89 processable images.</p>
+<p class="qc-flow-note">The 78 completed first QC decisions split into 65 Pass and 13 Fail/reprocess. Of the 11 with QC Pending, 7 are in progress, 3 show an upload, and 1 failed during processing.</p>
 
 ### The 28 undelivered images
 
