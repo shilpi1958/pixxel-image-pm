@@ -421,7 +421,7 @@ Eleven processable images have QC Pending and no recorded first QC decision, so 
     .replace('- [IPR Data Cleaning Rules](#rules): every cleaning decision, with counts.\n', '')
     .replace('the cleaned data, one row per image attempt, with a column guide and a log of every changed cell. Also attached as IPR\\_Cleaned\\_Data.xlsx.', 'the cleaned data, one row per image attempt, with a column guide and a log of every changed cell.')
     .replace('| Count | Number | How it\'s made |', '| Step | Count | How derived |')
-    .replace('| = Valid rows | 130 | 123 processing attempts + 7 rows for not-captured images |', '| = Valid rows | 130 | 123 processing attempts + 1 captured record without a trigger + 6 not-captured rows |')
+    .replace('| = Valid rows | 130 | 123 processing attempts + 7 rows for not-captured images |', '| = Valid rows | 130 | 123 processing attempts + 1 historical no-trigger attempt + 6 not-captured rows |')
     .replace('| Processable images | 89 | Processed 123 times (one attempt per run); 26 needed more than one run |', '| Processable images | 89 | 123 processing attempts; 26 needed more than one run |')
     .replace('| Average attempts per image | 1.38 | 123 ÷ 89: 63 ran once, 18 twice, 8 three or more times |', '| Average attempts per image | 1.38 | 123 ÷ 89: 63 ran once, 18 twice, 8 three times |')
     .replace('| Not captured | 6 | 7 rows (some tried more than once); no processing run; excluded from delivery metrics |', '| Not captured | 6 | 6 image rows; excluded from delivery metrics |');
